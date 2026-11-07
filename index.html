@@ -905,15 +905,6 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
   </div>
 </section>
 
-<section class="sec" id="dia" style="padding-top:0">
-  <div class="wrap">
-    <div class="strip-head rv">
-      <div><p class="eyebrow">Um dia na Ingá</p><h2 style="font-size:clamp(36px,4.6vw,58px)">Do nascer do sol ao céu estrelado.</h2></div>
-      <div class="strip-nav"><button type="button" class="icon-btn" id="sl" aria-label="Voltar">‹</button><button type="button" class="icon-btn" id="sr" aria-label="Avançar">›</button></div>
-    </div>
-    <div class="day-strip" id="strip"></div>
-  </div>
-</section>
 <section class="sec" id="quartos" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head rv">
@@ -1850,19 +1841,6 @@ var hin=document.querySelector(".hero-inner"),ticking=false;
 function onScroll(){var y=scrollY,max=document.documentElement.scrollHeight-innerHeight;var pr=max>0?y/max:0;$("sprog").style.transform="scaleX("+pr+")";$("sleaf").style.transform="translateX("+(pr*innerWidth)+"px) rotate("+(y*.4)+"deg)";$("sleaf").style.opacity=pr>.005?1:0;
   ticking=false}
 addEventListener("scroll",function(){if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});onScroll();
-
-// faixa "um dia na Ingá" ligada ao cenário do topo
-$("strip").innerHTML=MOM.map(function(m){var h=m[0]+.6,pp=pal(h),night=pp.l<.55;
-  var hh=Math.floor(m[0]),mm=Math.round((m[0]-hh)*60);
-  return '<button type="button" class="dcard'+(night?" night":"")+'" data-h="'+h+'" style="background:linear-gradient(170deg,'+pp.top+','+pp.bot+')"><span class="orb" style="background:'+(night?"#F7F0DC":"#FFE3A8")+';box-shadow:0 0 30px '+(night?"rgba(255,255,255,.35)":"rgba(255,200,120,.8)")+'"></span><span class="hr">'+(hh<10?"0":"")+hh+":"+(mm<10?"0":"")+mm+'</span><span><b>'+m[1]+'</b><p>'+m[2]+'</p><span class="go">Ver no cenário ↑</span></span></button>'}).join("");
-var moved=false;
-$("strip").addEventListener("click",function(e){if(moved)return;var b=e.target.closest(".dcard");if(!b)return;hour=+b.dataset.h;$("hour").value=hour;setPlay(false);setClock();draw(performance.now());scrollTo({top:0,behavior:reduce?"auto":"smooth"})});
-$("sl").addEventListener("click",function(){$("strip").scrollBy({left:-280,behavior:"smooth"})});
-$("sr").addEventListener("click",function(){$("strip").scrollBy({left:280,behavior:"smooth"})});
-(function(){var st=$("strip"),down=false,x0=0,s0=0;
-  st.addEventListener("pointerdown",function(e){if(e.pointerType!=="mouse")return;down=true;moved=false;x0=e.clientX;s0=st.scrollLeft});
-  addEventListener("pointermove",function(e){if(!down)return;var dx=e.clientX-x0;if(Math.abs(dx)>5){moved=true;st.classList.add("drag")}st.scrollLeft=s0-dx});
-  addEventListener("pointerup",function(){if(!down)return;down=false;st.classList.remove("drag");setTimeout(function(){moved=false},50)});})();
 
 // cartões com inclinação 3D seguindo o mouse
 if(!reduce&&matchMedia("(hover:hover)").matches){

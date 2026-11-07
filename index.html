@@ -911,6 +911,19 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 @media (max-width:560px){.amen-grid{gap:6px}.am{padding:12px 4px 10px;border-radius:16px;gap:7px}.am-ic{width:40px;height:40px;border-radius:12px}.am-ic svg{width:20px;height:20px}.am-t{font-size:10.5px}
   .amen-panel{grid-template-columns:auto 1fr;padding:16px;gap:14px}.amen-panel .cnt{display:none}.amen-panel .pi{width:48px;height:48px;border-radius:14px}.amen-panel .pi svg{width:24px;height:24px}.amen-panel h3{font-size:22px}.amen-panel p{font-size:14px}}
 
+
+/* ---- player ---- */
+.player{position:relative;display:block;aspect-ratio:16/9;max-width:100%;border-radius:28px;overflow:hidden;background:var(--olive);box-shadow:0 30px 60px -36px rgba(14,40,30,.7)}
+.player-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.02);transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.player:hover .player-thumb{transform:scale(1.07)}
+.player-shade{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(0,0,0,.05),rgba(0,0,0,.35))}
+.player-btn{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:rgba(244,246,241,.95);color:var(--logo-rose);display:grid;place-items:center;animation:pulse 2.2s infinite;transition:transform .3s}
+.player:hover .player-btn{transform:scale(1.08)}
+.player-btn svg{width:34px;height:34px;margin-left:5px}
+.player-tag{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:6px;background:rgba(20,26,18,.7);color:#F4F6F1;font-size:13px;font-weight:700;padding:8px 12px;border-radius:999px;backdrop-filter:blur(6px)}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media (max-width:560px){.player{border-radius:20px}.player-btn{width:64px;height:64px;margin:-32px 0 0 -32px}.player-btn svg{width:26px;height:26px}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -1150,10 +1163,15 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 </section>
 <section class="sec" id="video" style="padding-top:0" hidden>
   <div class="wrap">
-    <a class="vid" id="vid-link" href="#" target="_blank" rel="noopener">
-      <span class="vid-bg" aria-hidden="true"></span>
-      <span class="vid-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
-      <span class="vid-txt"><span class="eyebrow">Vídeo</span><b>Veja a pousada em movimento</b><small id="vid-sub">Abre o vídeo em uma nova aba</small></span>
+    <div class="sec-head">
+      <div><p class="eyebrow">Vídeo</p><h2>A Ingá em movimento.</h2></div>
+      <p>Um passeio pela pousada, pelo jardim e pela praia em frente. Dê o play e sinta o clima antes de chegar.</p>
+    </div>
+    <a class="player" id="vid-link" href="#" target="_blank" rel="noopener" aria-label="Assistir ao vídeo da Pousada Ingá">
+      <img class="player-thumb" id="vid-thumb" alt="" loading="lazy">
+      <span class="player-shade" aria-hidden="true"></span>
+      <span class="player-btn" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+      <span class="player-tag"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg><span id="vid-sub">Assistir vídeo</span></span>
     </a>
   </div>
 </section>
@@ -2029,9 +2047,9 @@ var VIDEO_URL = "https://youtu.be/N_t4LrQtYjc";
 (function(){if(!VIDEO_URL)return;var a=$("vid-link"),m=VIDEO_URL.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/),id=m&&m[1];
   a.href=VIDEO_URL;$("video").hidden=false;
   var host=location.hostname,canEmbed=id&&/^https?:/.test(location.protocol)&&!/claude\.ai|claudeusercontent|claude\.site/.test(host);
-  if(id){a.style.backgroundImage="linear-gradient(90deg,rgba(43,49,34,.85),rgba(43,49,34,.25)),url(https://i.ytimg.com/vi/"+id+"/hqdefault.jpg)";a.classList.add("has-thumb");}
-  if(canEmbed){$("vid-sub").textContent="Toque para assistir aqui mesmo";
-    a.addEventListener("click",function(e){e.preventDefault();var f=document.createElement("div");f.className="vid-frame";
+  if(id){$("vid-thumb").src="https://i.ytimg.com/vi/"+id+"/hqdefault.jpg";}
+  $("vid-sub").textContent=canEmbed?"Assistir aqui":"Assistir no YouTube";
+  if(canEmbed){a.addEventListener("click",function(e){e.preventDefault();var f=document.createElement("div");f.className="player";
       f.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1" title="Vídeo da Pousada Ingá" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
       a.replaceWith(f);});}
 })();

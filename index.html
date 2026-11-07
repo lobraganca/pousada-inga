@@ -936,6 +936,29 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 @media (max-width:560px){.player{border-radius:20px}.player-btn{width:64px;height:64px;margin:-32px 0 0 -32px}.player-btn svg{width:26px;height:26px}}
 
+
+/* ---- voos compacto no celular ---- */
+@media (max-width:640px){
+  .fly{padding:18px 16px;gap:14px;margin-top:20px;border-radius:22px}
+  .fly .eyebrow{display:none}
+  .fly h3{font-size:24px}
+  .fly p.hint{display:none}
+  .fly-form{margin-top:12px;gap:10px}
+  .fly-form .grid3{grid-template-columns:1fr 1fr 64px;gap:8px}
+  .fly-form .grid3 label:last-child{grid-column:auto}
+  .fly label{font-size:10px;gap:4px}
+  .fly input,.fly select{padding:9px 10px;border-radius:10px;min-height:42px}
+  .fly input[type=date]{min-height:42px;font-size:14px!important;padding:9px 8px}
+  .fly .btns{display:grid;grid-template-columns:1.4fr 1fr;gap:8px}
+  .fly .btns .btn{padding:13px 10px;font-size:14px}
+  .arc{gap:6px}
+  .arc .codes{font-size:30px}
+  .arc .codes small{font-size:11px;margin-top:2px}
+  .arc svg{max-height:70px}
+  .legs{padding:8px 12px;font-size:11px}
+  .legs b{font-size:13px}
+}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -1313,7 +1336,7 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
     <div class="fly rv" id="voos">
       <div>
         <p class="eyebrow">Vem de avião?</p>
-        <h3>Busque voos para Porto Seguro.</h3>
+        <h3>Voos para Porto Seguro</h3>
         <p class="hint">O aeroporto de Porto Seguro (BPS) é a chegada mais usada. As datas e os passageiros já vêm da sua reserva.</p>
         <div class="fly-form">
           <label for="f-or">Saindo de

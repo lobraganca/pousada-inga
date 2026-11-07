@@ -480,24 +480,17 @@ footer .credit{border-top:1px solid rgba(255,255,255,.12)}
 }
 @media (max-width:760px){.fab.inhero,.mbar.inhero{transform:translateY(calc(100% + 140px))}.fab{transition:transform .35s, bottom .35s}}
 
-/* abertura com a logo: abre como uma flor */
-.intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#F4F6F1;animation:introOut .6s cubic-bezier(.6,0,.2,1) 1.9s forwards;pointer-events:none}
-.bloom{position:relative;width:min(300px,64vw);aspect-ratio:200/120}
-.flower{position:absolute;inset:0;width:100%;height:100%;overflow:visible;animation:budGrow 1.1s cubic-bezier(.3,1.3,.5,1) both}
-.flower .lr,.flower .lg,.flower .lm{transform-origin:4px 64px;transform-box:view-box}
-.flower .lr{animation:petalUp 1.2s .25s cubic-bezier(.3,1.5,.45,1) both}
-.flower .lg{animation:petalDown 1.2s .25s cubic-bezier(.3,1.5,.45,1) both}
-.flower .lm{animation:heart .9s .45s cubic-bezier(.3,1.4,.5,1) both}
-.flower .tx{animation:inT .7s 1s cubic-bezier(.2,.8,.2,1) both}
-.burst{position:absolute;left:48%;top:52%;width:150%;height:auto;transform:translate(-50%,-50%);overflow:visible}
-.burst .pt{transform-origin:0 0;transform-box:view-box;opacity:0;animation:petalBurst 1.3s calc(.35s + var(--d)) cubic-bezier(.2,.8,.2,1) both}
-@keyframes budGrow{from{transform:scale(.35) rotate(-18deg);opacity:0}40%{opacity:1}to{transform:none;opacity:1}}
-@keyframes petalUp{from{transform:rotate(30deg) scaleX(.6)}to{transform:none}}
-@keyframes petalDown{from{transform:rotate(-30deg) scaleX(.6)}to{transform:none}}
-@keyframes heart{from{transform:scale(0,.2);opacity:0}to{transform:none;opacity:1}}
-@keyframes inT{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
-@keyframes petalBurst{0%{transform:rotate(var(--r)) scale(.1);opacity:0}35%{opacity:.55}100%{transform:rotate(calc(var(--r) + 25deg)) scale(1.35) translateX(18px);opacity:0}}
-@keyframes introOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.05);visibility:hidden}}
+/* abertura com a logo: folhas se mexendo na vertical */
+.intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#F4F6F1;animation:introOut .5s ease 1.5s forwards;pointer-events:none}
+.bloom{position:relative;width:min(240px,56vw);aspect-ratio:200/120}
+.flower{position:absolute;inset:0;width:100%;height:100%;overflow:visible;animation:fadeIn .4s ease both}
+.flower .lr{animation:leafUp 1.4s ease-in-out both}
+.flower .lg{animation:leafDown 1.4s ease-in-out both}
+.flower .tx{animation:fadeIn .6s .5s ease both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes leafUp{0%{transform:translateY(14px)}55%{transform:translateY(-5px)}100%{transform:none}}
+@keyframes leafDown{0%{transform:translateY(-14px)}55%{transform:translateY(5px)}100%{transform:none}}
+@keyframes introOut{to{opacity:0;visibility:hidden}}
 @media (prefers-reduced-motion: reduce){.intro{display:none}}
 
 /* voos */
@@ -893,9 +886,6 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 
 <div class="intro" aria-hidden="true">
   <div class="bloom">
-    <svg class="burst" viewBox="-100 -100 200 200">
-      <g><path class="pt" style="--r:0deg;--d:0.00s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#B06C80"/><path class="pt" style="--r:45deg;--d:0.04s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#4A7A27"/><path class="pt" style="--r:90deg;--d:0.08s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#B06C80"/><path class="pt" style="--r:135deg;--d:0.12s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#4A7A27"/><path class="pt" style="--r:180deg;--d:0.16s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#B06C80"/><path class="pt" style="--r:225deg;--d:0.20s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#4A7A27"/><path class="pt" style="--r:270deg;--d:0.24s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#B06C80"/><path class="pt" style="--r:315deg;--d:0.28s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#4A7A27"/></g>
-    </svg>
     <svg class="flower" viewBox="0 0 200 120">
       <path class="lr" d="M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z" fill="#B06C80"/>
       <path class="lg" d="M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z" fill="#4A7A27"/>

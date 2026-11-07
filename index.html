@@ -479,22 +479,24 @@ footer .credit a:hover{color:#F4F6F1;text-decoration:underline}
 }
 @media (max-width:760px){.fab.inhero,.mbar.inhero{transform:translateY(calc(100% + 140px))}.fab{transition:transform .35s, bottom .35s}}
 
-/* abertura com a logo */
-.intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#F4F6F1;animation:introOut .55s cubic-bezier(.6,0,.2,1) 1.45s forwards;pointer-events:none}
-.intro svg{width:min(300px,62vw);height:auto;overflow:visible}
-.intro .lr,.intro .lg,.intro .lm{transform-origin:4px 64px;transform-box:view-box}
-.intro .lr{animation:inR .9s cubic-bezier(.3,1.4,.4,1) both}
-.intro .lg{animation:inG .9s .08s cubic-bezier(.3,1.4,.4,1) both}
-.intro .lm{animation:inM .8s .18s cubic-bezier(.3,1.4,.4,1) both}
-.intro .tx{animation:inT .7s .45s cubic-bezier(.2,.8,.2,1) both}
-.intro .bar{position:absolute;left:50%;bottom:22%;width:120px;height:3px;margin-left:-60px;border-radius:3px;background:#E2E8E2;overflow:hidden}
-.intro .bar i{display:block;height:100%;background:linear-gradient(90deg,#4A7A27,#B06C80);animation:load 1.3s ease-in-out both}
-@keyframes inR{from{transform:rotate(40deg) scale(.2);opacity:0}to{transform:none;opacity:1}}
-@keyframes inG{from{transform:rotate(-40deg) scale(.2);opacity:0}to{transform:none;opacity:1}}
-@keyframes inM{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}
-@keyframes inT{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
-@keyframes load{from{width:0}to{width:100%}}
-@keyframes introOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.06);visibility:hidden}}
+/* abertura com a logo: abre como uma flor */
+.intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#F4F6F1;animation:introOut .6s cubic-bezier(.6,0,.2,1) 1.9s forwards;pointer-events:none}
+.bloom{position:relative;width:min(300px,64vw);aspect-ratio:200/120}
+.flower{position:absolute;inset:0;width:100%;height:100%;overflow:visible;animation:budGrow 1.1s cubic-bezier(.3,1.3,.5,1) both}
+.flower .lr,.flower .lg,.flower .lm{transform-origin:4px 64px;transform-box:view-box}
+.flower .lr{animation:petalUp 1.2s .25s cubic-bezier(.3,1.5,.45,1) both}
+.flower .lg{animation:petalDown 1.2s .25s cubic-bezier(.3,1.5,.45,1) both}
+.flower .lm{animation:heart .9s .45s cubic-bezier(.3,1.4,.5,1) both}
+.flower .tx{animation:inT .7s 1s cubic-bezier(.2,.8,.2,1) both}
+.burst{position:absolute;left:48%;top:52%;width:150%;height:auto;transform:translate(-50%,-50%);overflow:visible}
+.burst .pt{transform-origin:0 0;transform-box:view-box;opacity:0;animation:petalBurst 1.3s calc(.35s + var(--d)) cubic-bezier(.2,.8,.2,1) both}
+@keyframes budGrow{from{transform:scale(.35) rotate(-18deg);opacity:0}40%{opacity:1}to{transform:none;opacity:1}}
+@keyframes petalUp{from{transform:rotate(30deg) scaleX(.6)}to{transform:none}}
+@keyframes petalDown{from{transform:rotate(-30deg) scaleX(.6)}to{transform:none}}
+@keyframes heart{from{transform:scale(0,.2);opacity:0}to{transform:none;opacity:1}}
+@keyframes inT{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+@keyframes petalBurst{0%{transform:rotate(var(--r)) scale(.1);opacity:0}35%{opacity:.55}100%{transform:rotate(calc(var(--r) + 25deg)) scale(1.35) translateX(18px);opacity:0}}
+@keyframes introOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.05);visibility:hidden}}
 @media (prefers-reduced-motion: reduce){.intro{display:none}}
 
 /* voos */
@@ -779,14 +781,20 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 </svg>
 
 <div class="intro" aria-hidden="true">
-  <svg viewBox="0 0 200 120">
-    <path class="lr" d="M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z" fill="#B06C80"/>
-    <path class="lg" d="M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z" fill="#4A7A27"/>
-    <path class="lm" d="M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z" fill="#2F3424"/>
-    <g class="tx" fill="#fff" font-family="Yanone Kaffeesatz, Arial Narrow, sans-serif" font-weight="300"><text x="74" y="50" font-size="17" letter-spacing=".5">pousada</text><text x="60" y="94" font-size="58">Ingá</text></g>
-  </svg>
-  <div class="bar"><i></i></div>
+  <div class="bloom">
+    <svg class="burst" viewBox="-100 -100 200 200">
+      <g><path class="pt" style="--r:0deg;--d:0.00s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#B06C80"/><path class="pt" style="--r:45deg;--d:0.04s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#4A7A27"/><path class="pt" style="--r:90deg;--d:0.08s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#B06C80"/><path class="pt" style="--r:135deg;--d:0.12s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#4A7A27"/><path class="pt" style="--r:180deg;--d:0.16s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#B06C80"/><path class="pt" style="--r:225deg;--d:0.20s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#4A7A27"/><path class="pt" style="--r:270deg;--d:0.24s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#B06C80"/><path class="pt" style="--r:315deg;--d:0.28s" d="M0 0C10-22 34-40 62-42 52-20 30-4 0 0Z" fill="#4A7A27"/></g>
+    </svg>
+    <svg class="flower" viewBox="0 0 200 120">
+      <path class="lr" d="M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z" fill="#B06C80"/>
+      <path class="lg" d="M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z" fill="#4A7A27"/>
+      <path class="lm" d="M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z" fill="#2F3424"/>
+      <g class="tx" fill="#fff" font-family="Yanone Kaffeesatz, Arial Narrow, sans-serif" font-weight="300"><text x="74" y="50" font-size="17" letter-spacing=".5">pousada</text><text x="60" y="94" font-size="58">Ingá</text></g>
+    </svg>
+  </div>
 </div>
+</div>
+<script>try{if("scrollRestoration" in history)history.scrollRestoration="manual";if(location.hash)history.replaceState(null,"",location.pathname+location.search);scrollTo(0,0)}catch(e){}</script>
 <script>try{if(sessionStorage.getItem("ingaIntro"))document.querySelector(".intro").remove();else sessionStorage.setItem("ingaIntro","1")}catch(e){}</script>
 <div class="sprog" id="sprog" aria-hidden="true"></div>
 <div class="sleaf" id="sleaf" aria-hidden="true"></div>
@@ -1882,6 +1890,14 @@ if("IntersectionObserver" in window&&!reduce){
   ln.addEventListener("click",function(e){if(e.target.closest("a"))set(false)});
   document.addEventListener("keydown",function(e){if(e.key==="Escape")set(false)});
   document.addEventListener("click",function(e){if(!e.target.closest("header.top"))set(false)});})();
+
+/* ============ COMEÇA SEMPRE DO TOPO ============ */
+addEventListener("pageshow",function(){scrollTo(0,0)});
+addEventListener("load",function(){setTimeout(function(){scrollTo(0,0)},0)});
+// links internos rolam sem deixar #seção no endereço (assim o link compartilhado abre sempre no início)
+document.addEventListener("click",function(e){var a=e.target.closest('a[href^="#"]');if(!a)return;var id=a.getAttribute("href").slice(1),t=id?document.getElementById(id):null;
+  e.preventDefault();if(!t||id==="inicio"){scrollTo({top:0,behavior:reduce?"auto":"smooth"});return}t.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});});
+
 /* ============ COPY ============ */
 function toast(t){var el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true},2200)}
 function sel(el){if(!el)return;var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);toast("Texto selecionado. Copie com Ctrl+C.")}

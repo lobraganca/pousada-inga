@@ -1112,6 +1112,15 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 .live-btn{position:absolute;top:12px;right:14px}
 @media (max-width:560px){.nowtag{top:12px;right:12px;font-size:9px;padding:4px 8px}.live-btn{top:10px;right:10px}}
 
+
+/* meses em duas linhas no celular */
+@media (max-width:760px){
+  .months{display:grid!important;grid-template-columns:repeat(6,1fr);overflow:visible;margin-inline:0;padding:0;gap:6px}
+  .months-w::after{display:none}
+  .mo{min-width:0;padding:9px 2px;border-radius:12px}
+  .mo b{font-size:13px}
+}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -1423,7 +1432,7 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
       </div>
     </div>
     <div class="near rv" id="near">
-      <div class="near-head"><p class="eyebrow">Por perto</p><h3>Tudo a uma caminhada da Ingá.</h3></div>
+      <div class="near-head"><p class="eyebrow">Praias e atrações por perto</p><h3>Tudo a uma caminhada da Ingá.</h3></div>
       <div class="ruler" id="ruler" role="tablist" aria-label="Lugares por perto">
         <div class="track"><i id="r-fill"></i></div>
         <div class="walker" id="walker" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2.5" fill="currentColor"/><path d="M12 8l-3 5 2 1 1-2 1 3-2 6h2.4l1.8-5 1.8 2v3H19v-4l-2.6-3-.8-3 2.4 2H21l-4-4c-.8-.8-2-1.2-3-1Z" fill="currentColor"/></svg></div>
@@ -2097,9 +2106,9 @@ addEventListener("resize",function(){wSize();setWhaleMonth(wMonth)});
 
 /* ============ POR PERTO ============ */
 var NEAR=[
- {k:"home",km:0,lab:"Ingá",t:"Praia do Rio do Peixe Grande",d:"A praia em frente à pousada. Sai do quarto e já está na areia.",w:"a poucos passos",c:"",sc:"home"},
+ {k:"home",km:0,lab:"Rio do Peixe",t:"Praia do Rio do Peixe Grande",d:"A praia em frente à pousada, a 16 metros do portão. Sai do quarto e já está na areia.",w:"1 min a pé (16 m)",c:"",sc:"home"},
  {km:2,lab:"Ponta do Moreira",t:"Ponta do Moreira",d:"O ponto mais próximo da pousada. Caminhada gostosa pela areia, melhor no fim da tarde.",w:"~25 min a pé",c:"~5 min de carro",sc:"point"},
- {km:3,lab:"Praia da Vila",t:"Praia da Vila",d:"O centrinho de Cumuruxatiba, com restaurantes, barracas e o movimento da noite.",w:"~40 min a pé",c:"~6 min de carro",sc:"vila"},
+ {km:2.9,lab:"Cumuruxatiba",t:"Praia de Cumuruxatiba",d:"A praia do centrinho da vila, com restaurantes, barracas e o movimento da noite.",w:"~35 min a pé",c:"5 min de carro (2,9 km)",sc:"vila"},
  {km:6,lab:"Japara Grande",t:"Praia da Japara Grande",d:"Praia extensa e tranquila, para passar o dia inteiro com pouca gente em volta.",w:"~1h20 a pé",c:"~12 min de carro",sc:"long"}];
 var MAXK=6.4,nearI=0,walkT;
 function nearScene(k){
@@ -2111,15 +2120,15 @@ function nearScene(k){
 }
 function renderRuler(){
   var r=$("ruler");r.querySelectorAll(".pin").forEach(function(x){x.remove()});
-  NEAR.forEach(function(n,i){var b=document.createElement("button");b.type="button";b.className="pin"+(n.k==="home"?" home":"");b.setAttribute("role","tab");b.dataset.i=i;b.style.left=(n.km/MAXK*100)+"%";
-    b.innerHTML='<span class="km">'+(n.km?n.km+" km":"0")+'</span><span class="dot"></span><span class="nm">'+n.lab+'</span>';r.appendChild(b)});
+  NEAR.forEach(function(n,i){var b=document.createElement("button");b.type="button";b.className="pin"+(n.k==="home"?" home":"");b.setAttribute("role","tab");b.dataset.i=i;b.style.left=(i/(NEAR.length-1)*100)+"%";
+    b.innerHTML='<span class="km">'+(n.km?String(n.km).replace(".",",")+" km":"16 m")+'</span><span class="dot"></span><span class="nm">'+n.lab+'</span>';r.appendChild(b)});
 }
 function showNear(i){
-  nearI=i;var n=NEAR[i],pct=n.km/MAXK*100;
+  nearI=i;var n=NEAR[i],pct=i/(NEAR.length-1)*100;
   $("ruler").querySelectorAll(".pin").forEach(function(b){b.setAttribute("aria-selected",+b.dataset.i===i)});
   $("r-fill").style.width=pct+"%";var wk=$("walker");wk.classList.remove("idle");wk.style.left=pct+"%";clearTimeout(walkT);walkT=setTimeout(function(){wk.classList.add("idle")},950);
   var ic='<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4.5" r="2.3"/><path d="M12 8l-3 5 2 1 1-2 1 3-2 6h2.4l1.8-5 1.8 2v3H19v-4l-2.6-3-.8-3 2.4 2H21l-4-4c-.8-.8-2-1.2-3-1Z"/></svg>',car='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v-4l2-5h12l2 5v4M4 16h16M7 16v2M17 16v2"/><circle cx="7.5" cy="13" r=".8" fill="currentColor"/><circle cx="16.5" cy="13" r=".8" fill="currentColor"/></svg>';
-  $("near-card").innerHTML='<div class="ill"><svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+nearScene(n.sc)+'</svg></div><div class="near-info"><p class="eyebrow">'+(n.km?n.km+" km da pousada":"Em frente à pousada")+'</p><h4>'+n.t+'</h4><p>'+n.d+'</p><div class="modes"><span>'+ic+n.w+'</span>'+(n.c?'<span>'+car+n.c+'</span>':'')+'</div>'+(n.km?'<small>Tempos aproximados.</small>':'')+'<div class="near-nav"><button type="button" class="icon-btn" data-nv="-1" aria-label="Lugar anterior"'+(i===0?" disabled":"")+'>‹</button><button type="button" class="icon-btn" data-nv="1" aria-label="Próximo lugar"'+(i===NEAR.length-1?" disabled":"")+'>›</button></div></div>';
+  $("near-card").innerHTML='<div class="ill"><svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+nearScene(n.sc)+'</svg></div><div class="near-info"><p class="eyebrow">'+(n.km?String(n.km).replace(".",",")+" km da pousada":"Em frente à pousada")+'</p><h4>'+n.t+'</h4><p>'+n.d+'</p><div class="modes"><span>'+ic+n.w+'</span>'+(n.c?'<span>'+car+n.c+'</span>':'')+'</div>'+(n.km?'<small>Tempos aproximados, pelo trajeto mais rápido.</small>':'')+'<div class="near-nav"><button type="button" class="icon-btn" data-nv="-1" aria-label="Lugar anterior"'+(i===0?" disabled":"")+'>‹</button><button type="button" class="icon-btn" data-nv="1" aria-label="Próximo lugar"'+(i===NEAR.length-1?" disabled":"")+'>›</button></div></div>';
 }
 $("ruler").addEventListener("click",function(e){var b=e.target.closest(".pin");if(b)showNear(+b.dataset.i)});
 $("near-card").addEventListener("click",function(e){var b=e.target.closest("[data-nv]");if(b)showNear(Math.max(0,Math.min(NEAR.length-1,nearI+(+b.dataset.nv))))});

@@ -7,6 +7,15 @@
 <meta property="og:title" content="Pousada Ingá · Cumuruxatiba, BA">
 <meta property="og:description" content="Hospitalidade, conforto e tranquilidade, pé na areia. Monte sua reserva e fale com a gente pelo WhatsApp.">
 <meta property="og:type" content="website">
+<link rel="canonical" href="https://pousada-inga.vercel.app/">
+<meta property="og:url" content="https://pousada-inga.vercel.app/">
+<meta property="og:image" content="https://pousada-inga.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LodgingBusiness","name":"Pousada Ingá","description":"Pousada pé na areia em Cumuruxatiba, Bahia, com piscina, jardim, restaurante, bar e café da manhã.","url":"https://pousada-inga.vercel.app/","image":"https://pousada-inga.vercel.app/og.png","telephone":"+55 73 3573-1214","email":"reserva@pousadaingacumuru.com.br","address":{"@type":"PostalAddress","streetAddress":"Alameda Roberto Pompeu, Lote 17, Rio do Peixe Grande","addressLocality":"Cumuruxatiba, Prado","addressRegion":"BA","postalCode":"45983-000","addressCountry":"BR"},"checkinTime":"14:00","checkoutTime":"12:00","petsAllowed":true,"sameAs":["https://www.instagram.com/pousada_inga_cumuruxatiba"]}</script>
 <meta name="theme-color" content="#EEF1EC">
 <meta name="color-scheme" content="light only">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cpath d='M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z' fill='%23B06C80'/%3E%3Cpath d='M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z' fill='%234A7A27'/%3E%3Cpath d='M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z' fill='%232F3424'/%3E%3C/svg%3E">
@@ -554,6 +563,22 @@ footer .credit a:hover{color:#F4F6F1;text-decoration:underline}
 .faq .wm{position:absolute;right:20px;top:10px;width:260px;height:auto;opacity:.08;pointer-events:none;transform:rotate(-8deg)}
 @media (max-width:760px){.faq .wm{width:150px}}
 
+
+/* ---- correções da auditoria ---- */
+section[id],#reserva{scroll-margin-top:84px}
+@media (max-width:760px){input[type=text],input[type=number],input[type=date],select,textarea{font-size:16px!important}}
+footer a{display:inline-block;padding-block:6px}
+.copy{padding:8px 12px}
+.menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;place-items:center;flex:none}
+.menu-btn svg{width:20px;height:20px}
+.nav-right{display:flex;align-items:center;gap:10px}
+@media (max-width:900px){
+  .menu-btn{display:grid}
+  .links{position:absolute;left:0;right:0;top:100%;display:none;flex-direction:column;gap:2px;background:var(--paper);border-bottom:1px solid var(--line);padding:10px max(16px, env(safe-area-inset-right,0px)) 16px max(16px, env(safe-area-inset-left,0px));box-shadow:0 24px 40px -24px rgba(0,0,0,.35)}
+  .links.open{display:flex}
+  .links a{font-size:17px;padding:13px 14px;border-radius:14px}
+}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -612,6 +637,7 @@ footer .credit a:hover{color:#F4F6F1;text-decoration:underline}
   </svg>
   <div class="bar"><i></i></div>
 </div>
+<script>try{if(sessionStorage.getItem("ingaIntro"))document.querySelector(".intro").remove();else sessionStorage.setItem("ingaIntro","1")}catch(e){}</script>
 <div class="sprog" id="sprog" aria-hidden="true"></div>
 <div class="sleaf" id="sleaf" aria-hidden="true"></div>
 <header class="top">
@@ -620,14 +646,17 @@ footer .credit a:hover{color:#F4F6F1;text-decoration:underline}
       <svg class="logo" aria-hidden="true"><use href="#logo"/></svg>
       <small>Cumuruxatiba · BA</small>
     </a>
-    <nav class="links" aria-label="Seções">
+    <nav class="links" id="links" aria-label="Seções">
       <a href="#reserva">Reservar</a>
       <a href="#pousada">A pousada</a>
       <a href="#quartos">Quartos</a>
       <a href="#quando">Quando vir</a>
       <a href="#chegar">Como chegar</a>
     </nav>
-    <a class="btn btn-dark" href="#reserva" style="padding:12px 20px">Reservar</a>
+    <div class="nav-right">
+      <a class="btn btn-dark" href="#reserva" style="padding:12px 20px">Reservar</a>
+      <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="links" aria-label="Abrir menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg></button>
+    </div>
   </div>
 </header>
 
@@ -872,7 +901,7 @@ footer .credit a:hover{color:#F4F6F1;text-decoration:underline}
           <div class="grid3">
             <label for="f-go">Ida<input type="date" id="f-go"></label>
             <label for="f-back">Volta<input type="date" id="f-back"></label>
-            <label for="f-px">Pessoas<input type="number" id="f-px" min="1" max="9" value="2"></label>
+            <label for="f-px">Adultos<input type="number" id="f-px" min="1" max="9" value="2"></label>
           </div>
           <div class="btns">
             <a class="btn btn-rose" id="f-google" target="_blank" rel="noopener" href="#">Ver voos no Google</a>
@@ -1052,7 +1081,7 @@ function draw(t){
   // falésias (fundo e frente)
   var c0=narrow?W*.5:W*.6;
   ctx.fillStyle=mix(p.cl,p.bot,.45);
-  ctx.beginPath();ctx.moveTo(c0-40,hz);for(var x=c0-40;x<=W;x+=8)ctx.lineTo(x,cliffY(x+300,hz*.6)-(x-c0)*.05);ctx.lineTo(W,hz);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(c0-60,hz);for(var x=c0-60;x<=W;x+=8){var rb=Math.min(1,(x-c0+60)/170),tb=cliffY(x+300,hz*.6)-(x-c0)*.05;ctx.lineTo(x,hz-(hz-tb)*rb*rb*(3-2*rb));}ctx.lineTo(W,hz);ctx.closePath();ctx.fill();
   ctx.fillStyle=p.cl;
   ctx.beginPath();ctx.moveTo(c0+30,hz);
   for(x=c0+30;x<=W;x+=6){var ramp=Math.min(1,(x-c0-30)/80);ctx.lineTo(x,hz-(hz-cliffY(x,hz*.66))*ramp);}
@@ -1150,7 +1179,9 @@ function canNext(){if(state.step===1)return !!(state.start&&state.end);if(state.
 function needMsg(){return state.step===1?(state.start?"Agora toque no dia da saída.":"Toque no dia da chegada e depois no da saída."):"Escreva seu nome para a pousada saber com quem fala."}
 
 var dir=1;
-function go(n){if(n<1||n>5)return;dir=n>=state.step?1:-1;state.step=n;state.max=Math.max(state.max,n);$("err").hidden=true;renderPanel();}
+function go(n){if(n<1||n>5)return;
+  if(n>1&&!(state.start&&state.end)){n=1;if(state.step===1){$("err").textContent=needMsg();$("err").hidden=false;return}}
+  if(n>4&&state.name.trim().length<2){n=4;if(state.step===4){$("err").textContent="Escreva seu nome para a pousada saber com quem fala.";$("err").hidden=false;return}}dir=n>=state.step?1:-1;state.step=n;state.max=Math.max(state.max,n);$("err").hidden=true;renderPanel();}
 
 function renderCal(){
   var wide=$("panel").clientWidth>620, n=wide?2:1, h="";
@@ -1453,16 +1484,17 @@ function syncFly(){
   if(!flyTouched){
     if(state.start){$("f-go").value=isoD(state.start)}
     if(state.end){$("f-back").value=isoD(state.end)}
-    $("f-px").value=Math.min(9,people());
+    $("f-px").value=Math.min(9,state.ad);
   }
   if(!$("f-go").value){var a=new Date(today);a.setDate(a.getDate()+30);$("f-go").value=isoD(a);var b2=new Date(a);b2.setDate(a.getDate()+5);$("f-back").value=isoD(b2);}
   $("f-go").min=isoD(today);$("f-back").min=$("f-go").value;
   var o=$("f-or").value.split("|"),code=o[0],go=$("f-go").value,bk=$("f-back").value,px=+$("f-px").value||1;
   $("f-code").textContent=code;$("f-city").textContent=o[1];
-  var q="Voos de "+code+" para BPS em "+go+(bk?" volta "+bk:"")+" "+px+" adultos";
+  var kids=state.ch?state.ages.map(function(a){return a===""?"8":a}):[];
+  var q="Voos de "+code+" para BPS em "+go+(bk?" volta "+bk:"")+" "+px+" adulto"+(px>1?"s":"")+(kids.length?" e "+kids.length+" criança"+(kids.length>1?"s":""):"");
   $("f-google").href="https://www.google.com/travel/flights?hl=pt-BR&q="+encodeURIComponent(q);
   var sk=function(d){return d?d.slice(2,4)+d.slice(5,7)+d.slice(8,10):""};
-  $("f-sky").href="https://www.skyscanner.com.br/transporte/passagens-aereas/"+code.toLowerCase()+"/bps/"+sk(go)+"/"+(bk?sk(bk)+"/":"")+"?adultsv2="+px;
+  $("f-sky").href="https://www.skyscanner.com.br/transporte/passagens-aereas/"+code.toLowerCase()+"/bps/"+sk(go)+"/"+(bk?sk(bk)+"/":"")+"?adultsv2="+px+(kids.length?"&childrenv2="+kids.join("%7C"):"");
 }
 ["f-or","f-go","f-back","f-px"].forEach(function(id){$(id).addEventListener("input",function(){if(id!=="f-or")flyTouched=true;syncFly()});$(id).addEventListener("change",function(){if(id!=="f-or")flyTouched=true;syncFly()})});
 // atualiza quando a reserva muda
@@ -1519,6 +1551,13 @@ if("IntersectionObserver" in window&&!reduce){
   document.querySelectorAll(".place .km").forEach(function(k){if(k.getBoundingClientRect().top<vh2)return;k.dataset.v=parseFloat(k.textContent);k.textContent="0 km";io6.observe(k)});
 }
 
+/* ============ MENU CELULAR ============ */
+(function(){var mb=$("menu-btn"),ln=$("links");
+  function set(o){ln.classList.toggle("open",o);mb.setAttribute("aria-expanded",o);mb.setAttribute("aria-label",o?"Fechar menu":"Abrir menu")}
+  mb.addEventListener("click",function(){set(!ln.classList.contains("open"))});
+  ln.addEventListener("click",function(e){if(e.target.closest("a"))set(false)});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")set(false)});
+  document.addEventListener("click",function(e){if(!e.target.closest("header.top"))set(false)});})();
 /* ============ COPY ============ */
 function toast(t){var el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){el.hidden=true},2200)}
 function sel(el){if(!el)return;var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);toast("Texto selecionado. Copie com Ctrl+C.")}

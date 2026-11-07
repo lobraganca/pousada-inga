@@ -1103,6 +1103,15 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
   .counter small{font-size:12px}
 }
 
+
+/* agora: etiqueta pequena no canto */
+.clock{position:relative}
+.nowtag{position:absolute;top:14px;right:16px;margin:0;font-size:10px;letter-spacing:.08em;gap:5px;padding:5px 9px;border-radius:999px;background:rgba(31,143,90,.12)}
+.hero[data-mode="night"] .nowtag{background:rgba(141,216,174,.14)}
+.nowtag i{width:6px;height:6px}
+.live-btn{position:absolute;top:12px;right:14px}
+@media (max-width:560px){.nowtag{top:12px;right:12px;font-size:9px;padding:4px 8px}.live-btn{top:10px;right:10px}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -1211,7 +1220,7 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
     </div>
     <div class="clock" role="group" aria-label="Um dia na Ingá">
       <div class="time-w"><div class="time" id="clk">07:30</div><button type="button" class="live-btn" id="live" hidden>Voltar para agora</button></div>
-      <div class="what" aria-live="polite"><span class="nowtag" id="nowtag"><i></i>Agora em Cumuruxatiba</span><b id="clk-t">Café da manhã</b><span id="clk-d">Buffet servido todas as manhãs.</span></div>
+      <div class="what" aria-live="polite"><span class="nowtag" id="nowtag"><i></i>Agora</span><b id="clk-t">Café da manhã</b><span id="clk-d">Buffet servido todas as manhãs.</span></div>
       <div class="ctrl">
         <button class="play" id="play" type="button" aria-label="Ver o dia passar">
           <svg viewBox="0 0 16 16" id="play-ic"><path d="M4 2.5v11l9-5.5z"/></svg>

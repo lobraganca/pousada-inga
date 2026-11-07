@@ -886,6 +886,31 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
   .send .btn-wa{padding:15px}
 }
 
+
+/* ---- estrutura ---- */
+.amen{display:grid;gap:14px}
+.amen-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:10px}
+.am{position:relative;display:grid;justify-items:center;align-content:start;gap:10px;padding:16px 6px 14px;border-radius:20px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;overflow:hidden;transition:transform .25s,border-color .25s,background .25s;font-family:var(--body)}
+.am:hover{transform:translateY(-3px)}
+.am-ic{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--leaf-soft);color:var(--leaf);transition:background .3s,color .3s,transform .4s cubic-bezier(.3,1.6,.5,1)}
+.am-ic svg{width:24px;height:24px}
+.am-t{font-size:12.5px;font-weight:700;line-height:1.2;text-align:center}
+.am-bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
+.am[aria-selected="true"]{border-color:var(--olive);background:var(--olive);color:var(--on-dark)}
+.am[aria-selected="true"] .am-ic{background:var(--logo-rose);color:#fff;transform:scale(1.08) rotate(-4deg)}
+.am[aria-selected="true"] .am-bar{animation:amfill var(--dur,4s) linear forwards}
+.amen.paused .am-bar{animation:none!important;width:0}
+@keyframes amfill{to{width:100%}}
+.amen-panel{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:20px 22px;border-radius:22px;background:var(--paper);border:1px solid var(--line);min-height:104px}
+.amen-panel .pi{width:60px;height:60px;border-radius:18px;background:var(--rose-soft);color:var(--rose);display:grid;place-items:center;animation:enter .45s cubic-bezier(.2,.7,.2,1)}
+.amen-panel .pi svg{width:30px;height:30px}
+.amen-panel h3{font-size:clamp(24px,3vw,32px);animation:enter .45s cubic-bezier(.2,.7,.2,1)}
+.amen-panel p{color:var(--ink-soft);margin-top:4px;animation:enter .5s cubic-bezier(.2,.7,.2,1)}
+.amen-panel .cnt{font-family:var(--display);font-size:22px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+@media (max-width:900px){.amen-grid{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:560px){.amen-grid{gap:6px}.am{padding:12px 4px 10px;border-radius:16px;gap:7px}.am-ic{width:40px;height:40px;border-radius:12px}.am-ic svg{width:20px;height:20px}.am-t{font-size:10.5px}
+  .amen-panel{grid-template-columns:auto 1fr;padding:16px;gap:14px}.amen-panel .cnt{display:none}.amen-panel .pi{width:48px;height:48px;border-radius:14px}.amen-panel .pi svg{width:24px;height:24px}.amen-panel h3{font-size:22px}.amen-panel p{font-size:14px}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -1040,16 +1065,10 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
       <div><p class="eyebrow">A pousada</p><h2>Casa de praia, com cuidado de hotel.</h2></div>
       <p>Na Alameda Roberto Pompeu, com acesso direto à areia. Crianças de todas as idades e pets são bem-vindos.</p>
     </div>
-    <div class="feat rv">
-      <div class="ft"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 17c2 0 2-1.5 4-1.5S8 17 10 17s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5M2 21c2 0 2-1.5 4-1.5S8 21 10 21s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5M12 3v9M7 8l5-5 5 5"/></svg></div><h3>Frente para o mar</h3><p>Acesso direto à praia, sem atravessar rua.</p></div>
-      <div class="ft"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 15c3 0 3 2 6 2s3-2 6-2 3 2 6 2M7 15V5a2 2 0 0 1 4 0M13 15V5a2 2 0 0 1 4 0M7 9h6"/></svg></div><h3>Piscina e jardim</h3><p>Sombra, verde e mergulho entre uma praia e outra.</p></div>
-      <div class="ft"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 11h13v3a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6v-3ZM17 12h1.5a2.5 2.5 0 0 1 0 5H16M8 4c0 1.5 1 1.5 1 3M12 4c0 1.5 1 1.5 1 3"/></svg></div><h3>Café em buffet</h3><p>Servido todas as manhãs para os hóspedes.</p></div>
-      <div class="ft"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M6 3h12l-6 8-6-8ZM12 11v8M8 21h8"/></svg></div><h3>Restaurante e bar</h3><p>Aberto a hóspedes e visitantes.</p></div>
-      <div class="ft"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 20s-6-3.6-6-8.5A3.5 3.5 0 0 1 12 9a3.5 3.5 0 0 1 6 2.5C18 16.4 12 20 12 20Z"/><circle cx="6" cy="6" r="1.6"/><circle cx="10" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="18" cy="6" r="1.6"/></svg></div><h3>Pet friendly</h3><p>Seu cachorro também tira férias.</p></div>
-      <div class="ft"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 12h18M7 12V7h10v5M5 12v6M19 12v6M3 18h18"/></svg></div><h3>Quartos família</h3><p>Opções para casal ou para três pessoas.</p></div>
-      <div class="ft"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></div><h3>Ar-condicionado</h3><p>Em todas as acomodações, com TV.</p></div>
-      <div class="ft"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg></div><h3>Wi-Fi gratuito</h3><p>Para quando precisar dar uma olhada no mundo.</p></div>
-    </div>
+    <div class="amen rv" id="amen">
+      <div class="amen-grid" role="tablist" aria-label="Estrutura da pousada"><button type="button" class="am" role="tab" aria-selected="true" data-i="0"><span class="am-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 17c2 0 2-1.5 4-1.5S8 17 10 17s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5M2 21c2 0 2-1.5 4-1.5S8 21 10 21s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5M12 3v9M7 8l5-5 5 5"/></svg></span><span class="am-t">Frente para o mar</span><i class="am-bar"></i></button><button type="button" class="am" role="tab" aria-selected="false" data-i="1"><span class="am-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 15c3 0 3 2 6 2s3-2 6-2 3 2 6 2M7 15V5a2 2 0 0 1 4 0M13 15V5a2 2 0 0 1 4 0M7 9h6"/></svg></span><span class="am-t">Piscina e jardim</span><i class="am-bar"></i></button><button type="button" class="am" role="tab" aria-selected="false" data-i="2"><span class="am-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 11h13v3a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6v-3ZM17 12h1.5a2.5 2.5 0 0 1 0 5H16M8 4c0 1.5 1 1.5 1 3M12 4c0 1.5 1 1.5 1 3"/></svg></span><span class="am-t">Café em buffet</span><i class="am-bar"></i></button><button type="button" class="am" role="tab" aria-selected="false" data-i="3"><span class="am-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M6 3h12l-6 8-6-8ZM12 11v8M8 21h8"/></svg></span><span class="am-t">Restaurante e bar</span><i class="am-bar"></i></button><button type="button" class="am" role="tab" aria-selected="false" data-i="4"><span class="am-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 20s-6-3.6-6-8.5A3.5 3.5 0 0 1 12 9a3.5 3.5 0 0 1 6 2.5C18 16.4 12 20 12 20Z"/><circle cx="6" cy="6" r="1.6"/><circle cx="10" cy="4" r="1.6"/><circle cx="14" cy="4" r="1.6"/><circle cx="18" cy="6" r="1.6"/></svg></span><span class="am-t">Pet friendly</span><i class="am-bar"></i></button><button type="button" class="am" role="tab" aria-selected="false" data-i="5"><span class="am-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 12h18M7 12V7h10v5M5 12v6M19 12v6M3 18h18"/></svg></span><span class="am-t">Quartos família</span><i class="am-bar"></i></button><button type="button" class="am" role="tab" aria-selected="false" data-i="6"><span class="am-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg></span><span class="am-t">Ar-condicionado</span><i class="am-bar"></i></button><button type="button" class="am" role="tab" aria-selected="false" data-i="7"><span class="am-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg></span><span class="am-t">Wi-Fi gratuito</span><i class="am-bar"></i></button></div>
+      <div class="amen-panel" id="amen-panel" role="tabpanel" aria-live="polite"></div>
+    </div></div>
   </div>
 </section>
 
@@ -1705,6 +1724,20 @@ $("next").addEventListener("click",function(){if(!canNext()){$("err").textConten
 $("back").addEventListener("click",function(){go(state.step-1)});
 function scrollWiz(){var r=document.querySelector(".wiz").getBoundingClientRect();if(r.top<0)document.querySelector(".wiz").scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"})}
 renderPanel();
+
+
+/* ============ ESTRUTURA ============ */
+(function(){var D=[{t:"Frente para o mar",d:"Acesso direto à praia, sem atravessar rua."},{t:"Piscina e jardim",d:"Sombra, verde e mergulho entre uma praia e outra."},{t:"Café em buffet",d:"Servido todas as manhãs para os hóspedes."},{t:"Restaurante e bar",d:"Aberto a hóspedes e visitantes."},{t:"Pet friendly",d:"Seu cachorro também tira férias."},{t:"Quartos família",d:"Opções para casal ou para três pessoas."},{t:"Ar-condicionado",d:"Em todas as acomodações, com TV."},{t:"Wi-Fi gratuito",d:"Para quando precisar dar uma olhada no mundo."}],box=$("amen"),cur=0,timer=null,auto=!reduce,DUR=4000;
+  function show(i){cur=i;box.querySelectorAll(".am").forEach(function(b){var on=+b.dataset.i===i;b.setAttribute("aria-selected",on);var bar=b.querySelector(".am-bar");if(on){bar.style.animation="none";bar.offsetWidth;bar.style.animation=""}});
+    var ic=box.querySelector('.am[data-i="'+i+'"] .am-ic').innerHTML;
+    $("amen-panel").innerHTML='<span class="pi">'+ic+'</span><div><h3>'+D[i].t+'</h3><p>'+D[i].d+'</p></div><span class="cnt">'+(i+1)+'/'+D.length+'</span>';
+    clearTimeout(timer);if(auto)timer=setTimeout(function(){show((cur+1)%D.length)},DUR);}
+  box.style.setProperty("--dur",DUR/1000+"s");
+  box.querySelector(".amen-grid").addEventListener("click",function(e){var b=e.target.closest(".am");if(!b)return;auto=false;box.classList.add("paused");show(+b.dataset.i)});
+  if(reduce)box.classList.add("paused");
+  show(0);
+  if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es){if(!auto)return;if(es[0].isIntersecting)show(cur);else clearTimeout(timer)},{threshold:.3});io.observe(box)}
+})();
 
 /* ============ ROOMS TABS ============ */
 var ROOMS={a:{n:"Casa na Árvore",cap:"Suíte especial · única na pousada",img:1,d:"Uma suíte construída em volta de uma aroeira, que atravessa o quarto por dentro. É toda em madeira, fica a 3,5 metros do chão e tem janelas que se abrem para o mar: clima de chalé de montanha, pé na areia.",f:["Construída numa aroeira","A árvore dentro do quarto","Toda em madeira","A 3,5 m do chão","Janelas para o mar","Banheiro privativo"]},

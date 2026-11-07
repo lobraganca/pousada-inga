@@ -1121,6 +1121,14 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
   .mo b{font-size:13px}
 }
 
+
+/* datas dos voos em dd/mm/aaaa */
+.dwrap{position:relative;display:block}
+.dshow{display:flex;align-items:center;min-height:46px;padding:0 12px;border-radius:12px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);color:#F4F6F1;font:600 15px var(--body);font-variant-numeric:tabular-nums;letter-spacing:0;text-transform:none;pointer-events:none;white-space:nowrap}
+.dwrap input[type=date]{position:absolute!important;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;min-height:0!important;padding:0!important}
+.dwrap:focus-within .dshow{outline:2px solid #E7B6C5;border-color:transparent}
+@media (max-width:640px){.dshow{min-height:42px;padding:0 10px;font-size:14px}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -1522,8 +1530,8 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
             </select>
           </label>
           <div class="grid3">
-            <label for="f-go">Ida<input type="date" id="f-go"></label>
-            <label for="f-back">Volta<input type="date" id="f-back"></label>
+            <label for="f-go">Ida<span class="dwrap"><span class="dshow" id="f-go-s">dd/mm/aaaa</span><input type="date" id="f-go"></span></label>
+            <label for="f-back">Volta<span class="dwrap"><span class="dshow" id="f-back-s">dd/mm/aaaa</span><input type="date" id="f-back"></span></label>
             <label for="f-px">Adultos<input type="number" id="f-px" min="1" max="9" value="2"></label>
           </div>
           <div class="btns">
@@ -2230,6 +2238,7 @@ function syncFly(){
   }
   if(!$("f-go").value){var a=new Date(today);a.setDate(a.getDate()+30);$("f-go").value=isoD(a);var b2=new Date(a);b2.setDate(a.getDate()+5);$("f-back").value=isoD(b2);}
   $("f-go").min=isoD(today);$("f-back").min=$("f-go").value;
+  ["f-go","f-back"].forEach(function(id){var v=$(id).value;$(id+"-s").textContent=v?v.slice(8,10)+"/"+v.slice(5,7)+"/"+v.slice(0,4):"dd/mm/aaaa"});
   var o=$("f-or").value.split("|"),code=o[0],go=$("f-go").value,bk=$("f-back").value,px=+$("f-px").value||1;
   $("f-code").textContent=code;$("f-city").textContent=o[1];
   var kids=state.ch?state.ages.map(function(a){return a===""?"8":a}):[];

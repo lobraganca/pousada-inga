@@ -103,7 +103,12 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:29;backgroun
 .clock .what b{display:block;font-size:17px}
 .clock .what span{font-size:14px;opacity:.85}
 .clock .ctrl{grid-column:1/-1;display:flex;align-items:center;gap:14px}
-.play{flex:none;width:42px;height:42px;border-radius:50%;border:0;cursor:pointer;background:currentColor;display:grid;place-items:center}
+.play{position:relative;flex:none;width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;color:inherit;background:currentColor;display:grid;place-items:center;-webkit-appearance:none;appearance:none;padding:0}
+.play::before,.play::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid currentColor;animation:playPulse 2s ease-out infinite;pointer-events:none}
+.play::after{animation-delay:1s}
+.play.on::before,.play.on::after{animation:none;opacity:0}
+@keyframes playPulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.9);opacity:0}}
+.play svg{position:relative}
 .play svg{width:16px;height:16px}
 .hero .play svg{fill:#fff}
 .hero[data-mode="night"] .play svg{fill:#16261E}
@@ -1393,7 +1398,7 @@ function loop(t){
   lastT=t;draw(t);
   if(!reduce||playing)requestAnimationFrame(loop);
 }
-function setPlay(v){playing=v;$("play-ic").innerHTML=v?'<path d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/>':'<path d="M4 2.5v11l9-5.5z"/>';$("play").setAttribute("aria-label",v?"Pausar":"Ver o dia passar");if(v&&reduce){lastT=0;requestAnimationFrame(loop)}}
+function setPlay(v){playing=v;$("play").classList.toggle("on",v);$("play-ic").innerHTML=v?'<path d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/>':'<path d="M4 2.5v11l9-5.5z"/>';$("play").setAttribute("aria-label",v?"Pausar":"Ver o dia passar");if(v&&reduce){lastT=0;requestAnimationFrame(loop)}}
 $("play").addEventListener("click",function(){if(!playing&&hour>=22.9){hour=5;}setPlay(!playing)});
 $("hour").addEventListener("input",function(){hour=+this.value;setPlay(false);setClock();if(reduce)draw(performance.now())});
 // começa na hora atual de Cumuruxatiba (UTC−3)

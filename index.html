@@ -369,11 +369,6 @@ details summary::after{content:"+";font-family:var(--display);font-size:26px;lin
 details[open] summary::after{transform:rotate(45deg)}
 details p{color:var(--ink-soft);padding-bottom:20px;max-width:65ch}
 
-.final{background:var(--logo-rose);color:#fff;overflow:hidden;position:relative}
-.final .wrap{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;padding-block:56px;position:relative;z-index:1}
-.final h2{font-size:clamp(36px,5vw,64px);max-width:15ch}
-.final .btn{background:#2B3122;color:#F4F6F1}
-.final svg.leaves{position:absolute;right:-60px;top:-40px;width:440px;opacity:.3;pointer-events:none}
 
 footer{background:var(--sea-deep);color:rgba(244,246,241,.75);font-size:14px}
 footer .wrap{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:20px 28px;padding-block:36px 24px}
@@ -417,7 +412,6 @@ footer .credit a:hover{color:#F4F6F1;text-decoration:underline}
 @keyframes swayG{from{transform:rotate(0)}to{transform:rotate(2.5deg)}}
 .brand .logo{transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
 .brand:hover .logo{transform:rotate(-4deg) scale(1.06)}
-.final svg.leaves{animation:drift2 14s ease-in-out infinite alternate}
 @keyframes drift2{from{transform:rotate(-6deg) translateY(0)}to{transform:rotate(6deg) translateY(30px)}}
 .divider{display:flex;align-items:center;gap:16px;justify-content:center;padding-block:10px}
 .divider i{flex:1;max-width:220px;height:1px;background:var(--line)}
@@ -720,6 +714,21 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 .vid-txt small{opacity:.75}
 @media (max-width:560px){.vid{flex-direction:column;align-items:flex-start;padding:22px}.vid-play{width:64px;height:64px}}
 
+
+/* ---- chamada final ---- */
+.final{padding-block:20px 72px}
+.final-card{position:relative;border-radius:32px;overflow:hidden;min-height:420px;display:flex;align-items:flex-end;background:var(--olive)}
+.fc-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 6s ease-out}
+.final-card:hover .fc-bg{transform:scale(1.1)}
+.final-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,36,24,.15) 0%,rgba(30,36,24,.55) 45%,rgba(30,36,24,.92) 100%)}
+.fc-in{position:relative;z-index:1;padding:34px;display:grid;gap:14px;color:#F4F6F1;max-width:640px}
+.fc-logo{width:96px;height:auto}
+.fc-in h2{font-size:clamp(36px,5vw,60px)}
+.fc-in p{opacity:.85;font-size:16px;max-width:44ch}
+.fc-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.btn-light{background:#F4F6F1;color:#2B3122}
+@media (max-width:560px){.final-card{min-height:480px;border-radius:26px}.fc-in{padding:24px 20px}.fc-btns .btn{flex:1 1 auto}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -784,7 +793,7 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 <header class="top">
   <div class="wrap nav">
     <a class="brand" href="#inicio" aria-label="Pousada Ingá, início">
-      <svg class="logo" aria-hidden="true"><use href="#logo"/></svg>
+      <svg viewBox="0 0 200 120" class="logo" aria-hidden="true"><use href="#logo"/></svg>
       <small>Cumuruxatiba · BA</small>
     </a>
     <nav class="links" id="links" aria-label="Seções">
@@ -848,7 +857,7 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
     </div>
     <div class="wiz rv">
       <div class="steps" id="steps">
-        <svg class="logo" aria-hidden="true"><use href="#logo"/></svg>
+        <svg viewBox="0 0 200 120" class="logo" aria-hidden="true"><use href="#logo"/></svg>
       </div>
       <div class="panel-wrap">
         <div class="bar-top"><div class="prog"><i id="prog"></i></div><span id="prog-t">1 de 5</span></div>
@@ -1197,10 +1206,19 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 </section>
 
 <section class="final">
-  <svg class="leaves" aria-hidden="true"><use href="#logo"/></svg>
   <div class="wrap">
-    <h2>O mar está aqui. Falta só a sua data.</h2>
-    <a class="btn" href="#reserva">Começar reserva</a>
+    <div class="final-card">
+      <img class="fc-bg" id="fc-bg" alt="" aria-hidden="true">
+      <div class="fc-in">
+        <svg class="fc-logo" viewBox="0 0 200 120" aria-hidden="true"><use href="#logo"/></svg>
+        <h2>O mar está aqui. Falta só a sua data.</h2>
+        <p>Escolha os dias, monte sua estadia e receba a resposta da pousada pelo WhatsApp.</p>
+        <div class="fc-btns">
+          <a class="btn btn-light" href="#reserva">Começar reserva</a>
+          <a class="btn btn-wa" href="https://wa.me/557335731214?text=Ol%C3%A1%2C%20Pousada%20Ing%C3%A1!%20Vim%20pelo%20site." target="_blank" rel="noopener"><svg width="20" height="20" aria-hidden="true"><use href="#wa"/></svg>Falar agora</a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 </main>
@@ -1208,7 +1226,7 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 <footer>
   <div class="wrap">
     <div>
-      <svg class="logo" aria-label="Pousada Ingá" role="img"><use href="#logo"/></svg>
+      <svg viewBox="0 0 200 120" class="logo" aria-label="Pousada Ingá" role="img"><use href="#logo"/></svg>
       <p>Alameda Roberto Pompeu, Lote 17 · Cumuruxatiba, Prado – BA</p>
     </div>
     <div>
@@ -1392,7 +1410,7 @@ function stepSub(i){
   return "Revise e mande";
 }
 function renderSteps(){
-  var h='<svg class="logo" aria-hidden="true"><use href="#logo"/></svg>';
+  var h='<svg viewBox="0 0 200 120" class="logo" aria-hidden="true"><use href="#logo"/></svg>';
   for(var i=1;i<=5;i++){var st=i===state.step?"now":(i<=state.max?"done":"todo");
     h+='<button type="button" class="step-btn" data-go="'+i+'" data-state="'+st+'"'+(i>state.max?" disabled":"")+'><span class="dot">'+(st==="done"&&i!==state.step?'<svg width="14" height="14"><use href="#ck"/></svg>':i)+'</span><span><b>'+STEPS[i-1][0]+'</b><small>'+esc(stepSub(i))+'</small></span></button>';}
   h+='<p class="help">Sem compromisso. A pousada confirma valores e disponibilidade pelo WhatsApp.</p>';
@@ -1465,7 +1483,7 @@ function renderPanel(){
     '<div class="fld"><label for="ob">Algo mais?</label><textarea id="ob" placeholder="Chegada tarde, restrição alimentar, surpresa para alguém…">'+esc(state.obs)+'</textarea></div>';}
   if(s===5){
     var n=nights();
-    h='<div><h3>Tudo certo, '+esc(state.name.split(" ")[0]||"")+'!</h3><p class="hint">Confira e envie. A pousada responde com valores e disponibilidade.</p></div><div class="review"><div class="ticket"><div class="tt"><svg class="logo" aria-hidden="true"><use href="#logo"/></svg><small>Solicitação<br>de reserva</small></div>'+
+    h='<div><h3>Tudo certo, '+esc(state.name.split(" ")[0]||"")+'!</h3><p class="hint">Confira e envie. A pousada responde com valores e disponibilidade.</p></div><div class="review"><div class="ticket"><div class="tt"><svg viewBox="0 0 200 120" class="logo" aria-hidden="true"><use href="#logo"/></svg><small>Solicitação<br>de reserva</small></div>'+
     '<div class="tm"><div><span>Chegada</span><b>'+(state.start?state.start.getDate()+" "+MES[state.start.getMonth()].slice(0,3):"—")+'</b><em>'+(state.start?DS[state.start.getDay()]+" · a partir de 14h":"")+'</em></div><div class="mid"><svg viewBox="0 0 44 12" aria-hidden="true"><path d="M0 6c4-4 7-4 11 0s7 4 11 0 7-4 11 0 7 4 11 0" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>'+n+" "+(n===1?"diária":"diárias")+'</div><div><span>Saída</span><b>'+(state.end?state.end.getDate()+" "+MES[state.end.getMonth()].slice(0,3):"—")+'</b><em>'+(state.end?DS[state.end.getDay()]+" · até 12h":"")+'</em></div></div>'+
     '<div class="perf"></div><dl><div><dt>Hóspedes</dt><dd>'+guestsTxt()+'</dd></div><div><dt>Quarto</dt><dd>'+esc(state.room)+(state.rooms>1?" ×"+state.rooms:"")+'</dd></div><div><dt>Pet</dt><dd>'+(state.pet?"Sim":"Não")+'</dd></div><div><dt>Motivo</dt><dd>'+(state.occ.length?esc(state.occ.join(", ")):"—")+'</dd></div></dl></div>'+
     '<div class="send"><p class="msg" id="msg"></p><a class="btn btn-wa" id="send" target="_blank" rel="noopener" href="#"><svg width="22" height="22" aria-hidden="true"><use href="#wa"/></svg>Enviar pelo WhatsApp</a><div class="small-row"><button type="button" class="linkbtn" id="copymsg">Copiar mensagem</button><button type="button" class="linkbtn" data-go="1">Editar datas</button></div></div></div>';}
@@ -1781,6 +1799,7 @@ syncFly();
   requestAnimationFrame(frame);})();
 
 
+$("fc-bg").src=TREE_IMG;
 /* ============ VÍDEO E GALERIA ============ */
 // Cole aqui o link do vídeo (YouTube, Instagram etc.). Vazio = a seção fica escondida.
 var VIDEO_URL = "https://youtu.be/N_t4LrQtYjc";

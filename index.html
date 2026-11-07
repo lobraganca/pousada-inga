@@ -16,6 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LodgingBusiness","name":"Pousada Ingá","description":"Pousada pé na areia em Cumuruxatiba, Bahia, com piscina, jardim, restaurante, bar e café da manhã.","url":"https://pousada-inga.vercel.app/","image":"https://pousada-inga.vercel.app/og.png","telephone":"+55 73 3573-1214","email":"reserva@pousadaingacumuru.com.br","address":{"@type":"PostalAddress","streetAddress":"Alameda Roberto Pompeu, Lote 17, Rio do Peixe Grande","addressLocality":"Cumuruxatiba, Prado","addressRegion":"BA","postalCode":"45983-000","addressCountry":"BR"},"checkinTime":"14:00","checkoutTime":"12:00","petsAllowed":true,"sameAs":["https://www.instagram.com/pousada_inga_cumuruxatiba","https://www.booking.com/Share-dKX7BGk","https://www.tripadvisor.com.br/Hotel_Review-g1587885-d3452967-Reviews-Pousada_Inga-Cumuruxatiba_Prado_State_of_Bahia.html"]}</script>
+<meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#EEF1EC">
 <meta name="color-scheme" content="light only">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cpath d='M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z' fill='%23B06C80'/%3E%3Cpath d='M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z' fill='%234A7A27'/%3E%3Cpath d='M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z' fill='%232F3424'/%3E%3C/svg%3E">
@@ -1149,6 +1150,15 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 .wcount .wl.sub b{color:var(--ink)}
 @media (max-width:560px){.wl{font-size:13.5px;padding:10px 12px}.wl.sub{font-size:12.5px}}
 
+
+/* logo do rodapé: folhas se mexendo como na abertura */
+.flogo{overflow:visible}
+.flogo.go .lr{animation:leafUp 1.4s ease-in-out both,breathUp 5s 1.4s ease-in-out infinite}
+.flogo.go .lg{animation:leafDown 1.4s ease-in-out both,breathDown 5s 1.4s ease-in-out infinite}
+.flogo.go .tx{animation:fadeIn .6s .5s ease both}
+@keyframes breathUp{0%,100%{transform:none}50%{transform:translateY(-3px)}}
+@keyframes breathDown{0%,100%{transform:none}50%{transform:translateY(3px)}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -1647,7 +1657,12 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 <footer>
   <div class="wrap fwrap">
     <div class="f-brand">
-      <svg class="logo" viewBox="0 0 200 120" aria-label="Pousada Ingá" role="img"><use href="#logo"/></svg>
+      <svg class="logo flogo" id="flogo" viewBox="0 0 200 120" aria-label="Pousada Ingá" role="img">
+        <path class="lr" d="M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z" fill="#B06C80"/>
+        <path class="lg" d="M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z" fill="#4A7A27"/>
+        <path d="M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z" fill="#2F3424"/>
+        <g class="tx" fill="#fff" font-family="Yanone Kaffeesatz, Arial Narrow, sans-serif" font-weight="300"><text x="74" y="50" font-size="17" letter-spacing=".5">pousada</text><text x="60" y="94" font-size="58">Ingá</text></g>
+      </svg>
       <p class="f-tag">Hospitalidade, conforto e tranquilidade, pé na areia.</p>
       <p class="f-addr"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Alameda Roberto Pompeu, Lote 17 · Rio do Peixe Grande, Cumuruxatiba, Prado – BA</p>
     </div>
@@ -2412,6 +2427,12 @@ document.addEventListener("click",function(e){var a=e.target.closest('a[href^="#
     else if(/google\.com\/travel|skyscanner/.test(a.href))send("voos");
     else if(/maps|waze/.test(a.href))send("rota");
     else if(/fotografias360/.test(a.href))send("tour360");},true);
+})();
+
+
+/* ============ LOGO DO RODAPÉ ============ */
+(function(){var f=$("flogo");if(!f||reduce)return;
+  if("IntersectionObserver" in window){new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){f.classList.remove("go");void f.getBoundingClientRect();f.classList.add("go")}})},{threshold:.6}).observe(f)}else f.classList.add("go");
 })();
 
 /* ============ COPY ============ */

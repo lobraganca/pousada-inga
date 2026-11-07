@@ -689,6 +689,37 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 .room-desc{color:var(--ink-soft);font-size:16px;line-height:1.6;max-width:52ch}
 @media (max-width:560px){.room-tabs{display:flex;overflow-x:auto;max-width:100%;scrollbar-width:none}.room-tabs button{flex:none;padding:10px 16px;font-size:14px}}
 
+
+/* ---- galeria e vídeo ---- */
+.gal{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:180px;gap:10px}
+.gal button{border:0;padding:0;border-radius:18px;overflow:hidden;cursor:zoom-in;background:var(--sand-2);position:relative}
+.gal button:nth-child(5n+1){grid-column:span 2;grid-row:span 2}
+.gal img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.gal button:hover img{transform:scale(1.06)}
+@media (max-width:760px){.gal{grid-template-columns:1fr 1fr;grid-auto-rows:140px}}
+.lb{position:fixed;inset:0;z-index:90;background:rgba(10,16,13,.94);display:grid;place-items:center;padding:calc(56px + env(safe-area-inset-top,0px)) max(12px, env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(12px, env(safe-area-inset-left,0px));touch-action:pan-y}
+.lb img{max-width:100%;max-height:100%;border-radius:12px;object-fit:contain;animation:enter .35s cubic-bezier(.2,.7,.2,1)}
+.lb button{position:absolute;border:0;background:rgba(255,255,255,.14);color:#fff;width:46px;height:46px;border-radius:50%;font-size:26px;cursor:pointer;display:grid;place-items:center}
+.lb-x{top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px))}
+.lb-p{left:calc(12px + env(safe-area-inset-left,0px));top:50%;transform:translateY(-50%)}
+.lb-f{right:calc(12px + env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%)}
+.lb-c{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);color:rgba(255,255,255,.8);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.vid{position:relative;display:flex;align-items:center;gap:22px;padding:28px;border-radius:28px;overflow:hidden;text-decoration:none;color:#F4F6F1;min-height:200px;background:var(--olive)}
+.vid.has-thumb{background-size:cover;background-position:center;min-height:300px}
+.vid.has-thumb .vid-bg{opacity:.5}
+.vid-frame{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:28px;overflow:hidden;background:#000}
+.vid-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid-bg{position:absolute;inset:0;background:radial-gradient(80% 120% at 85% 20%,rgba(176,108,128,.55),transparent 60%),radial-gradient(70% 100% at 10% 100%,rgba(74,122,39,.6),transparent 60%);transition:transform 1.2s}
+.vid:hover .vid-bg{transform:scale(1.1)}
+.vid-play{position:relative;flex:none;width:84px;height:84px;border-radius:50%;background:#F4F6F1;color:var(--logo-rose);display:grid;place-items:center;box-shadow:0 0 0 0 rgba(244,246,241,.5);animation:pulse 2.2s infinite}
+.vid-play svg{width:34px;height:34px;margin-left:4px}
+@keyframes pulse{70%{box-shadow:0 0 0 22px rgba(244,246,241,0)}100%{box-shadow:0 0 0 0 rgba(244,246,241,0)}}
+.vid-txt{position:relative;display:grid;gap:4px}
+.vid-txt .eyebrow{color:#E7B6C5}
+.vid-txt b{font-family:var(--display);font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.05}
+.vid-txt small{opacity:.75}
+@media (max-width:560px){.vid{flex-direction:column;align-items:flex-start;padding:22px}.vid-play{width:64px;height:64px}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -761,6 +792,7 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
       <a href="#pousada">A pousada</a>
       <a href="#quartos">Quartos</a>
       <a href="#tour360">Tour 360°</a>
+      <a href="#galeria" id="nav-gal" hidden>Fotos</a>
       <a href="#quando">Quando vir</a>
       <a href="#chegar">Como chegar</a>
     </nav>
@@ -927,6 +959,31 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
     </div>
   </div>
 </section>
+<section class="sec" id="galeria" style="padding-top:0" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="eyebrow">Galeria</p><h2>Um pouco da Ingá em fotos.</h2></div>
+      <p>Toque numa foto para ver em tela cheia e passar para as próximas.</p>
+    </div>
+    <div class="gal" id="gal"></div>
+  </div>
+</section>
+<section class="sec" id="video" style="padding-top:0" hidden>
+  <div class="wrap">
+    <a class="vid" id="vid-link" href="#" target="_blank" rel="noopener">
+      <span class="vid-bg" aria-hidden="true"></span>
+      <span class="vid-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+      <span class="vid-txt"><span class="eyebrow">Vídeo</span><b>Veja a pousada em movimento</b><small id="vid-sub">Abre o vídeo em uma nova aba</small></span>
+    </a>
+  </div>
+</section>
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Foto em tela cheia">
+  <button type="button" class="lb-x" id="lb-x" aria-label="Fechar">×</button>
+  <button type="button" class="lb-n lb-p" id="lb-p" aria-label="Foto anterior">‹</button>
+  <img id="lb-img" alt="">
+  <button type="button" class="lb-n lb-f" id="lb-f" aria-label="Próxima foto">›</button>
+  <span class="lb-c" id="lb-c"></span>
+</div>
 <section class="sec sea-band" id="avaliacoes">
   <div class="wrap">
     <div class="sec-head">
@@ -1722,6 +1779,38 @@ syncFly();
   pn.addEventListener("pointermove",function(e){if(!drag)return;var d=e.clientX-lx;lx=e.clientX;x+=d;vx=d*30;if(reduce)requestAnimationFrame(frame)});
   ["pointerup","pointercancel"].forEach(function(ev){pn.addEventListener(ev,function(){drag=false;pn.classList.remove("drag")})});
   requestAnimationFrame(frame);})();
+
+
+/* ============ VÍDEO E GALERIA ============ */
+// Cole aqui o link do vídeo (YouTube, Instagram etc.). Vazio = a seção fica escondida.
+var VIDEO_URL = "https://youtu.be/N_t4LrQtYjc";
+(function(){if(!VIDEO_URL)return;var a=$("vid-link"),m=VIDEO_URL.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/),id=m&&m[1];
+  a.href=VIDEO_URL;$("video").hidden=false;
+  var host=location.hostname,canEmbed=id&&/^https?:/.test(location.protocol)&&!/claude\.ai|claudeusercontent|claude\.site/.test(host);
+  if(id){a.style.backgroundImage="linear-gradient(90deg,rgba(43,49,34,.85),rgba(43,49,34,.25)),url(https://i.ytimg.com/vi/"+id+"/hqdefault.jpg)";a.classList.add("has-thumb");}
+  if(canEmbed){$("vid-sub").textContent="Toque para assistir aqui mesmo";
+    a.addEventListener("click",function(e){e.preventDefault();var f=document.createElement("div");f.className="vid-frame";
+      f.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1" title="Vídeo da Pousada Ingá" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+      a.replaceWith(f);});}
+})();
+// Galeria: envie fotos para a pasta "fotos" do GitHub com os nomes 1.jpg, 2.jpg, 3.jpg...
+(function(){
+  var EXT=["jpg","jpeg","png","webp","JPG","JPEG"],found=[],miss=0,i=1;
+  function tryIdx(n,e){if(e>=EXT.length){miss++;next();return}var im=new Image();im.onload=function(){found.push(im.src);miss=0;next()};im.onerror=function(){tryIdx(n,e+1)};im.src="fotos/"+n+"."+EXT[e];}
+  function next(){i++;if(miss>=3||i>40){done();return}tryIdx(i,0)}
+  function done(){if(!found.length)return;$("galeria").hidden=false;$("nav-gal").hidden=false;
+    $("gal").innerHTML=found.map(function(u,k){return '<button type="button" data-k="'+k+'" aria-label="Abrir foto '+(k+1)+'"><img src="'+u+'" alt="Foto '+(k+1)+' da Pousada Ingá" loading="lazy"></button>'}).join("");}
+  if(location.protocol.indexOf("http")===0)tryIdx(1,0);
+  var cur=0,x0=null;
+  function open(k){cur=(k+found.length)%found.length;$("lb-img").src=found[cur];$("lb-c").textContent=(cur+1)+" / "+found.length;$("lb").hidden=false;document.body.style.overflow="hidden";}
+  function close(){$("lb").hidden=true;document.body.style.overflow="";}
+  $("gal").addEventListener("click",function(e){var b=e.target.closest("[data-k]");if(b)open(+b.dataset.k)});
+  $("lb-x").addEventListener("click",close);$("lb-p").addEventListener("click",function(){open(cur-1)});$("lb-f").addEventListener("click",function(){open(cur+1)});
+  $("lb").addEventListener("click",function(e){if(e.target===this)close()});
+  document.addEventListener("keydown",function(e){if($("lb").hidden)return;if(e.key==="Escape")close();if(e.key==="ArrowLeft")open(cur-1);if(e.key==="ArrowRight")open(cur+1)});
+  $("lb").addEventListener("touchstart",function(e){x0=e.touches[0].clientX},{passive:true});
+  $("lb").addEventListener("touchend",function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)open(cur+(dx<0?1:-1));x0=null});
+})();
 
 /* ============ DINÂMICA EXTRA ============ */
 // barra de progresso da rolagem + parallax do topo

@@ -692,8 +692,16 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 .gal button:nth-child(5n+1){grid-column:span 2;grid-row:span 2}
 .gal img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
 .gal button:hover img{transform:scale(1.06)}
+.gal .xtra{display:none}
+.gal.all .xtra{display:block}
+.gal-more-w{display:flex;justify-content:center;margin-top:18px}
+.gcap{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 10px;font-size:12px;font-weight:700;color:#fff;text-align:left;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s}
+.gal button:hover .gcap,.gal button:focus-visible .gcap{opacity:1;transform:none}
+.gal button:nth-child(5n+1) .gcap{opacity:1;transform:none;font-size:14px}
+.lb-c{max-width:calc(100% - 140px);text-align:center}
+@media (max-width:640px){.lb{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}.lb-p,.lb-f{top:auto;transform:none;bottom:calc(16px + env(safe-area-inset-bottom,0px))}.lb-c{bottom:calc(24px + env(safe-area-inset-bottom,0px));font-size:13px}}
 @media (max-width:760px){.gal{grid-template-columns:1fr 1fr;grid-auto-rows:140px}}
-.lb{position:fixed;inset:0;z-index:90;background:rgba(10,16,13,.94);display:grid;place-items:center;padding:calc(56px + env(safe-area-inset-top,0px)) max(12px, env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(12px, env(safe-area-inset-left,0px));touch-action:pan-y}
+.lb{position:fixed;inset:0;z-index:90;background:#0B110E;display:grid;place-items:center;padding:calc(56px + env(safe-area-inset-top,0px)) max(12px, env(safe-area-inset-right,0px)) calc(56px + env(safe-area-inset-bottom,0px)) max(12px, env(safe-area-inset-left,0px));touch-action:pan-y}
 .lb img{max-width:100%;max-height:100%;border-radius:12px;object-fit:contain;animation:enter .35s cubic-bezier(.2,.7,.2,1)}
 .lb button{position:absolute;border:0;background:rgba(255,255,255,.14);color:#fff;width:46px;height:46px;border-radius:50%;font-size:26px;cursor:pointer;display:grid;place-items:center}
 .lb-x{top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px))}
@@ -1163,6 +1171,7 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
       <p>Toque numa foto para ver em tela cheia e passar para as próximas.</p>
     </div>
     <div class="gal" id="gal"></div>
+    <div class="gal-more-w"><button type="button" class="btn btn-dark" id="gal-more" hidden>Ver todas as <span id="gal-more-n"></span> fotos</button></div>
   </div>
 </section>
 <section class="sec" id="video" style="padding-top:0" hidden>
@@ -2044,7 +2053,7 @@ syncFly();
   requestAnimationFrame(frame);})();
 
 
-$("fc-bg").src=TREE_IMG;
+$("fc-bg").src=TREE_IMG;if(location.protocol.indexOf("http")===0){var sb=new Image();sb.onload=function(){$("fc-bg").src=sb.src};sb.src="fotos/2.jpg";}
 /* ============ VÍDEO E GALERIA ============ */
 // Cole aqui o link do vídeo (YouTube, Instagram etc.). Vazio = a seção fica escondida.
 var VIDEO_URL = "https://youtu.be/N_t4LrQtYjc";
@@ -2059,15 +2068,19 @@ var VIDEO_URL = "https://youtu.be/N_t4LrQtYjc";
 })();
 // Galeria: envie fotos para a pasta "fotos" do GitHub com os nomes 1.jpg, 2.jpg, 3.jpg...
 (function(){
+  var CAPS=["Piscina, jardim e o mar ao fundo", "Nascer do sol visto da pousada", "Suíte com luz quente e enxoval branco", "Quiosque de palha pé na areia", "Casa na Árvore por dentro", "Mesa do café da manhã", "Caminho do jardim até a praia", "Casa na Árvore vista de fora", "Piscinas naturais de Cumuruxatiba", "Varanda com luminárias de palha", "Barcos na maré calma", "Suíte com enxoval e toalhas dobradas", "Casa na Árvore e piscina", "Amanhecer com cadeiras de praia", "Salão do café da manhã", "Deck da piscina", "Piscinas naturais ao entardecer", "Cantinho de leitura na varanda", "Piscina com vista para o mar", "Fachada da pousada", "Espumante e pétalas: surpresa para casais", "Sol nascendo entre as árvores", "Suíte com abajures", "Cadeiras na sombra, de frente para o mar", "Casa principal e piscina", "Sol entre as nuvens sobre o mar", "Cada suíte tem nome de planta", "Salão com vista para a mata", "Beira da piscina", "Fim de tarde com o antigo píer", "Suíte com a luz da manhã", "Piscina de frente para o mar", "Varanda e salão", "Amanhecer na praia", "Banheiro com pia de madeira", "Lua cheia sobre o mar", "Quiosque ao amanhecer"];
   var EXT=["jpg","jpeg","png","webp","JPG","JPEG"],found=[],miss=0,i=1;
-  function tryIdx(n,e){if(e>=EXT.length){miss++;next();return}var im=new Image();im.onload=function(){found.push(im.src);miss=0;next()};im.onerror=function(){tryIdx(n,e+1)};im.src="fotos/"+n+"."+EXT[e];}
-  function next(){i++;if(miss>=3||i>40){done();return}tryIdx(i,0)}
+  function head(u){return fetch(u,{method:"HEAD",cache:"no-store"}).then(function(r){return r.ok}).catch(function(){return false})}
+  function tryIdx(n,e){if(e>=EXT.length){miss++;next();return}var u="fotos/"+n+"."+EXT[e];head(u).then(function(ok){if(ok){found.push({u:u,c:CAPS[n-1]||""});miss=0;next()}else tryIdx(n,e+1)})}
+  function next(){i++;if(miss>=3||i>80){done();return}tryIdx(i,0)}
   function done(){if(!found.length)return;$("galeria").hidden=false;$("nav-gal").hidden=false;
-    $("gal").innerHTML=found.map(function(u,k){return '<button type="button" data-k="'+k+'" aria-label="Abrir foto '+(k+1)+'"><img src="'+u+'" alt="Foto '+(k+1)+' da Pousada Ingá" loading="lazy"></button>'}).join("");}
+    var LIM=7;$("gal-more").hidden=found.length<=LIM;$("gal-more-n").textContent=found.length;
+    $("gal").innerHTML=found.map(function(f,k){return '<button type="button"'+(k>=LIM?' class="xtra"':'')+' data-k="'+k+'" aria-label="Abrir foto: '+(f.c||"foto "+(k+1))+'"><img src="'+f.u+'" alt="'+(f.c||"Foto "+(k+1)+" da Pousada Ingá")+'" loading="lazy" decoding="async">'+(f.c?'<span class="gcap">'+f.c+'</span>':'')+'</button>'}).join("");}
   if(location.protocol.indexOf("http")===0)tryIdx(1,0);
   var cur=0,x0=null;
-  function open(k){cur=(k+found.length)%found.length;$("lb-img").src=found[cur];$("lb-c").textContent=(cur+1)+" / "+found.length;$("lb").hidden=false;document.body.style.overflow="hidden";}
+  function open(k){cur=(k+found.length)%found.length;$("lb-img").src=found[cur].u;$("lb-img").alt=found[cur].c;$("lb-c").textContent=(found[cur].c?found[cur].c+"  ·  ":"")+(cur+1)+" / "+found.length;$("lb").hidden=false;document.body.style.overflow="hidden";}
   function close(){$("lb").hidden=true;document.body.style.overflow="";}
+  $("gal-more").addEventListener("click",function(){var g=$("gal"),open=g.classList.toggle("all");this.innerHTML=open?"Mostrar menos fotos":'Ver todas as <span id="gal-more-n">'+found.length+'</span> fotos';if(!open)$("galeria").scrollIntoView({behavior:reduce?"auto":"smooth"})});
   $("gal").addEventListener("click",function(e){var b=e.target.closest("[data-k]");if(b)open(+b.dataset.k)});
   $("lb-x").addEventListener("click",close);$("lb-p").addEventListener("click",function(){open(cur-1)});$("lb-f").addEventListener("click",function(){open(cur+1)});
   $("lb").addEventListener("click",function(e){if(e.target===this)close()});

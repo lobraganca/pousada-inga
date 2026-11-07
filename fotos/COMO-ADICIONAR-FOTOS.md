@@ -2,7 +2,7 @@
 
 1. Abra esta pasta `fotos` no GitHub.
 2. Clique em **Add file → Upload files** e envie as fotos.
-3. Os nomes precisam ser números em sequência: `1.jpg`, `2.jpg`, `3.jpg`... (também vale `.jpeg`, `.png` ou `.webp`).
+3. Os nomes precisam ser números em sequência: `1.jpg`, `2.jpg`, `3.jpg`... A próxima foto nova é a `38.jpg` (também vale `.jpeg`, `.png` ou `.webp`).
 4. Clique em **Commit changes**. Em cerca de um minuto as fotos aparecem no site, na seção "Galeria".
 
 Dicas:

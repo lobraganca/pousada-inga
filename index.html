@@ -579,6 +579,38 @@ footer a{display:inline-block;padding-block:6px}
   .links a{font-size:17px;padding:13px 14px;border-radius:14px}
 }
 
+
+/* ---- por perto ---- */
+.near{margin-top:44px;background:var(--paper);border:1px solid var(--line);border-radius:28px;padding:26px;display:grid;gap:22px;overflow:hidden}
+.near-head h3{font-size:clamp(28px,3.4vw,40px);margin-top:6px}
+.ruler{position:relative;height:96px;margin:0 14px}
+.ruler .track{position:absolute;left:0;right:0;top:58px;height:6px;border-radius:6px;background:var(--sand-2);overflow:hidden}
+.ruler .track i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose));border-radius:6px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.pin{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;cursor:pointer;color:var(--ink);padding:0;font-family:var(--body)}
+.pin .km{white-space:nowrap;font-family:var(--display);font-size:20px;line-height:1;color:var(--ink-soft);transition:color .3s,transform .3s;font-variant-numeric:tabular-nums}
+.pin .dot{width:20px;height:20px;border-radius:50%;background:var(--paper);border:3px solid var(--line);margin-top:20px;transition:all .3s}
+.pin .nm{font-size:12px;font-weight:700;color:var(--ink-soft);white-space:nowrap;position:absolute;top:84px}
+.pin[aria-selected="true"] .km{color:var(--rose);transform:scale(1.15)}
+.pin[aria-selected="true"] .dot{border-color:var(--logo-rose);background:var(--logo-rose);box-shadow:0 0 0 6px var(--rose-soft)}
+.pin.home .dot{width:30px;height:20px;border:0;border-radius:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cpath d='M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z' fill='%23B06C80'/%3E%3Cpath d='M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z' fill='%234A7A27'/%3E%3Cpath d='M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z' fill='%232F3424'/%3E%3C/svg%3E") center/contain no-repeat;box-shadow:none!important}
+.walker{position:absolute;top:22px;left:0;width:26px;height:26px;margin-left:-13px;color:var(--olive);transition:left .9s cubic-bezier(.2,.8,.2,1)}
+.walker svg{width:100%;height:100%;animation:step .45s ease-in-out infinite alternate}
+.walker.idle svg{animation:none}
+@keyframes step{from{transform:translateY(0) rotate(-3deg)}to{transform:translateY(-3px) rotate(3deg)}}
+.near-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:22px;align-items:center;margin-top:18px}
+.near-card .ill{border-radius:20px;overflow:hidden;aspect-ratio:16/10;max-width:100%;animation:enter .5s cubic-bezier(.2,.7,.2,1)}
+.near-card .ill svg{width:100%;height:100%;display:block}
+.near-info{display:grid;gap:12px;animation:enter .5s cubic-bezier(.2,.7,.2,1)}
+.near-info h4{font-family:var(--display);font-weight:400;font-size:clamp(30px,3.6vw,42px);margin:0;line-height:1.05}
+.near-info p{color:var(--ink-soft)}
+.near-info .modes{display:flex;flex-wrap:wrap;gap:8px}
+.near-info .modes span{display:inline-flex;align-items:center;gap:8px;background:var(--sand);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700}
+.near-info .modes svg{width:18px;height:18px;color:var(--leaf)}
+.near-info small{font-size:12px;color:var(--ink-soft)}
+.near-nav{display:flex;gap:8px}
+@media (max-width:760px){.near{padding:20px 16px}.near-card{grid-template-columns:minmax(0,1fr)}.ruler{margin:0 18px}.pin .km{font-size:15px}.pin .nm{font-size:10.5px}.walker{top:24px;width:22px;height:22px;margin-left:-11px}}
+@media (max-width:420px){.pin .nm{max-width:64px;white-space:normal;text-align:center;line-height:1.15}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -811,11 +843,14 @@ footer a{display:inline-block;padding-block:6px}
         </div>
       </div>
     </div>
-    <div class="places rv">
-      <div class="place"><span class="km">2 km</span><h3>Ponta do Moreira</h3><p>O ponto mais próximo da pousada, bom para caminhar pela areia.</p></div>
-      <div class="place"><span class="km">3 km</span><h3>Praia da Vila</h3><p>O centrinho, com restaurantes, barracas e o movimento da noite.</p></div>
-      <div class="place"><span class="km">6 km</span><h3>Japara Grande</h3><p>Praia extensa e tranquila, para passar o dia.</p></div>
-    </div>
+    <div class="near rv" id="near">
+      <div class="near-head"><p class="eyebrow">Por perto</p><h3>Tudo a uma caminhada da Ingá.</h3></div>
+      <div class="ruler" id="ruler" role="tablist" aria-label="Lugares por perto">
+        <div class="track"><i id="r-fill"></i></div>
+        <div class="walker" id="walker" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="2.5" fill="currentColor"/><path d="M12 8l-3 5 2 1 1-2 1 3-2 6h2.4l1.8-5 1.8 2v3H19v-4l-2.6-3-.8-3 2.4 2H21l-4-4c-.8-.8-2-1.2-3-1Z" fill="currentColor"/></svg></div>
+      </div>
+      <div class="near-card" id="near-card" aria-live="polite"></div>
+    </div></div>
   </div>
 </section>
 
@@ -1396,6 +1431,38 @@ $("sea-sc").addEventListener("keydown",function(e){if(e.key==="Enter"||e.key==="
 wSize();setWhaleMonth(today.getMonth());
 (function wLoop(t){wDraw(t);if(!reduce)requestAnimationFrame(wLoop)})(0);
 addEventListener("resize",function(){wSize();setWhaleMonth(wMonth)});
+
+
+/* ============ POR PERTO ============ */
+var NEAR=[
+ {k:"home",km:0,lab:"Ingá",t:"Praia do Rio do Peixe Grande",d:"A praia em frente à pousada. Sai do quarto e já está na areia.",w:"a poucos passos",c:"",sc:"home"},
+ {km:2,lab:"Ponta do Moreira",t:"Ponta do Moreira",d:"O ponto mais próximo da pousada. Caminhada gostosa pela areia, melhor no fim da tarde.",w:"~25 min a pé",c:"~5 min de carro",sc:"point"},
+ {km:3,lab:"Praia da Vila",t:"Praia da Vila",d:"O centrinho de Cumuruxatiba, com restaurantes, barracas e o movimento da noite.",w:"~40 min a pé",c:"~6 min de carro",sc:"vila"},
+ {km:6,lab:"Japara Grande",t:"Praia da Japara Grande",d:"Praia extensa e tranquila, para passar o dia inteiro com pouca gente em volta.",w:"~1h20 a pé",c:"~12 min de carro",sc:"long"}];
+var MAXK=6.4,nearI=0,walkT;
+function nearScene(k){
+  var sky='<rect width="320" height="200" fill="#CFE6EE"/><circle cx="250" cy="48" r="20" fill="#F6CF8A"/>',sea='<rect y="118" width="320" height="82" fill="#1C6A72"/><path d="M0 132q20-5 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0" stroke="rgba(255,255,255,.35)" fill="none" stroke-width="2"/><path d="M0 150q20-5 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0" stroke="rgba(255,255,255,.22)" fill="none" stroke-width="2"/>',sand='<path d="M0 170c80-12 200-16 320-6v36H0Z" fill="#EAD9B8"/>';
+  if(k==="home")return sky+'<path d="M0 118c40-30 70-42 110-40 30 2 40 20 40 40Z" fill="#4A7A27" opacity=".85"/><rect x="40" y="88" width="54" height="34" fill="#F4F1E8"/><path d="M34 90l33-22 33 22Z" fill="#B06C80"/><rect x="58" y="100" width="12" height="22" fill="#2F3424"/><rect x="76" y="98" width="12" height="10" fill="#9FD0E6"/>'+sea+sand+'<g transform="translate(180 150)"><path d="M0 0h40" stroke="#2F3424" stroke-width="3"/><path d="M6 0l6-14h22l6 14" fill="#B06C80"/></g><svg x="120" y="20" width="80" height="48" viewBox="0 0 200 120"><use href="#logo"/></svg>';
+  if(k==="point")return sky+sea+'<path d="M190 118c20-26 60-40 130-44v44Z" fill="#C66F35"/><path d="M230 118c10-10 30-16 90-18v18Z" fill="#E9B38A"/><ellipse cx="200" cy="124" rx="16" ry="6" fill="#4A3B33"/><ellipse cx="225" cy="128" rx="10" ry="4" fill="#4A3B33"/>'+sand+'<path d="M40 176l8-6 8 6M62 180l8-6 8 6" stroke="#2F3424" stroke-width="2" fill="none"/>';
+  if(k==="vila")return sky+sea+sand+'<g>'+[30,90,150,210].map(function(x,i){return '<rect x="'+x+'" y="150" width="44" height="22" fill="'+["#F4F1E8","#F6D7A8","#F4F1E8","#E7C7D1"][i]+'"/><path d="M'+(x-6)+' 152l28-18 28 18Z" fill="'+["#B06C80","#4A7A27","#C66F35","#2F3424"][i]+'"/>'}).join("")+'</g><g transform="translate(270 140)"><path d="M0 30V0" stroke="#6B4A2E" stroke-width="3"/><path d="M0 0c-12 2-18 8-22 14M0 0c12 2 18 8 22 14M0 0c-8-6-16-6-22-4M0 0c8-6 16-6 22-4" stroke="#4A7A27" stroke-width="4" fill="none" stroke-linecap="round"/></g>';
+  return sky+sea+'<path d="M0 178c100-20 220-24 320-14v36H0Z" fill="#EAD9B8"/><path d="M0 182c60-8 120-10 200-8" stroke="#fff" stroke-width="2" opacity=".6" fill="none"/><g fill="#2F3424" opacity=".5"><circle cx="200" cy="176" r="2"/><circle cx="208" cy="176" r="2"/></g><g transform="translate(60 150)"><path d="M0 0l20-26v26Z" fill="#F4F1E8"/><path d="M-6 0h32l-4 6H-2Z" fill="#6B4A2E"/></g>';
+}
+function renderRuler(){
+  var r=$("ruler");r.querySelectorAll(".pin").forEach(function(x){x.remove()});
+  NEAR.forEach(function(n,i){var b=document.createElement("button");b.type="button";b.className="pin"+(n.k==="home"?" home":"");b.setAttribute("role","tab");b.dataset.i=i;b.style.left=(n.km/MAXK*100)+"%";
+    b.innerHTML='<span class="km">'+(n.km?n.km+" km":"0")+'</span><span class="dot"></span><span class="nm">'+n.lab+'</span>';r.appendChild(b)});
+}
+function showNear(i){
+  nearI=i;var n=NEAR[i],pct=n.km/MAXK*100;
+  $("ruler").querySelectorAll(".pin").forEach(function(b){b.setAttribute("aria-selected",+b.dataset.i===i)});
+  $("r-fill").style.width=pct+"%";var wk=$("walker");wk.classList.remove("idle");wk.style.left=pct+"%";clearTimeout(walkT);walkT=setTimeout(function(){wk.classList.add("idle")},950);
+  var ic='<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4.5" r="2.3"/><path d="M12 8l-3 5 2 1 1-2 1 3-2 6h2.4l1.8-5 1.8 2v3H19v-4l-2.6-3-.8-3 2.4 2H21l-4-4c-.8-.8-2-1.2-3-1Z"/></svg>',car='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v-4l2-5h12l2 5v4M4 16h16M7 16v2M17 16v2"/><circle cx="7.5" cy="13" r=".8" fill="currentColor"/><circle cx="16.5" cy="13" r=".8" fill="currentColor"/></svg>';
+  $("near-card").innerHTML='<div class="ill"><svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+nearScene(n.sc)+'</svg></div><div class="near-info"><p class="eyebrow">'+(n.km?n.km+" km da pousada":"Em frente à pousada")+'</p><h4>'+n.t+'</h4><p>'+n.d+'</p><div class="modes"><span>'+ic+n.w+'</span>'+(n.c?'<span>'+car+n.c+'</span>':'')+'</div>'+(n.km?'<small>Tempos aproximados.</small>':'')+'<div class="near-nav"><button type="button" class="icon-btn" data-nv="-1" aria-label="Lugar anterior"'+(i===0?" disabled":"")+'>‹</button><button type="button" class="icon-btn" data-nv="1" aria-label="Próximo lugar"'+(i===NEAR.length-1?" disabled":"")+'>›</button></div></div>';
+}
+$("ruler").addEventListener("click",function(e){var b=e.target.closest(".pin");if(b)showNear(+b.dataset.i)});
+$("near-card").addEventListener("click",function(e){var b=e.target.closest("[data-nv]");if(b)showNear(Math.max(0,Math.min(NEAR.length-1,nearI+(+b.dataset.nv))))});
+renderRuler();showNear(0);$("walker").classList.add("idle");
+if("IntersectionObserver" in window&&!reduce){var ion=new IntersectionObserver(function(es){if(es[0].isIntersecting){ion.disconnect();var k=0;(function nx(){k++;if(k<NEAR.length&&nearI===k-1){showNear(k);setTimeout(nx,1300)}else if(k>=NEAR.length){setTimeout(function(){if(nearI===NEAR.length-1)showNear(1)},1300)}})();}},{threshold:.5});ion.observe($("near"))}
 
 /* ============ MONTHS ============ */
 var MO=[

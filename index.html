@@ -388,7 +388,7 @@ footer .credit b{display:inline;margin:0}
 footer .credit a{color:rgba(244,246,241,.75);text-decoration:none}
 footer .credit a:hover{color:#F4F6F1;text-decoration:underline}
 .lmark{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#C6F24E;color:#000;font:800 17px/1 var(--body);letter-spacing:-.02em}
-@media (max-width:760px){footer .credit .wrap{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
+@media (max-width:760px){footer .credit .wrap{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
 
 .fab{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:26;display:flex;align-items:center;gap:10px;padding:8px 18px 8px 8px;border-radius:999px;background:var(--wa);color:#fff;text-decoration:none;box-shadow:0 16px 34px -12px rgba(0,0,0,.5);transition:transform .25s, bottom .35s}
 .fab:hover{transform:translateY(-3px)}
@@ -399,7 +399,7 @@ footer .credit a:hover{color:#F4F6F1;text-decoration:underline}
 .fab span{display:grid;line-height:1.15}
 .fab small{font-size:11px;font-weight:600;opacity:.85}
 .fab b{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
-@media (max-width:760px){.fab{bottom:calc(86px + env(safe-area-inset-bottom,0px));right:calc(14px + env(safe-area-inset-right,0px));padding:6px 14px 6px 6px}.fab .ic{width:38px;height:38px}.fab b{font-size:14px}.fab.low{bottom:calc(16px + env(safe-area-inset-bottom,0px))}}
+@media (max-width:760px){.fab{bottom:calc(16px + env(safe-area-inset-bottom,0px));right:calc(14px + env(safe-area-inset-right,0px));padding:6px 14px 6px 6px}.fab .ic{width:38px;height:38px}.fab b{font-size:14px}.fab.low{bottom:calc(16px + env(safe-area-inset-bottom,0px))}}
 
 /* logo animada */
 .alogo{display:block;width:clamp(170px,22vw,290px);height:auto;overflow:visible;margin-bottom:18px;filter:drop-shadow(0 14px 22px rgba(0,0,0,.18))}
@@ -609,7 +609,39 @@ footer a{display:inline-block;padding-block:6px}
 .near-info small{font-size:12px;color:var(--ink-soft)}
 .near-nav{display:flex;gap:8px}
 @media (max-width:760px){.near{padding:20px 16px}.near-card{grid-template-columns:minmax(0,1fr)}.ruler{margin:0 18px}.pin .km{font-size:15px}.pin .nm{font-size:10.5px}.walker{top:24px;width:22px;height:22px;margin-left:-11px}}
-@media (max-width:420px){.pin .nm{max-width:64px;white-space:normal;text-align:center;line-height:1.15}}
+@media (max-width:420px){.pin .nm{max-width:64px;white-space:normal;text-align:center;line-height:1.15}.ruler{height:122px}}
+
+
+/* ---- celular: rotas e por perto compactos ---- */
+@media (max-width:860px){
+  .route-wrap{display:flex;flex-direction:column;gap:12px}
+  .routes{display:contents}
+  .rtabs{order:-1;display:flex;overflow-x:auto;gap:8px;scrollbar-width:none;margin-inline:-2px;padding:2px}
+  .rtabs::-webkit-scrollbar{display:none}
+  .rtab{flex:none;padding:10px 14px;border-radius:999px}
+  .rtab small{display:none}
+  .map{order:0;background:linear-gradient(90deg,var(--sand-2) 71%,var(--sea) 71%)}
+  .map svg.m{height:310px;width:100%}
+  .map .note{bottom:auto;top:10px;left:10px}
+  .rcard{order:1;padding:16px;gap:10px}
+  .rcard .nums b{font-size:26px}
+  .rcard li{font-size:14px;padding-bottom:10px}
+  .go-btns{order:2;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .go-btns .btn{padding:12px 10px;font-size:13px}
+}
+@media (max-width:760px){
+  .near{gap:14px}
+  .near-card{margin-top:4px;gap:14px}
+  .near-card .ill{aspect-ratio:16/8}
+  .near-info{gap:8px}
+  .near-info h4{font-size:28px}
+  .near-info p{font-size:15px;line-height:1.5}
+  .near-info .modes span{padding:7px 12px;font-size:13px}
+  .near-info small{display:none}
+  .near-nav{position:absolute;right:0;top:0}
+  .near-info{position:relative}
+  .near-nav .icon-btn{width:36px;height:36px}
+}
 
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
@@ -1038,10 +1070,6 @@ footer a{display:inline-block;padding-block:6px}
 </footer>
 
 <a class="fab" id="fab" href="https://wa.me/557335731214?text=Ol%C3%A1%2C%20Pousada%20Ing%C3%A1!%20Vim%20pelo%20site." target="_blank" rel="noopener" aria-label="Falar no WhatsApp: (73) 3573-1214"><span class="ic"><svg aria-hidden="true"><use href="#wa"/></svg></span><span><small>Fale com a gente</small><b>(73) 3573-1214</b></span></a>
-<div class="mbar" id="mbar">
-  <div class="ml"><svg viewBox="0 0 200 120" aria-hidden="true"><use href="#logo"/></svg><div><b id="mb-t">Sua estadia</b><small id="mb-s">Escolha as datas</small></div></div>
-  <a class="btn btn-dark" href="#reserva">Reservar</a>
-</div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -1208,7 +1236,7 @@ function renderSteps(){
   $("next").hidden=state.step===5;
   $("next").textContent=state.step===4?"Revisar reserva":"Continuar";
   $("next").setAttribute("aria-disabled",canNext()?"false":"true");
-  $("mb-s").textContent=(state.start&&state.end?stepSub(1)+" · ":"")+guestsTxt();
+  
 }
 function canNext(){if(state.step===1)return !!(state.start&&state.end);if(state.step===4)return state.name.trim().length>1;return true}
 function needMsg(){return state.step===1?(state.start?"Agora toque no dia da saída.":"Toque no dia da chegada e depois no da saída."):"Escreva seu nome para a pousada saber com quem fala."}
@@ -1510,9 +1538,8 @@ if("IntersectionObserver" in window&&!reduce){
     }},{threshold:.3});io2.observe(bars);
   }
   // barra inferior no celular some quando a reserva está na tela
-  var ioh=new IntersectionObserver(function(es){var v=es[0].isIntersecting;$("fab").classList.toggle("inhero",v);$("mbar").classList.toggle("inhero",v)},{threshold:.35});ioh.observe($("hero"));
-  var io3=new IntersectionObserver(function(es){$("mbar").classList.toggle("away",es[0].isIntersecting);$("fab").classList.toggle("low",es[0].isIntersecting)},{threshold:.15});
-  io3.observe($("reserva"));
+  var ioh=new IntersectionObserver(function(es){var v=es[0].isIntersecting;$("fab").classList.toggle("inhero",v)},{threshold:.35});ioh.observe($("hero"));
+
   // menu ativo
   var secs=["reserva","pousada","quartos","quando","chegar"].map($);
   var io4=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){document.querySelectorAll(".links a").forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id)})}})},{rootMargin:"-45% 0px -50% 0px"});

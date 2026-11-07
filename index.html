@@ -1129,6 +1129,26 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 .dwrap:focus-within .dshow{outline:2px solid #E7B6C5;border-color:transparent}
 @media (max-width:640px){.dshow{min-height:42px;padding:0 10px;font-size:14px}}
 
+
+/* rotas: botões em grade no celular */
+@media (max-width:860px){
+  .rtabs{display:grid!important;grid-template-columns:1fr 1fr;overflow:visible;margin-inline:0;padding:0;gap:8px}
+  .rtab{padding:10px 12px;border-radius:14px;text-align:center}
+  .rtab b{font-size:14px;white-space:nowrap}
+  .map .note{top:auto!important;bottom:10px!important;left:auto!important;right:10px;font-size:10px;padding:3px 8px}
+}
+
+
+/* baleias: frase clara no lugar dos números */
+.wcount{display:grid!important;grid-template-columns:1fr!important;gap:6px!important}
+.wl{display:flex;align-items:center;gap:10px;margin:0;padding:12px 14px;border-radius:14px;background:#E3EEF0;color:#163F45;font-size:14.5px;line-height:1.4}
+.wl svg{flex:none;color:#1C6A72}
+.wcount .wl b{display:inline;font:inherit;font-weight:800;color:#0E3D43;white-space:normal}
+.wcount .wl span{display:block;font:inherit;text-transform:none;letter-spacing:0;color:inherit;opacity:1}
+.wl.sub{display:block;background:none;padding:2px 2px 0;color:var(--ink-soft);font-size:13px}
+.wcount .wl.sub b{color:var(--ink)}
+@media (max-width:560px){.wl{font-size:13.5px;padding:10px 12px}.wl.sub{font-size:12.5px}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -2022,10 +2042,10 @@ function setWhaleMonth(m){
   $("whint").textContent=inSeason?"Toque no mar":md.hint;$("whint-w").style.opacity=1;wSeen=0;
   $("sea-sc").setAttribute("aria-label",inSeason?"Toque no mar para ver uma baleia saltar":md.aria);
   // contagem real a partir de hoje
-  var tm=today.getMonth(),open=tm>=6&&tm<=10,c;
-  if(open){var end=new Date(y,10,30);c=[[Math.max(0,Math.ceil((end-today)/864e5)),"dias de temporada"],["jul–nov","todo ano"],["16 m","jubarte adulta"]];}
-  else{var st=new Date(tm>10?y+1:y,6,1);c=[[Math.ceil((st-today)/864e5),"dias para voltarem"],["jul–nov","todo ano"],["16 m","jubarte adulta"]];}
-  $("wcount").innerHTML=c.map(function(x){return '<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>'}).join("");
+  var tm=today.getMonth(),open=tm>=6&&tm<=10,line;
+  if(open){var dl=Math.max(0,Math.ceil((new Date(y,10,30)-today)/864e5));line=dl?'Faltam <b>'+dl+' dias</b> para acabar a temporada das baleias deste ano.':'Hoje é o <b>último dia</b> da temporada das baleias.';}
+  else{var st=new Date(tm>10?y+1:y,6,1),dv=Math.ceil((st-today)/864e5);line='Faltam <b>'+dv+' dias</b> para as baleias voltarem, em 1º de julho.';}
+  $("wcount").innerHTML='<p class="wl"><svg viewBox="0 0 120 70" width="26" height="16" aria-hidden="true"><use href="#whale"/></svg><span>'+line+'</span></p><p class="wl sub">As jubartes passam por aqui de <b>julho a novembro</b> e chegam a <b>16 metros</b> de comprimento.</p>';
   if(reduce)wDraw(0);
 }
 function whaleBody(s,belly){ // de lado, cabeça para a direita

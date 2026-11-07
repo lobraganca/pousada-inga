@@ -836,6 +836,56 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
   .pl2 b{font-size:13px}
 }
 
+
+/* ---- reserva compacta no celular ---- */
+@media (max-width:560px){
+  .book{padding-block:56px 24px}
+  .book-head{margin-bottom:16px}
+  .book-head p{display:none}
+  .panel-wrap{gap:14px;padding:16px 14px 14px}
+  .panel{gap:12px}
+  .panel h3{font-size:24px}
+  .panel .hint{font-size:13px;margin-top:2px}
+  .date-pills{grid-template-columns:1fr 1fr auto;gap:6px}
+  .nights{grid-column:auto;padding:6px 10px;font-size:11px;border-radius:14px}
+  .nights b{font-size:20px}
+  .date-pill{padding:8px 10px;border-radius:14px}
+  .date-pill span{font-size:10px}
+  .date-pill b{font-size:14px}
+  .cal-nav{position:relative;height:36px}
+  .cal-nav .hint{display:none}
+  .cal-nav .icon-btn{width:36px;height:36px}
+  .cal.one .month h4{position:absolute;margin-top:-42px;left:50%;transform:translateX(-50%);font-size:19px;white-space:nowrap}
+  .cal.one{position:relative}
+  .day{aspect-ratio:auto;height:40px;font-size:14px;border-radius:10px}
+  .day.today::after{bottom:3px}
+  .wd span{padding-bottom:2px}
+  .nav-row{padding-top:12px}
+  .nav-row .btn{padding:12px 20px}
+}
+@media (max-width:760px){.fab.inbook{transform:translateY(calc(100% + 140px))}}
+
+
+@media (max-width:640px){
+  .choices{grid-template-columns:1fr 1fr;gap:8px}
+  .choice{grid-template-columns:1fr!important;padding:8px;gap:6px;border-radius:16px;align-items:start}
+  .choice .ill{grid-row:auto!important;aspect-ratio:16/9;border-radius:10px}
+  .choice b{font-size:14px}
+  .choice small{font-size:11px}
+  .choice .rec{font-size:10px;padding:3px 7px;left:6px;top:6px}
+  .choice .chk{width:22px;height:22px;right:6px;top:6px}
+  .counter{padding:10px 14px}
+  .tip{padding:8px 12px;font-size:13px}
+  .ticket .tt{padding:14px 18px}
+  .ticket .tt .logo{width:70px}
+  .ticket .tm{padding:0 18px 14px}
+  .ticket .tm b{font-size:22px}
+  .ticket dl{padding:14px 18px 16px;gap:10px 14px}
+  .msg{display:none}
+  .review{gap:12px}
+  .send .btn-wa{padding:15px}
+}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -1861,8 +1911,9 @@ if("IntersectionObserver" in window&&!reduce){
     }},{threshold:.25});io2.observe(bars);
   }
   // barra inferior no celular some quando a reserva está na tela
+  var iob=new IntersectionObserver(function(es){$("fab").classList.toggle("inbook",es[0].isIntersecting)},{threshold:.3});iob.observe(document.querySelector(".wiz"));
   var iof=new IntersectionObserver(function(es){$("fab").classList.toggle("infooter",es[0].isIntersecting)},{threshold:.2});iof.observe(document.querySelector(".credit"));
-  var ioh=new IntersectionObserver(function(es){var v=es[0].isIntersecting;$("fab").classList.toggle("inhero",v)},{threshold:.35});ioh.observe($("hero"));
+
 
   // menu ativo
   var secs=["reserva","pousada","quartos","quando","chegar"].map($);

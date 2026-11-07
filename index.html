@@ -383,12 +383,8 @@ footer .logo{width:110px;margin-bottom:6px}
 @media (max-width:760px){footer .wrap{grid-template-columns:1fr}}
 
 footer .credit{border-top:1px solid rgba(255,255,255,.12)}
-footer .credit .wrap{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;padding-block:14px 18px;font-size:13px}
-footer .credit b{display:inline;margin:0}
-footer .credit a{color:rgba(244,246,241,.75);text-decoration:none}
-footer .credit a:hover{color:#F4F6F1;text-decoration:underline}
-.lmark{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#C6F24E;color:#000;font:800 17px/1 var(--body);letter-spacing:-.02em}
-@media (max-width:760px){footer .credit .wrap{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
+
+
 
 .fab{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:26;display:flex;align-items:center;gap:10px;padding:8px 18px 8px 8px;border-radius:999px;background:var(--wa);color:#fff;text-decoration:none;box-shadow:0 16px 34px -12px rgba(0,0,0,.5);transition:transform .25s, bottom .35s}
 .fab:hover{transform:translateY(-3px)}
@@ -735,6 +731,24 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 .fc-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 .btn-light{background:#F4F6F1;color:#2B3122}
 @media (max-width:560px){.final-card{min-height:480px;border-radius:26px}.fc-in{padding:24px 20px}.fc-btns .btn{flex:1 1 auto}}
+
+
+/* ---- assinatura ---- */
+footer .credit .wrap{display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px 24px;padding-block:18px calc(96px + env(safe-area-inset-bottom,0px))}
+@media (max-width:860px){footer .credit .wrap{grid-template-columns:1fr}}
+.copy-l{font-size:12px;opacity:.6}
+.sig{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px 18px;background:rgba(0,0,0,.22);border:1px solid rgba(198,242,78,.18);border-radius:20px;padding:14px 16px}
+.lmark{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:#C6F24E;color:#000;font:800 26px/1 var(--body);letter-spacing:-.04em;transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.sig:hover .lmark{transform:rotate(-6deg) scale(1.06)}
+.sig-t{display:grid;line-height:1.25;min-width:0}
+.sig-t small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+.sig-t b{color:#F4F6F1;font-size:17px;margin:0}
+.sig-t span{font-size:13px;opacity:.75}
+.sig-links{display:flex;flex-wrap:wrap;gap:8px}
+.sig-links a{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;background:rgba(244,246,241,.08);color:#F4F6F1;text-decoration:none;font-size:13px;font-weight:700;transition:background .2s,color .2s}
+.sig-links a:hover{background:#C6F24E;color:#000}
+@media (max-width:640px){.sig{grid-template-columns:auto 1fr}.sig-links{grid-column:1/-1}.sig-links a{flex:1 1 auto;justify-content:center}}
+@media (max-width:760px){footer .credit .wrap{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
 
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
@@ -1248,10 +1262,19 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
   </div>
   <div class="credit">
     <div class="wrap">
-      <span class="lmark" aria-hidden="true">L.</span>
-      <p>Site criado por <b>Lorena Bragança</b></p>
-      <a href="https://wa.me/5531971473162" target="_blank" rel="noopener">WhatsApp (31) 97147-3162</a>
-      <a href="https://www.instagram.com/lo_braganca" target="_blank" rel="noopener">@lo_braganca</a>
+      <p class="copy-l">© 2026 Pousada Ingá · Cumuruxatiba, BA</p>
+      <div class="sig">
+        <span class="lmark" aria-hidden="true">L.</span>
+        <div class="sig-t">
+          <small>Site criado por</small>
+          <b>Lorena Bragança</b>
+          <span>Sites, apps e dashboards para empresas</span>
+        </div>
+        <div class="sig-links">
+          <a href="https://wa.me/5531971473162?text=Ol%C3%A1%2C%20Lorena!%20Vi%20o%20site%20da%20Pousada%20Ing%C3%A1%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener" aria-label="WhatsApp de Lorena Bragança, (31) 97147-3162"><svg width="18" height="18" aria-hidden="true"><use href="#wa"/></svg>(31) 97147-3162</a>
+          <a href="https://www.instagram.com/lo_braganca" target="_blank" rel="noopener" aria-label="Instagram de Lorena Bragança"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>@lo_braganca</a>
+        </div>
+      </div>
     </div>
   </div>
 </footer>

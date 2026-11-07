@@ -1638,15 +1638,24 @@ showRoom("a");
 /* ============ CENA DAS BALEIAS ============ */
 var wcv=$("wcv"),wx=wcv.getContext("2d"),WW=0,WH=0,wd=1,whales=[],drops=[],boat=null,wMonth=today.getMonth(),wLast=0,wSeen=0;
 var DENS=[0,0,0,0,0,0,1,3,3,2,1,0];
+var wMode="whale",boats=[],sparks=[],shoots=[],autoT=0,wStars=[];for(var si=0;si<60;si++)wStars.push([Math.random(),Math.random()*.9,Math.random()*1.2+.4,Math.random()*6.3]);
+var MODES={
+  whale:{sky:["#7FB7D8","#EAD7BC"],sea:["rgba(28,106,114,.86)","rgba(14,61,67,.97)"],night:0},
+  sun:{sky:["#5FA8DA","#F4E2BF"],sea:["rgba(28,118,128,.86)","rgba(14,70,78,.97)"],night:0,badge:"Alta temporada de verão",hint:"Toque no mar e solte uma jangada",aria:"Toque no mar para soltar uma jangada"},
+  fest:{sky:["#141B3D","#7A4A6E"],sea:["rgba(20,40,66,.92)","rgba(8,20,36,.98)"],night:1,badge:"Réveillon pé na areia",hint:"Toque no céu e solte fogos",aria:"Toque no céu para soltar fogos de artifício"},
+  calm:{sky:["#0B1530","#2B3A66"],sea:["rgba(16,36,60,.92)","rgba(6,18,32,.98)"],night:1,badge:"Noites tranquilas",hint:"Toque no céu e faça um pedido",aria:"Toque no céu para ver uma estrela cadente"}};
 function wSize(){wd=Math.min(2,devicePixelRatio||1);WW=wcv.clientWidth;WH=wcv.clientHeight;wcv.width=WW*wd;wcv.height=WH*wd;wx.setTransform(wd,0,0,wd,0,0)}
 function newWhale(i,n){return {x:WW*((i+.5)/n)+(Math.random()-.5)*40,dir:Math.random()<.5?-1:1,sp:8+Math.random()*10,s:.55+Math.random()*.35,cyc:Math.random()*7,br:-1,bx:0}}
 function setWhaleMonth(m){
   wMonth=m;var n=DENS[m];whales=[];for(var i=0;i<n;i++)whales.push(newWhale(i,n));
-  boat=n?null:{x:WW*.3,dir:1};
+  wMode=n?"whale":(m===11?"fest":(m<=2?"sun":"calm"));boats=[];sparks=[];shoots=[];
+  if(wMode==="sun")boats=[{x:WW*.3,dir:1,sp:10,s:1}];if(wMode==="calm")boats=[{x:WW*.55,dir:-1,sp:5,s:.8}];
   var inSeason=n>0,y=today.getFullYear();
-  $("wbadge").classList.toggle("off",!inSeason);
-  $("wbadge-t").textContent=inSeason?(n>=3?"Pico da temporada":"Temporada das baleias"):"Fora da temporada";
-  $("whint").textContent=inSeason?"Toque no mar":"Baleias de julho a novembro";
+  $("wbadge").classList.toggle("off",false);
+  var md=MODES[wMode];
+  $("wbadge-t").textContent=inSeason?(n>=3?"Pico da temporada":"Temporada das baleias"):md.badge;
+  $("whint").textContent=inSeason?"Toque no mar":md.hint;$("whint").style.opacity=1;wSeen=0;
+  $("sea-sc").setAttribute("aria-label",inSeason?"Toque no mar para ver uma baleia saltar":md.aria);
   // contagem real a partir de hoje
   var tm=today.getMonth(),open=tm>=6&&tm<=10,c;
   if(open){var end=new Date(y,10,30);c=[[Math.max(0,Math.ceil((end-today)/864e5)),"dias de temporada"],["jul–nov","todo ano"],["16 m","jubarte adulta"]];}
@@ -1671,10 +1680,21 @@ function splash(x,y,n,pow){for(var i=0;i<n;i++)drops.push({x:x+(Math.random()-.5
 function wDraw(t){
   var dt=wLast?Math.min(50,t-wLast)/1000:0;wLast=t;
   var surf=WH*.42;
-  var g=wx.createLinearGradient(0,0,0,surf);g.addColorStop(0,"#7FB7D8");g.addColorStop(1,"#EAD7BC");wx.fillStyle=g;wx.fillRect(0,0,WW,surf);
+  var md=MODES[wMode],nt=md.night;
+  var g=wx.createLinearGradient(0,0,0,surf);g.addColorStop(0,md.sky[0]);g.addColorStop(1,md.sky[1]);wx.fillStyle=g;wx.fillRect(0,0,WW,surf);
+  if(nt){wStars.forEach(function(st){wx.fillStyle="rgba(255,255,255,"+(.35+.45*Math.sin(t/600+st[3]))+")";wx.beginPath();wx.arc(st[0]*WW,st[1]*surf,st[2]*.8,0,6.3);wx.fill()});
+    wx.fillStyle="#F6EFD9";wx.beginPath();wx.arc(WW*.5,surf*.4,13,0,6.3);wx.fill();wx.fillStyle=md.sky[0];wx.beginPath();wx.arc(WW*.5+6,surf*.4-3,11,0,6.3);wx.fill();}
+  else{wx.fillStyle="rgba(255,236,200,.9)";wx.beginPath();wx.arc(WW*.18,surf*.42,14,0,6.3);wx.fill();}
+  // estrelas cadentes
+  for(var q=shoots.length-1;q>=0;q--){var sh=shoots[q];sh.p+=dt/1.1;if(sh.p>=1){shoots.splice(q,1);continue}var hx=sh.x-sh.p*160,hy=sh.y+sh.p*90,gr=wx.createLinearGradient(hx,hy,hx+60,hy-34);gr.addColorStop(0,"rgba(255,255,255,"+(1-sh.p)+")");gr.addColorStop(1,"rgba(255,255,255,0)");wx.strokeStyle=gr;wx.lineWidth=2.2;wx.beginPath();wx.moveTo(hx,hy);wx.lineTo(hx+60,hy-34);wx.stroke();wx.fillStyle="rgba(255,255,255,"+(1-sh.p)+")";wx.beginPath();wx.arc(hx,hy,2.2,0,6.3);wx.fill()}
+  // fogos
+  for(q=sparks.length-1;q>=0;q--){var sp2=sparks[q];sp2.vy+=40*dt;sp2.x+=sp2.vx*dt;sp2.y+=sp2.vy*dt;sp2.l-=dt*.75;if(sp2.l<=0){sparks.splice(q,1);continue}wx.fillStyle=sp2.c.replace("A",Math.max(0,sp2.l).toFixed(2));wx.beginPath();wx.arc(sp2.x,sp2.y,1.8+sp2.l,0,6.3);wx.fill()}
+  // gaivotas no verão
+  if(wMode==="sun"){wx.strokeStyle="rgba(30,40,40,.7)";wx.lineWidth=1.6;for(var gl=0;gl<3;gl++){var gx=((t/40+gl*140)%(WW+60))-30,gy=surf*(.25+gl*.12)+Math.sin(t/500+gl)*5,fl=Math.sin(t/160+gl)*3;wx.beginPath();wx.moveTo(gx-7,gy-fl);wx.quadraticCurveTo(gx-3,gy-4,gx,gy);wx.quadraticCurveTo(gx+3,gy-4,gx+7,gy-fl);wx.stroke()}}
+  // automático
+  if(!reduce&&!nt===false){autoT+=dt;if(autoT>(wMode==="fest"?1.8:3.5)){autoT=0;if(wMode==="fest")firework(WW*(.25+Math.random()*.5),surf*(.2+Math.random()*.4));else shoot(WW*(.4+Math.random()*.6),surf*(.05+Math.random()*.3));}}
   // falésia ao longe
-  wx.fillStyle="rgba(198,111,53,.55)";wx.beginPath();wx.moveTo(WW*.62,surf);for(var x=WW*.62;x<=WW;x+=8)wx.lineTo(x,surf-14-Math.sin(x*.05)*3-(x-WW*.62)*.05);wx.lineTo(WW,surf);wx.fill();
-  wx.fillStyle="rgba(255,236,200,.9)";wx.beginPath();wx.arc(WW*.18,surf*.42,14,0,6.3);wx.fill();
+  wx.fillStyle=nt?"rgba(90,60,60,.8)":"rgba(198,111,53,.55)";wx.beginPath();wx.moveTo(WW*.62,surf);for(var x=WW*.62;x<=WW;x+=8)wx.lineTo(x,surf-14-Math.sin(x*.05)*3-(x-WW*.62)*.05);wx.lineTo(WW,surf);wx.fill();
   // baleias saltando ficam atrás da água
   whales.forEach(function(w){
     w.x+=w.dir*w.sp*dt;if(w.x<-60)w.x=WW+60;if(w.x>WW+60)w.x=-60;
@@ -1686,7 +1706,7 @@ function wDraw(t){
     else w.sp1=0;
   });
   // mar por cima
-  var sg=wx.createLinearGradient(0,surf,0,WH);sg.addColorStop(0,"rgba(28,106,114,.86)");sg.addColorStop(1,"rgba(14,61,67,.97)");wx.fillStyle=sg;wx.fillRect(0,surf,WW,WH-surf);
+  var sg=wx.createLinearGradient(0,surf,0,WH);sg.addColorStop(0,md.sea[0]);sg.addColorStop(1,md.sea[1]);wx.fillStyle=sg;wx.fillRect(0,surf,WW,WH-surf);
   for(var k=0;k<5;k++){var yy=surf+6+k*(WH-surf)/5;wx.strokeStyle="rgba(255,255,255,"+(.18-k*.02)+")";wx.lineWidth=1.2;wx.beginPath();for(x=0;x<=WW;x+=8){var v=yy+Math.sin(x*.03+t/900+k)*(1.5+k*.5);x?wx.lineTo(x,v):wx.moveTo(x,v)}wx.stroke()}
   // costas, borrifo e cauda dos que estão nadando
   whales.forEach(function(w){if(w.br>=0)return;var c=w.cyc%7,y=surf;
@@ -1699,14 +1719,23 @@ function wDraw(t){
     if(!reduce&&Math.random()<dt*.025&&WW)startBreach(w);
   });
   // jangada fora da temporada
-  if(boat){boat.x+=boat.dir*10*dt;if(boat.x>WW+40)boat.x=-40;var by2=surf+2+Math.sin(t/600)*2;wx.fillStyle="#6B4A2E";wx.fillRect(boat.x-22,by2-3,44,5);wx.fillStyle="#F4F1E8";wx.beginPath();wx.moveTo(boat.x,by2-4);wx.lineTo(boat.x,by2-40);wx.lineTo(boat.x+22,by2-8);wx.fill();wx.strokeStyle="#6B4A2E";wx.beginPath();wx.moveTo(boat.x,by2-3);wx.lineTo(boat.x,by2-42);wx.stroke()}
+  boats.forEach(function(b,bi){b.x+=b.dir*b.sp*dt;if(b.x>WW+40)b.x=-40;if(b.x<-40)b.x=WW+40;var by2=surf+2+b.s*4+Math.sin(t/600+bi)*2,k=b.s;
+    wx.save();wx.translate(b.x,by2);wx.scale(k*b.dir,k);wx.fillStyle="#6B4A2E";wx.fillRect(-22,-3,44,5);wx.fillStyle=bi%2?"#E7C7D1":"#F4F1E8";wx.beginPath();wx.moveTo(0,-4);wx.lineTo(0,-40);wx.lineTo(22,-8);wx.fill();wx.strokeStyle="#6B4A2E";wx.lineWidth=1.5;wx.beginPath();wx.moveTo(0,-3);wx.lineTo(0,-42);wx.stroke();
+    if(nt){wx.fillStyle="rgba(255,214,140,.9)";wx.beginPath();wx.arc(-14,-8,2.5,0,6.3);wx.fill();}wx.restore();
+    wx.strokeStyle="rgba(255,255,255,.35)";wx.lineWidth=1;wx.beginPath();wx.moveTo(b.x-b.dir*24*k,by2+3);wx.lineTo(b.x-b.dir*60*k,by2+6);wx.stroke();});
   // gotas
   for(var d=drops.length-1;d>=0;d--){var o=drops[d];o.vy+=320*dt;o.x+=o.vx*dt;o.y+=o.vy*dt;o.l-=dt*.9;if(o.l<=0||o.y>surf+20){drops.splice(d,1);continue}wx.fillStyle="rgba(255,255,255,"+o.l+")";wx.beginPath();wx.arc(o.x,o.y,2.2,0,6.3);wx.fill()}
 }
+function firework(x,y){var cols=["rgba(231,182,197,A)","rgba(244,194,126,A)","rgba(141,184,98,A)","rgba(255,255,255,A)"],c=cols[Math.floor(Math.random()*cols.length)];for(var i=0;i<46;i++){var a=Math.random()*6.3,v=40+Math.random()*90;sparks.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,c:Math.random()<.25?cols[3]:c})}}
+function shoot(x,y){shoots.push({x:x,y:y,p:0})}
 function startBreach(w){if(w.br>=0)return;w.br=0;w.bx=w.x-w.dir*45*w.s;}
 function wTap(ev){
-  if(!whales.length){toast("As baleias passam por aqui de julho a novembro");return}
-  var r=wcv.getBoundingClientRect(),cx=ev&&ev.clientX!=null?ev.clientX-r.left:WW/2,best=null,bd=1e9;
+  var r=wcv.getBoundingClientRect(),cx=ev&&ev.clientX!=null?ev.clientX-r.left:WW/2,cy=ev&&ev.clientY!=null?ev.clientY-r.top:WH*.25,best=null,bd=1e9,surf=WH*.42;
+  if(!whales.length){wSeen++;$("whint").style.opacity=wSeen>1?0:1;
+    if(wMode==="fest"){firework(cx,Math.min(cy,surf-30));firework(cx+(Math.random()-.5)*80,Math.min(cy,surf-30)-30)}
+    else if(wMode==="calm"){shoot(cx+80,Math.min(cy,surf-40))}
+    else{if(boats.length>=6)boats.shift();boats.push({x:cx,dir:Math.random()<.5?-1:1,sp:12+Math.random()*14,s:.6+Math.random()*.6});splash(cx,surf,10,.5)}
+    return}
   whales.forEach(function(w){var d=Math.abs(w.x-cx);if(w.br<0&&d<bd){bd=d;best=w}});
   if(best){best.x=Math.max(40,Math.min(WW-40,cx));startBreach(best)}
   wSeen++;$("whint").style.opacity=wSeen>1?0:1;

@@ -643,6 +643,24 @@ footer a{display:inline-block;padding-block:6px}
   .near-nav .icon-btn{width:36px;height:36px}
 }
 
+
+/* ---- tour 360 ---- */
+.pano{position:relative;height:340px;border-radius:28px;overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;box-shadow:0 30px 60px -40px rgba(14,40,30,.6)}
+.pano.drag{cursor:grabbing}
+.pano-track{position:absolute;inset:0 auto 0 0;display:flex;height:100%;will-change:transform}
+.pano-track svg{height:100%;width:auto;aspect-ratio:1600/320;flex:none;display:block}
+.pano::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(0,0,0,.35));}
+.pano-ui{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding:18px;z-index:2;pointer-events:none}
+.pano-ui>*{pointer-events:auto}
+.pano-badge{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.9);color:#16261E;border-radius:999px;padding:6px 14px 6px 6px;font-weight:800}
+.pano-badge svg{width:30px;height:30px;color:#B06C80}
+.spin{animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pano-hint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(14,30,26,.55);color:#fff;font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px;backdrop-filter:blur(6px);transition:opacity .4s;pointer-events:none;white-space:nowrap}
+.pano-go{align-self:stretch;justify-content:center;max-width:320px;box-shadow:0 14px 30px -12px rgba(0,0,0,.5)}
+@media (max-width:560px){.pano{height:260px}}
+@media (prefers-reduced-motion: reduce){.spin{animation:none}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -714,6 +732,7 @@ footer a{display:inline-block;padding-block:6px}
       <a href="#reserva">Reservar</a>
       <a href="#pousada">A pousada</a>
       <a href="#quartos">Quartos</a>
+      <a href="#tour360">Tour 360°</a>
       <a href="#quando">Quando vir</a>
       <a href="#chegar">Como chegar</a>
     </nav>
@@ -827,6 +846,58 @@ footer a{display:inline-block;padding-block:6px}
   </div>
 </section>
 
+<section class="sec" id="tour360" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div><p class="eyebrow">Tour 360°</p><h2>Conheça a pousada por dentro.</h2></div>
+      <p>Passeie pelos quartos, pela piscina e pela área externa em fotos 360°, como se já estivesse lá.</p>
+    </div>
+    <div class="pano rv" id="pano">
+      <div class="pano-track" id="pano-track"><svg viewBox="0 0 1600 320" preserveAspectRatio="none" aria-hidden="true">
+<defs><linearGradient id="psky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7FB7D8"/><stop offset="1" stop-color="#F2DEC0"/></linearGradient></defs>
+<rect width="1600" height="320" fill="url(#psky)"/>
+<circle cx="260" cy="70" r="30" fill="#FBE3B0"/>
+<rect y="150" width="520" height="170" fill="#1C6A72"/><path d="M0 170q30-6 60 0t60 0 60 0 60 0 60 0 60 0 60 0 60 0 60 0" stroke="rgba(255,255,255,.35)" fill="none" stroke-width="3"/><path d="M0 200q30-6 60 0t60 0 60 0 60 0 60 0 60 0 60 0 60 0 60 0" stroke="rgba(255,255,255,.2)" fill="none" stroke-width="3"/>
+<path d="M120 152l14-36v36Z" fill="#F4F1E8"/><path d="M112 152h32l-4 6h-24Z" fill="#6B4A2E"/>
+<path d="M0 240c120-18 300-22 520-8v88H0Z" fill="#EAD9B8"/>
+<path d="M520 150c40-50 120-70 230-74v244H520Z" fill="#C66F35"/><path d="M560 150c30-30 90-46 190-48v48Z" fill="#E9B38A"/>
+<g fill="#3E6B26"><circle cx="600" cy="104" r="14"/><circle cx="630" cy="96" r="16"/><circle cx="665" cy="90" r="14"/><circle cx="700" cy="86" r="16"/><circle cx="735" cy="84" r="14"/></g>
+<rect x="750" y="120" width="420" height="200" fill="#5E8C3A"/>
+<g transform="translate(790 120)"><path d="M0 120V20" stroke="#6B4A2E" stroke-width="7"/><path d="M0 20c-30 4-46 18-56 34M0 20c30 4 46 18 56 34M0 20c-20-16-40-16-56-10M0 20c20-16 40-16 56-10" stroke="#3E6B26" stroke-width="10" fill="none" stroke-linecap="round"/></g>
+<rect x="860" y="220" width="220" height="56" rx="10" fill="#9FD9E3"/><path d="M880 240h180M880 256h180" stroke="#fff" stroke-width="3" opacity=".6"/>
+<g transform="translate(900 120)"><rect x="0" y="40" width="220" height="80" fill="#F4F1E8"/><path d="M-14 44L110 -4 234 44Z" fill="#B06C80"/><rect x="24" y="64" width="34" height="56" fill="#2F3424"/><rect x="80" y="64" width="44" height="30" fill="#9FD0E6"/><rect x="146" y="64" width="44" height="30" fill="#9FD0E6"/><svg x="78" y="6" width="64" height="38" viewBox="0 0 200 120"><use href="#logo"/></svg></g>
+<g transform="translate(1135 150)"><path d="M0 120V10" stroke="#6B4A2E" stroke-width="7"/><path d="M0 10c-30 4-46 18-56 34M0 10c30 4 46 18 56 34M0 10c-20-16-40-16-56-10M0 10c20-16 40-16 56-10" stroke="#3E6B26" stroke-width="10" fill="none" stroke-linecap="round"/></g>
+<rect x="1170" y="150" width="430" height="170" fill="#1C6A72"/><path d="M1170 170q30-6 60 0t60 0 60 0 60 0 60 0 60 0 60 0 60 0" stroke="rgba(255,255,255,.35)" fill="none" stroke-width="3"/>
+<path d="M1170 236c160-14 300-16 430-6v90H1170Z" fill="#EAD9B8"/>
+<g transform="translate(1320 236)"><path d="M0 0v-46" stroke="#2F3424" stroke-width="3"/><path d="M-30 -44c10-16 50-16 60 0Z" fill="#B06C80"/><rect x="-26" y="2" width="22" height="6" rx="2" fill="#F4F1E8"/><rect x="6" y="2" width="22" height="6" rx="2" fill="#F4F1E8"/></g>
+<rect x="1170" y="150" width="2" height="0"/>
+</svg><svg viewBox="0 0 1600 320" preserveAspectRatio="none" aria-hidden="true">
+<defs><linearGradient id="psky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7FB7D8"/><stop offset="1" stop-color="#F2DEC0"/></linearGradient></defs>
+<rect width="1600" height="320" fill="url(#psky)"/>
+<circle cx="260" cy="70" r="30" fill="#FBE3B0"/>
+<rect y="150" width="520" height="170" fill="#1C6A72"/><path d="M0 170q30-6 60 0t60 0 60 0 60 0 60 0 60 0 60 0 60 0 60 0" stroke="rgba(255,255,255,.35)" fill="none" stroke-width="3"/><path d="M0 200q30-6 60 0t60 0 60 0 60 0 60 0 60 0 60 0 60 0 60 0" stroke="rgba(255,255,255,.2)" fill="none" stroke-width="3"/>
+<path d="M120 152l14-36v36Z" fill="#F4F1E8"/><path d="M112 152h32l-4 6h-24Z" fill="#6B4A2E"/>
+<path d="M0 240c120-18 300-22 520-8v88H0Z" fill="#EAD9B8"/>
+<path d="M520 150c40-50 120-70 230-74v244H520Z" fill="#C66F35"/><path d="M560 150c30-30 90-46 190-48v48Z" fill="#E9B38A"/>
+<g fill="#3E6B26"><circle cx="600" cy="104" r="14"/><circle cx="630" cy="96" r="16"/><circle cx="665" cy="90" r="14"/><circle cx="700" cy="86" r="16"/><circle cx="735" cy="84" r="14"/></g>
+<rect x="750" y="120" width="420" height="200" fill="#5E8C3A"/>
+<g transform="translate(790 120)"><path d="M0 120V20" stroke="#6B4A2E" stroke-width="7"/><path d="M0 20c-30 4-46 18-56 34M0 20c30 4 46 18 56 34M0 20c-20-16-40-16-56-10M0 20c20-16 40-16 56-10" stroke="#3E6B26" stroke-width="10" fill="none" stroke-linecap="round"/></g>
+<rect x="860" y="220" width="220" height="56" rx="10" fill="#9FD9E3"/><path d="M880 240h180M880 256h180" stroke="#fff" stroke-width="3" opacity=".6"/>
+<g transform="translate(900 120)"><rect x="0" y="40" width="220" height="80" fill="#F4F1E8"/><path d="M-14 44L110 -4 234 44Z" fill="#B06C80"/><rect x="24" y="64" width="34" height="56" fill="#2F3424"/><rect x="80" y="64" width="44" height="30" fill="#9FD0E6"/><rect x="146" y="64" width="44" height="30" fill="#9FD0E6"/><svg x="78" y="6" width="64" height="38" viewBox="0 0 200 120"><use href="#logo"/></svg></g>
+<g transform="translate(1135 150)"><path d="M0 120V10" stroke="#6B4A2E" stroke-width="7"/><path d="M0 10c-30 4-46 18-56 34M0 10c30 4 46 18 56 34M0 10c-20-16-40-16-56-10M0 10c20-16 40-16 56-10" stroke="#3E6B26" stroke-width="10" fill="none" stroke-linecap="round"/></g>
+<rect x="1170" y="150" width="430" height="170" fill="#1C6A72"/><path d="M1170 170q30-6 60 0t60 0 60 0 60 0 60 0 60 0 60 0 60 0" stroke="rgba(255,255,255,.35)" fill="none" stroke-width="3"/>
+<path d="M1170 236c160-14 300-16 430-6v90H1170Z" fill="#EAD9B8"/>
+<g transform="translate(1320 236)"><path d="M0 0v-46" stroke="#2F3424" stroke-width="3"/><path d="M-30 -44c10-16 50-16 60 0Z" fill="#B06C80"/><rect x="-26" y="2" width="22" height="6" rx="2" fill="#F4F1E8"/><rect x="6" y="2" width="22" height="6" rx="2" fill="#F4F1E8"/></g>
+<rect x="1170" y="150" width="2" height="0"/>
+</svg></div>
+      <div class="pano-ui">
+        <div class="pano-badge"><svg class="spin" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4 5"/><path d="M24 4l4 7h-8Z" fill="currentColor"/></svg><b>360°</b></div>
+        <p class="pano-hint" id="pano-hint">Arraste para olhar em volta</p>
+        <a class="btn btn-rose pano-go" href="http://www.pousadasemcumuruxatiba.fotografias360graus.com.br/foto360/celular/360_fotografias_360_graus.asp?Parametros=2515/442/0" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M12 2a4 10 0 0 1 0 20M12 2a4 10 0 0 0 0 20"/></svg>Abrir o tour 360°</a>
+      </div>
+    </div>
+  </div>
+</section>
 <section class="sec sea-band" id="avaliacoes">
   <div class="wrap">
     <div class="sec-head">
@@ -1600,6 +1671,18 @@ syncFly();
     if(e>.98)ang=0;$("plane").setAttribute("transform","translate("+a.x+" "+a.y+") rotate("+ang+")");$("plane").setAttribute("opacity",1);$("bus").setAttribute("opacity",0);}
   else{var q=Math.min(1,(p-.5)/.42),c=gp.getPointAtLength(L2*ease(q));$("bus").setAttribute("transform","translate("+c.x+" "+c.y+")");$("bus").setAttribute("opacity",1);$("plane").setAttribute("opacity",0);}
   if(!reduce)requestAnimationFrame(planeLoop)})(0);
+
+
+/* ============ TOUR 360 ============ */
+(function(){var pn=$("pano"),tr=$("pano-track"),x=0,vx=-18,drag=false,lx=0,last=0,touched=false;
+  function W(){return tr.firstElementChild.getBoundingClientRect().width}
+  function frame(t){var dt=last?Math.min(50,t-last)/1000:0;last=t;var w=W();
+    if(!drag){x+=vx*dt;vx+=((-18)-vx)*Math.min(1,dt*1.5);}
+    if(w){x=((x%w)-w)%w;}tr.style.transform="translateX("+x+"px)";if(!reduce||drag)requestAnimationFrame(frame)}
+  pn.addEventListener("pointerdown",function(e){if(e.target.closest("a"))return;drag=true;lx=e.clientX;pn.classList.add("drag");pn.setPointerCapture(e.pointerId);if(!touched){touched=true;$("pano-hint").style.opacity=0}});
+  pn.addEventListener("pointermove",function(e){if(!drag)return;var d=e.clientX-lx;lx=e.clientX;x+=d;vx=d*30;if(reduce)requestAnimationFrame(frame)});
+  ["pointerup","pointercancel"].forEach(function(ev){pn.addEventListener(ev,function(){drag=false;pn.classList.remove("drag")})});
+  requestAnimationFrame(frame);})();
 
 /* ============ DINÂMICA EXTRA ============ */
 // barra de progresso da rolagem + parallax do topo

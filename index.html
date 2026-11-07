@@ -535,7 +535,10 @@ footer .credit{border-top:1px solid rgba(255,255,255,.12)}
 .wbadge i{width:8px;height:8px;border-radius:50%;background:#1F8F5A;box-shadow:0 0 0 0 rgba(31,143,90,.6);animation:live 1.6s infinite}
 .wbadge.off i{background:#9AA59F;animation:none}
 @keyframes live{70%{box-shadow:0 0 0 8px rgba(31,143,90,0)}100%{box-shadow:0 0 0 0 rgba(31,143,90,0)}}
-.whint{position:absolute;right:14px;bottom:12px;font-size:12px;font-weight:800;color:#fff;background:rgba(14,61,67,.55);padding:6px 11px;border-radius:999px;backdrop-filter:blur(6px);transition:opacity .4s}
+.whint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:#16261E;background:#F4F6F1;padding:10px 18px 10px 14px;border-radius:999px;white-space:nowrap;pointer-events:none;animation:hintPulse 1.8s ease-out infinite;transition:opacity .4s}
+.whint svg{color:#B06C80;animation:tapFinger 1.8s ease-in-out infinite}
+@keyframes hintPulse{0%{box-shadow:0 0 0 0 rgba(244,246,241,.85),0 10px 22px -10px rgba(0,0,0,.6)}70%{box-shadow:0 0 0 16px rgba(244,246,241,0),0 10px 22px -10px rgba(0,0,0,.6)}100%{box-shadow:0 0 0 0 rgba(244,246,241,0),0 10px 22px -10px rgba(0,0,0,.6)}}
+@keyframes tapFinger{0%,100%{transform:translateY(0)}30%{transform:translateY(3px) scale(.92)}}
 .wcount{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .wcount div{background:var(--sand);border-radius:16px;padding:12px 14px}
 .wcount b{display:block;white-space:nowrap;font-family:var(--display);font-weight:400;font-size:28px;line-height:1.05;color:var(--sea);font-variant-numeric:tabular-nums}
@@ -989,6 +992,33 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 .nbtn.done .nic{background:var(--logo-leaf);color:#fff}
 @media (max-width:860px){.go-btns .nbtn{padding:7px 10px 7px 7px;gap:8px}.nbtn b{font-size:13px}}
 
+
+/* ---- quando vir: compacto no celular ---- */
+@media (max-width:760px){
+  #quando .sec-head p{display:none}
+  #quando .sec-head{margin-bottom:16px}
+  .when{grid-template-columns:minmax(0,1fr)!important}.when>*{min-width:0}
+  .when{gap:12px}
+  .months{display:flex!important;overflow-x:auto;gap:6px;scroll-snap-type:x proximity;scrollbar-width:none;margin-inline:calc(-1 * max(20px, env(safe-area-inset-left,0px)));padding:2px max(20px, env(safe-area-inset-left,0px)) 4px}
+  .months::-webkit-scrollbar{display:none}
+  .mo{flex:0 0 auto;min-width:56px;padding:8px 10px;border-radius:14px;gap:5px;scroll-snap-align:center}
+  .mo b{font-size:13px}
+  .mo .dots i{width:6px;height:6px}
+  .legend{gap:10px;font-size:11px;margin-top:8px}
+  .legend i{width:7px;height:7px}
+  .sea-sc{height:230px}
+  .mo-card .mc-body{padding:4px 16px 18px;gap:10px}
+  .mo-card .mc-body .eyebrow{display:none}
+  .mo-card h3{font-size:28px}
+  #mo-p{font-size:14px;line-height:1.5}
+  .mo-card .chips{display:none}
+  .wcount{gap:6px}
+  .wcount div{padding:8px 10px;border-radius:12px}
+  .wcount b{font-size:20px}
+  .wcount span{font-size:9.5px}
+  #mo-go{width:100%;padding:13px}
+}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -1286,7 +1316,7 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
         <div class="sea-sc" id="sea-sc" role="button" tabindex="0" aria-label="Toque no mar para ver uma baleia saltar">
           <canvas id="wcv" aria-hidden="true"></canvas>
           <span class="wbadge" id="wbadge"><i></i><span id="wbadge-t">Temporada aberta</span></span>
-          <span class="whint" id="whint">Toque no mar</span>
+          <span class="whint" id="whint-w"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V12m0-1a1.5 1.5 0 0 1 3 0v3.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.6 15a1.5 1.5 0 0 1 2.3-2L9 15"/></svg><span id="whint">Toque no mar</span></span>
         </div>
         <div class="mc-body">
           <p class="eyebrow" id="mo-eb">Em novembro</p>
@@ -1863,7 +1893,7 @@ function setWhaleMonth(m){
   $("wbadge").classList.toggle("off",false);
   var md=MODES[wMode];
   $("wbadge-t").textContent=inSeason?(n>=3?"Pico da temporada":"Temporada das baleias"):md.badge;
-  $("whint").textContent=inSeason?"Toque no mar":md.hint;$("whint").style.opacity=1;wSeen=0;
+  $("whint").textContent=inSeason?"Toque no mar":md.hint;$("whint-w").style.opacity=1;wSeen=0;
   $("sea-sc").setAttribute("aria-label",inSeason?"Toque no mar para ver uma baleia saltar":md.aria);
   // contagem real a partir de hoje
   var tm=today.getMonth(),open=tm>=6&&tm<=10,c;
@@ -1940,14 +1970,14 @@ function shoot(x,y){shoots.push({x:x,y:y,p:0})}
 function startBreach(w){if(w.br>=0)return;w.br=0;w.bx=w.x-w.dir*45*w.s;}
 function wTap(ev){
   var r=wcv.getBoundingClientRect(),cx=ev&&ev.clientX!=null?ev.clientX-r.left:WW/2,cy=ev&&ev.clientY!=null?ev.clientY-r.top:WH*.25,best=null,bd=1e9,surf=WH*.42;
-  if(!whales.length){wSeen++;$("whint").style.opacity=wSeen>1?0:1;
+  if(!whales.length){wSeen++;$("whint-w").style.opacity=wSeen>2?.85:1;
     if(wMode==="fest"){firework(cx,Math.min(cy,surf-30));firework(cx+(Math.random()-.5)*80,Math.min(cy,surf-30)-30)}
     else if(wMode==="calm"){shoot(cx+80,Math.min(cy,surf-40))}
     else{if(boats.length>=6)boats.shift();boats.push({x:cx,dir:Math.random()<.5?-1:1,sp:12+Math.random()*14,s:.6+Math.random()*.6});splash(cx,surf,10,.5)}
     return}
   whales.forEach(function(w){var d=Math.abs(w.x-cx);if(w.br<0&&d<bd){bd=d;best=w}});
   if(best){best.x=Math.max(40,Math.min(WW-40,cx));startBreach(best)}
-  wSeen++;$("whint").style.opacity=wSeen>1?0:1;
+  wSeen++;$("whint-w").style.opacity=wSeen>2?.85:1;
 }
 $("sea-sc").addEventListener("click",wTap);
 $("sea-sc").addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();wTap(null)}});
@@ -2011,7 +2041,9 @@ function renderMonths(){
   setWhaleMonth(curMo);
   $("mo-go").textContent="Ver datas em "+MES[curMo];
 }
-$("months").addEventListener("click",function(e){var b=e.target.closest(".mo");if(b){curMo=+b.dataset.m;renderMonths();}});
+$("months").addEventListener("click",function(e){var b=e.target.closest(".mo");if(b){curMo=+b.dataset.m;renderMonths();centerMo();}});
+function centerMo(){var m=$("months"),b=m.querySelector('[aria-pressed="true"]');if(b&&m.scrollWidth>m.clientWidth)m.scrollTo({left:b.offsetLeft-m.clientWidth/2+b.offsetWidth/2,behavior:"smooth"})}
+setTimeout(centerMo,300);
 $("mo-go").addEventListener("click",function(){
   var y=today.getFullYear()+(curMo<today.getMonth()?1:0);state.view=new Date(y,curMo,1);go(1);
   $("reserva").scrollIntoView({behavior:reduce?"auto":"smooth"});

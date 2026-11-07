@@ -649,7 +649,11 @@ footer a{display:inline-block;padding-block:6px}
 .spin{animation:spin 6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .pano-hint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(14,30,26,.55);color:#fff;font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px;backdrop-filter:blur(6px);transition:opacity .4s;pointer-events:none;white-space:nowrap}
-.pano-go{align-self:stretch;justify-content:center;max-width:320px;box-shadow:0 14px 30px -12px rgba(0,0,0,.5)}
+.pano-go{align-self:center;justify-content:center;min-width:min(300px,100%);padding:18px 28px;font-size:17px;background:#B06C80;color:#fff;box-shadow:0 0 0 0 rgba(176,108,128,.7),0 16px 34px -12px rgba(0,0,0,.55);animation:goPulse 1.8s ease-out infinite}
+.pano-go svg{width:24px;height:24px;animation:spin 4s linear infinite}
+.pano-go:hover{background:#9C5970;animation-play-state:paused}
+@keyframes goPulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.85),0 16px 34px -12px rgba(0,0,0,.55)}70%{box-shadow:0 0 0 18px rgba(255,255,255,0),0 16px 34px -12px rgba(0,0,0,.55)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0),0 16px 34px -12px rgba(0,0,0,.55)}}
+@media (max-width:560px){.pano-go{padding:15px 22px;font-size:16px;min-width:0;width:100%}}
 @media (max-width:560px){.pano{height:260px}}
 @media (prefers-reduced-motion: reduce){.spin{animation:none}}
 
@@ -1147,7 +1151,7 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
       <div class="pano-ui">
         <div class="pano-badge"><svg class="spin" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4 5"/><path d="M24 4l4 7h-8Z" fill="currentColor"/></svg><b>360°</b></div>
         <p class="pano-hint" id="pano-hint">Arraste para olhar em volta</p>
-        <a class="btn btn-rose pano-go" href="http://www.pousadasemcumuruxatiba.fotografias360graus.com.br/foto360/celular/360_fotografias_360_graus.asp?Parametros=2515/442/0" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M12 2a4 10 0 0 1 0 20M12 2a4 10 0 0 0 0 20"/></svg>Abrir o tour 360°</a>
+        <a class="btn btn-rose pano-go" href="http://www.pousadasemcumuruxatiba.fotografias360graus.com.br/foto360/celular/360_fotografias_360_graus.asp?Parametros=2515/442/0" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M12 2a4 10 0 0 1 0 20M12 2a4 10 0 0 0 0 20"/></svg>Fazer o tour 360°</a>
       </div>
     </div>
   </div>

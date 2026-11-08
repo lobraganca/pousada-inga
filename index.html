@@ -1262,6 +1262,19 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 @media (max-width:860px){.mural{grid-template-columns:minmax(0,1fr);padding:24px 18px;gap:18px}.mural-head h3{font-size:28px;margin-bottom:12px}}
 @media (max-width:560px){.deck{height:290px}.pc{padding:22px 18px 16px}.pc blockquote{margin-right:56px;font-size:21px}.pc .stamp{width:52px;height:52px;top:12px;right:12px}.pc .stamp svg{width:36px}.mchips button{padding:8px 12px;font-size:12px}}
 
+
+/* ---- correções da revisão final ---- */
+@media (max-width:640px){footer .fwrap{grid-template-columns:minmax(0,1fr)!important}footer .fwrap>*{min-width:0}}
+@media (max-width:360px){
+  #mail{font-size:12px!important;overflow-wrap:anywhere!important}
+  .am-t{font-size:9.5px;letter-spacing:-.01em}
+  .am{padding:10px 2px 8px}
+  .nbtn{gap:6px;padding:6px 8px 6px 6px}.nbtn img,.nbtn .nic{width:28px;height:28px}.nbtn b{font-size:12px}.nbtn small{font-size:10.5px}
+  .tips-wa{font-size:13px;padding:13px 12px}
+  .fbtn b{font-size:12px}.fbtn img{width:28px;height:28px}
+}
+.am-t{overflow-wrap:anywhere}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -2483,7 +2496,7 @@ var VIDEO_URL = "https://youtu.be/N_t4LrQtYjc";
 (function(){if(!VIDEO_URL)return;var a=$("vid-link"),m=VIDEO_URL.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/),id=m&&m[1];
   a.href=VIDEO_URL;$("video").hidden=false;
   var host=location.hostname,canEmbed=id&&/^https?:/.test(location.protocol)&&!/claude\.ai|claudeusercontent|claude\.site/.test(host);
-  if(id){$("vid-thumb").src="https://i.ytimg.com/vi/"+id+"/hqdefault.jpg";}
+  if(id){var th=$("vid-thumb"),tries=["https://i.ytimg.com/vi/"+id+"/hqdefault.jpg","https://img.youtube.com/vi/"+id+"/hqdefault.jpg","fotos/2.jpg"],ti=0;th.onerror=function(){ti++;if(ti<tries.length)th.src=tries[ti];else th.onerror=null};th.src=tries[0];}
   $("vid-sub").textContent=canEmbed?"Assistir aqui":"Assistir no YouTube";
   if(canEmbed){a.addEventListener("click",function(e){e.preventDefault();var f=document.createElement("div");f.className="player";
       f.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1" title="Vídeo da Pousada Ingá" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';

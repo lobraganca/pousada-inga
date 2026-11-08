@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { dbReady, pipeline, dayKey } from "./_db.js";
+import { dbReady, dbMissing, pipeline, dayKey } from "./_db.js";
 
 // Login e senha ficam nas variáveis ADMIN_USER e ADMIN_PASS da Vercel (nunca no código).
 function same(a, b) {
@@ -13,6 +13,11 @@ const sumInto = (acc, o) => { for (const [k, v] of Object.entries(o)) acc[k] = (
 const isDay = (d) => /^\d{4}-\d{2}-\d{2}$/.test(String(d || ""));
 
 export default async function handler(req, res) {
+  try { return await main(req, res); }
+  catch (e) { return res.status(500).json({ erro: String((e && e.message) || e) }); }
+}
+
+async function main(req, res) {
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "POST") return res.status(405).json({ erro: "Use POST" });
   const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0] || "?";
@@ -28,7 +33,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ erro: "Login ou senha incorretos." });
   }
   tries.delete(ip);
-  if (!dbReady()) return res.status(503).json({ erro: "O banco do contador ainda não foi conectado na Vercel." });
+  if (!dbReady()) return res.status(503).json({ erro: `O banco do contador ainda não foi conectado na Vercel. Falta: ${dbMissing()}.` });
 
   // ações sobre pedidos
   if (body.acao === "contatado" && body.id) {

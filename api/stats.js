@@ -8,6 +8,9 @@ function same(a, b) {
   return crypto.timingSafeEqual(x, y);
 }
 const tries = new Map();
+const toObj = (a, raw) => { const o = {}; if (Array.isArray(a)) for (let i = 0; i < a.length; i += 2) o[a[i]] = raw ? a[i + 1] : (+a[i + 1] || 0); else if (a) Object.assign(o, a); return o; };
+const sumInto = (acc, o) => { for (const [k, v] of Object.entries(o)) acc[k] = (acc[k] || 0) + (+v || 0); return acc; };
+const isDay = (d) => /^\d{4}-\d{2}-\d{2}$/.test(String(d || ""));
 
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
@@ -27,19 +30,47 @@ export default async function handler(req, res) {
   tries.delete(ip);
   if (!dbReady()) return res.status(503).json({ erro: "O banco do contador ainda não foi conectado na Vercel." });
 
+  // ações sobre pedidos
+  if (body.acao === "contatado" && body.id) {
+    const id = String(body.id).replace(/[^\w-]/g, "").slice(0, 40);
+    await pipeline([["HSET", `inga:lead:${id}`, "contatado", body.valor ? String(Date.now()) : ""]]);
+    return res.status(200).json({ ok: true });
+  }
+  if (body.acao === "apagar" && body.id) {
+    const id = String(body.id).replace(/[^\w-]/g, "").slice(0, 40);
+    await pipeline([["DEL", `inga:lead:${id}`], ["ZREM", "inga:leads", id]]);
+    return res.status(200).json({ ok: true });
+  }
+
+  // período
+  let to = isDay(body.ate) ? body.ate : dayKey();
+  let from = isDay(body.de) ? body.de : dayKey(new Date(Date.now() - 29 * 864e5));
+  if (from > to) [from, to] = [to, from];
   const days = [];
-  for (let i = 29; i >= 0; i--) days.push(dayKey(new Date(Date.now() - i * 864e5)));
-  const cmds = [["HGETALL", "inga:total"], ["PFCOUNT", "inga:uniq:all"], ["HGETALL", "inga:device"], ["HGETALL", "inga:src"]];
-  days.forEach((d) => cmds.push(["HGETALL", `inga:day:${d}`], ["PFCOUNT", `inga:uniq:${d}`]));
+  for (let d = new Date(from + "T12:00:00Z"); d <= new Date(to + "T12:00:00Z") && days.length < 400; d = new Date(d.getTime() + 864e5)) days.push(d.toISOString().slice(0, 10));
+
+  const per = ["day", "dev", "src", "pais", "estado", "cidade", "ret"];
+  const cmds = [["PFCOUNT", "inga:uniq:all"], ["PFCOUNT", ...days.map((d) => `inga:uniq:${d}`)]];
+  days.forEach((d) => { cmds.push(["PFCOUNT", `inga:uniq:${d}`]); per.forEach((p) => cmds.push(["HGETALL", `inga:${p}:${d}`])); });
+  cmds.push(["ZREVRANGE", "inga:leads", 0, 199]);
   const r = await pipeline(cmds);
-  const toObj = (a) => { const o = {}; if (Array.isArray(a)) for (let i = 0; i < a.length; i += 2) o[a[i]] = +a[i + 1]; else if (a) Object.assign(o, a); return o; };
-  const series = days.map((d, i) => ({ dia: d, ...toObj(r[4 + i * 2]), pessoas: +r[5 + i * 2] || 0 }));
-  return res.status(200).json({
-    total: toObj(r[0]),
-    pessoasTotal: +r[1] || 0,
-    dispositivo: toObj(r[2]),
-    origem: toObj(r[3]),
-    dias: series,
-    agora: new Date().toISOString(),
-  });
+
+  const out = { de: from, ate: to, pessoasTotal: +r[0] || 0, pessoasPeriodo: +r[1] || 0, dias: [], dispositivo: {}, origem: {}, pais: {}, estado: {}, cidade: {}, retorno: {} };
+  let i = 2;
+  for (const d of days) {
+    const pessoas = +r[i++] || 0;
+    const parts = per.map(() => toObj(r[i++]));
+    out.dias.push({ dia: d, pessoas, ...parts[0] });
+    sumInto(out.dispositivo, parts[1]); sumInto(out.origem, parts[2]); sumInto(out.pais, parts[3]);
+    sumInto(out.estado, parts[4]); sumInto(out.cidade, parts[5]); sumInto(out.retorno, parts[6]);
+  }
+  const ids = r[i] || [];
+  let leads = [];
+  if (ids.length) {
+    const lr = await pipeline(ids.map((id) => ["HGETALL", `inga:lead:${id}`]));
+    leads = lr.map((x) => toObj(x, true)).filter((l) => l.id && (l.name || l.phone));
+  }
+  out.pedidos = leads;
+  out.agora = new Date().toISOString();
+  return res.status(200).json(out);
 }

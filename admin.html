@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#2B3122">
 <title>Painel Pousada Ingá</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cpath d='M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z' fill='%23B06C80'/%3E%3Cpath d='M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z' fill='%234A7A27'/%3E%3Cpath d='M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z' fill='%232F3424'/%3E%3C/svg%3E">
@@ -11,21 +12,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Yanone+Kaffeesatz:wght@300&family=Manrope:wght@500;600;700;800&display=swap">
 <style>
-/* Painel simples: login, números principais, gráfico de 30 dias e de onde vêm as visitas */
+/* Painel: login, filtro de período, números, gráfico, de onde vêm, pedidos para retornar */
 :root{
   --sand:#EEF1EC;--sand-2:#E2E8E2;--paper:#FBFCFA;--ink:#16261E;--ink-soft:#56665E;--line:#D3DCD6;
-  --olive:#2B3122;--rose:#B06C80;--rose-soft:#F1DDE3;--leaf:#4A7A27;--leaf-soft:#E1EBD6;--sea:#1C6A72;--wa:#1F8F5A;--err:#B4432A;
+  --olive:#2B3122;--rose:#B06C80;--rose-soft:#F1DDE3;--leaf:#4A7A27;--leaf-soft:#E1EBD6;--sea:#1C6A72;--wa:#1F8F5A;--err:#B4432A;--warn:#C9622F;
   --display:"Gloock",Georgia,serif;--body:"Manrope","Segoe UI",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--sand);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
-.wrap{max-width:1080px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
 h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1.1}
-button,input{font-family:inherit}
+button,input,select{font-family:inherit}
 :focus-visible{outline:2px solid var(--rose);outline-offset:3px;border-radius:8px}
 .logo{width:110px;height:auto;display:block}
-.logo text{font-family:"Yanone Kaffeesatz","Arial Narrow",sans-serif;fill:#fff}
+[hidden]{display:none!important}
 
 /* login */
 .login{min-height:100vh;display:grid;place-items:center;padding-block:40px}
@@ -39,13 +40,15 @@ button,input{font-family:inherit}
 .fld input:focus{outline:2px solid var(--leaf);border-color:transparent}
 .pw{position:relative}
 .pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--ink-soft);font-weight:700;font-size:12px;cursor:pointer;padding:8px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:14px 22px;font-weight:800;font-size:15px;cursor:pointer;background:var(--olive);color:#F4F6F1;transition:transform .2s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:14px 22px;font-weight:800;font-size:15px;cursor:pointer;background:var(--olive);color:#F4F6F1;transition:transform .2s;text-decoration:none;white-space:nowrap}
 .btn:hover{transform:translateY(-2px)}
 .btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.wa{background:var(--wa)}
+.btn.sm{padding:9px 14px;font-size:13px}
 .btn[disabled]{opacity:.6;cursor:wait}
 .err{color:var(--err);font-weight:700;font-size:14px;text-align:center;margin:0}
 
-/* painel */
+/* topo */
 .top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--sand) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
 .top .lt{display:flex;align-items:center;gap:12px}
@@ -53,14 +56,23 @@ button,input{font-family:inherit}
 .top small{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:var(--ink-soft)}
 .top .acts{display:flex;gap:8px}
 .top .btn{padding:10px 16px;font-size:13px}
-main{padding-block:28px 60px;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
-main>*,.grid2>*{min-width:0}
+.tabs{display:flex;gap:4px;background:var(--sand-2);border-radius:999px;padding:4px;width:max-content;max-width:100%}
+.tabs button{border:0;background:none;padding:10px 16px;border-radius:999px;font-weight:800;font-size:14px;color:var(--ink-soft);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.tabs button[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:0 4px 12px -6px rgba(0,0,0,.3)}
+.tabs .count{background:var(--rose);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px;min-width:20px;text-align:center}
+main{padding-block:22px 60px;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+main>*,.grid2>*,.grid3>*{min-width:0}
 .head{display:flex;justify-content:space-between;align-items:end;gap:14px;flex-wrap:wrap}
 .head h1{font-size:clamp(30px,4vw,44px)}
 .head p{color:var(--ink-soft);margin:6px 0 0;font-size:14px}
-.range{display:inline-flex;background:var(--sand-2);border-radius:999px;padding:4px;gap:2px}
-.range button{border:0;background:none;padding:8px 14px;border-radius:999px;font-weight:800;font-size:13px;color:var(--ink-soft);cursor:pointer}
-.range button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:0 4px 12px -6px rgba(0,0,0,.3)}
+
+/* filtro */
+.filter{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:10px}
+.chip{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px;color:var(--ink-soft);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--olive);border-color:var(--olive);color:#F4F6F1}
+.custom{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;font-weight:700;color:var(--ink-soft)}
+.custom input{font:700 14px var(--body);padding:8px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--sand);color:var(--ink)}
+
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .kpi{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:18px;display:grid;gap:4px}
 .kpi.main{background:var(--olive);color:#F4F6F1;border-color:var(--olive)}
@@ -68,7 +80,7 @@ main>*,.grid2>*{min-width:0}
 .kpi.main span{color:#E7B6C5}
 .kpi b{font-family:var(--display);font-weight:400;font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
 .kpi small{font-size:12.5px;color:var(--ink-soft)}
-.kpi.main small{color:rgba(244,246,241,.7)}
+.kpi.main small{color:rgba(244,246,241,.75)}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:22px}
 .card h2{font-size:24px;margin-bottom:4px}
 .card .note{font-size:13px;color:var(--ink-soft);margin:0 0 16px}
@@ -77,39 +89,58 @@ main>*,.grid2>*{min-width:0}
 .chart-w{overflow-x:auto}
 .chart{width:100%;min-width:520px;height:auto;display:block}
 .chart text{font-family:var(--body);font-size:10px;fill:var(--ink-soft);font-variant-numeric:tabular-nums}
-.chart .bar{fill:var(--leaf);transition:opacity .2s}
-.chart .bar2{fill:var(--rose)}
+.chart .bar{fill:var(--leaf)}.chart .bar2{fill:var(--rose)}
 .chart g:hover .bar,.chart g:hover .bar2{opacity:.75}
 .tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:#F4F6F1;font-size:12.5px;font-weight:700;padding:8px 11px;border-radius:10px;white-space:nowrap}
-.grid2{display:grid;grid-template-columns:1.2fr 1fr;gap:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .acts-list{display:grid;gap:10px}
 .act{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
 .act .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff}
 .act b{font-size:14.5px;display:block}
 .act small{font-size:12px;color:var(--ink-soft)}
 .act .n{font-family:var(--display);font-size:28px;font-variant-numeric:tabular-nums}
-.split{display:grid;gap:12px}
-.srow{display:grid;grid-template-columns:110px 1fr 46px;gap:10px;align-items:center;font-size:14px;font-weight:700}
+.split{display:grid;gap:10px}
+.srow{display:grid;grid-template-columns:minmax(0,1fr) 1fr 52px;gap:10px;align-items:center;font-size:14px;font-weight:700}
+.srow span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .srow .tr{height:10px;border-radius:10px;background:var(--sand-2);overflow:hidden}
 .srow .tr i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,var(--leaf),var(--rose))}
 .srow b{text-align:right;font-variant-numeric:tabular-nums}
+.srow small{color:var(--ink-soft);font-weight:600}
 .empty{color:var(--ink-soft);font-size:14px}
 .info{font-size:13px;color:var(--ink-soft);text-align:center}
-@media (max-width:860px){.kpis{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
-@media (max-width:480px){.kpi b{font-size:34px}.kpi{padding:14px}.top small{display:none}.card{padding:18px 16px}.srow{grid-template-columns:90px 1fr 40px}}
-[hidden]{display:none!important}
+
+/* pedidos */
+.ped-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.ped-filter{display:flex;gap:6px;flex-wrap:wrap}
+.peds{display:grid;gap:12px}
+.ped{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 18px;align-items:center;border-left:6px solid var(--warn)}
+.ped.sent{border-left-color:var(--leaf)}
+.ped.done{border-left-color:var(--line);opacity:.75}
+.ped h3{font-family:var(--body);font-weight:800;font-size:17px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{font-size:11px;font-weight:800;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:#FBE3D6;color:var(--warn)}
+.pill.ok{background:var(--leaf-soft);color:var(--leaf)}
+.pill.gray{background:var(--sand-2);color:var(--ink-soft)}
+.ped .meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:var(--ink-soft);margin-top:6px}
+.ped .meta b{color:var(--ink);font-weight:700}
+.ped .obs{font-size:13px;color:var(--ink-soft);margin-top:6px;font-style:italic}
+.ped .pa{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.nophone{font-size:12.5px;color:var(--ink-soft);max-width:180px;text-align:right}
+@media (max-width:860px){.kpis{grid-template-columns:1fr 1fr}.grid2,.grid3{grid-template-columns:1fr}}
+@media (max-width:560px){.kpi b{font-size:34px}.kpi{padding:14px}.top small{display:none}.card{padding:18px 16px}.ped{grid-template-columns:1fr}.ped .pa{justify-content:flex-start}.nophone{text-align:left;max-width:none}.tabs button{padding:9px 12px;font-size:13px}}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <symbol id="logo" viewBox="0 0 200 120"><path d="M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z" fill="#B06C80"/><path d="M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z" fill="#4A7A27"/><path d="M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z" fill="#2F3424"/><text x="74" y="50" font-size="17" font-weight="300" fill="#fff" font-family="Yanone Kaffeesatz, Arial Narrow, sans-serif">pousada</text><text x="60" y="94" font-size="58" font-weight="300" fill="#fff" font-family="Yanone Kaffeesatz, Arial Narrow, sans-serif">Ingá</text></symbol>
+  <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></symbol>
 </defs></svg>
 
 <section class="login wrap" id="login">
   <form class="login-card" id="form" autocomplete="on">
     <svg class="logo" viewBox="0 0 200 120" aria-label="Pousada Ingá" role="img"><use href="#logo"/></svg>
     <h1>Área da administração</h1>
-    <p class="sub">Entre para ver quantas pessoas visitaram o site.</p>
+    <p class="sub">Entre para ver as visitas do site e os pedidos de reserva.</p>
     <div class="fld"><label for="u">Login</label><input id="u" name="username" autocomplete="username" required></div>
     <div class="fld"><label for="p">Senha</label><div class="pw"><input id="p" name="password" type="password" autocomplete="current-password" required><button type="button" id="show">Mostrar</button></div></div>
     <p class="err" id="err" hidden></p>
@@ -119,42 +150,67 @@ main>*,.grid2>*{min-width:0}
 
 <div id="dash" hidden>
   <header class="top"><div class="wrap">
-    <div class="lt"><svg class="logo" viewBox="0 0 200 120" aria-hidden="true"><use href="#logo"/></svg><small>Painel de visitas</small></div>
+    <div class="lt"><svg class="logo" viewBox="0 0 200 120" aria-hidden="true"><use href="#logo"/></svg><small>Painel da pousada</small></div>
     <div class="acts"><button class="btn ghost" id="refresh" type="button">Atualizar</button><button class="btn" id="out" type="button">Sair</button></div>
   </div></header>
   <main class="wrap">
-    <div class="head">
-      <div><h1>Visitas ao site</h1><p id="upd">Atualizado agora</p></div>
-      <div class="range" role="group" aria-label="Período"><button type="button" data-r="7" aria-pressed="false">7 dias</button><button type="button" data-r="30" aria-pressed="true">30 dias</button></div>
+    <div class="tabs" role="tablist" aria-label="Seções do painel">
+      <button type="button" role="tab" id="t-vis" aria-selected="true">Visitas</button>
+      <button type="button" role="tab" id="t-ped" aria-selected="false">Pedidos de reserva <span class="count" id="ped-count" hidden>0</span></button>
     </div>
-    <div class="kpis">
-      <div class="kpi main"><span>Hoje</span><b id="k-hoje">0</b><small id="k-hoje-s">pessoas</small></div>
-      <div class="kpi"><span id="k-per-l">Últimos 30 dias</span><b id="k-per">0</b><small id="k-per-s">pessoas</small></div>
-      <div class="kpi"><span>Desde o início</span><b id="k-all">0</b><small>pessoas diferentes</small></div>
-      <div class="kpi"><span>Contatos</span><b id="k-conv">0</b><small id="k-conv-s">cliques no WhatsApp no período</small></div>
-    </div>
-    <div class="card">
-      <h2>Por dia</h2>
-      <p class="note">Pessoas diferentes que abriram o site em cada dia, e quantas vezes ele foi aberto.</p>
-      <div class="legend"><span><i style="background:var(--leaf)"></i>Pessoas</span><span><i style="background:var(--rose)"></i>Aberturas do site</span></div>
-      <div class="chart-w"><svg class="chart" id="chart" role="img" aria-label="Gráfico de visitas por dia"></svg></div>
-    </div>
-    <div class="grid2">
-      <div class="card">
-        <h2>O que as pessoas fizeram</h2>
-        <p class="note" id="acts-note">No período escolhido.</p>
-        <div class="acts-list" id="acts"></div>
+
+    <section id="p-vis" style="display:grid;gap:18px">
+      <div class="head">
+        <div><h1>Visitas ao site</h1><p id="upd">Atualizado agora</p></div>
+      </div>
+      <div class="filter" role="group" aria-label="Período">
+        <button type="button" class="chip" data-r="1" aria-pressed="false">Hoje</button>
+        <button type="button" class="chip" data-r="7" aria-pressed="false">7 dias</button>
+        <button type="button" class="chip" data-r="30" aria-pressed="true">30 dias</button>
+        <button type="button" class="chip" data-r="90" aria-pressed="false">90 dias</button>
+        <button type="button" class="chip" data-r="365" aria-pressed="false">12 meses</button>
+        <span class="custom"><label for="de">De</label><input type="date" id="de"><label for="ate">até</label><input type="date" id="ate"><button type="button" class="btn sm" id="apply">Ver</button></span>
+      </div>
+      <div class="kpis">
+        <div class="kpi main"><span>Pessoas no período</span><b id="k-per">0</b><small id="k-per-s">pessoas diferentes</small></div>
+        <div class="kpi"><span>Aberturas do site</span><b id="k-views">0</b><small id="k-views-s">no período</small></div>
+        <div class="kpi"><span>Novas x voltaram</span><b id="k-new">0</b><small id="k-new-s">primeira visita</small></div>
+        <div class="kpi"><span>Contatos</span><b id="k-conv">0</b><small>WhatsApp e reservas enviadas</small></div>
       </div>
       <div class="card">
-        <h2>De onde vieram</h2>
-        <p class="note">Desde o início da contagem.</p>
-        <div class="split" id="src"></div>
-        <h2 style="margin-top:22px">Aparelho</h2>
-        <p class="note">Desde o início da contagem.</p>
-        <div class="split" id="dev"></div>
+        <h2>Por dia</h2>
+        <p class="note">Pessoas diferentes que abriram o site em cada dia, e quantas vezes ele foi aberto.</p>
+        <div class="legend"><span><i style="background:var(--leaf)"></i>Pessoas</span><span><i style="background:var(--rose)"></i>Aberturas do site</span></div>
+        <div class="chart-w"><svg class="chart" id="chart" role="img" aria-label="Gráfico de visitas por dia"></svg></div>
       </div>
-    </div>
-    <p class="info">Os números contam só visitas reais pelo link do site. Robôs e prévias de link não entram.</p>
+      <div class="grid3">
+        <div class="card"><h2>Cidades</h2><p class="note">De onde as pessoas acessaram.</p><div class="split" id="cid"></div></div>
+        <div class="card"><h2>Estados</h2><p class="note">Estado ou região.</p><div class="split" id="est"></div></div>
+        <div class="card"><h2>Países</h2><p class="note">País de acesso.</p><div class="split" id="pai"></div></div>
+      </div>
+      <div class="grid2">
+        <div class="card"><h2>O que as pessoas fizeram</h2><p class="note" id="acts-note">No período escolhido.</p><div class="acts-list" id="acts"></div></div>
+        <div class="card">
+          <h2>Como chegaram ao site</h2><p class="note">No período escolhido.</p><div class="split" id="src"></div>
+          <h2 style="margin-top:22px">Aparelho</h2><p class="note">No período escolhido.</p><div class="split" id="dev"></div>
+        </div>
+      </div>
+      <p class="info">A localização é aproximada, pela internet de quem acessou. Robôs e prévias de link não entram na contagem.</p>
+    </section>
+
+    <section id="p-ped" hidden style="display:grid;gap:18px">
+      <div class="ped-head">
+        <div><h1 style="font-size:clamp(30px,4vw,44px)">Pedidos de reserva</h1><p style="color:var(--ink-soft);margin:6px 0 0;font-size:14px">Pessoas que começaram a reserva no site. Chame quem não chegou a enviar.</p></div>
+        <div class="ped-filter" role="group" aria-label="Filtrar pedidos">
+          <button type="button" class="chip" data-f="pend" aria-pressed="true">Não enviados</button>
+          <button type="button" class="chip" data-f="sent" aria-pressed="false">Enviados</button>
+          <button type="button" class="chip" data-f="done" aria-pressed="false">Já contatados</button>
+          <button type="button" class="chip" data-f="all" aria-pressed="false">Todos</button>
+        </div>
+      </div>
+      <div class="peds" id="peds"></div>
+      <p class="info">Os pedidos ficam guardados por 120 dias. O WhatsApp só aparece quando a pessoa preencheu o campo opcional.</p>
+    </section>
   </main>
 </div>
 <div class="tip" id="tip" hidden></div>
@@ -162,67 +218,99 @@ main>*,.grid2>*{min-width:0}
 <script>
 (function(){
 "use strict";
-var $=function(i){return document.getElementById(i)},DATA=null,RANGE=30,CRED=null;
+var $=function(i){return document.getElementById(i)},DATA=null,CRED=null,RANGE=30,CUSTOM=null,PF="pend";
+var MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+var PAISES={BR:"Brasil",AR:"Argentina",US:"Estados Unidos",PT:"Portugal",UY:"Uruguai",CL:"Chile",PY:"Paraguai",DE:"Alemanha",FR:"França",IT:"Itália",ES:"Espanha",GB:"Reino Unido",CH:"Suíça",CA:"Canadá",NL:"Holanda",IE:"Irlanda"};
 function fmt(n){return (n||0).toLocaleString("pt-BR")}
-function sum(arr,k){return arr.reduce(function(a,d){return a+(+d[k]||0)},0)}
-function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function sum(a,k){return a.reduce(function(s,d){return s+(+d[k]||0)},0)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function day(d){var z=new Date(d.getTime()-3*3600e3);return z.toISOString().slice(0,10)}
+function br(s){return s?s.slice(8,10)+"/"+s.slice(5,7)+"/"+s.slice(0,4):""}
 try{var c=sessionStorage.getItem("ingaAdm");if(c)CRED=JSON.parse(c)}catch(e){}
 
 $("show").addEventListener("click",function(){var p=$("p");p.type=p.type==="password"?"text":"password";this.textContent=p.type==="password"?"Mostrar":"Esconder"});
 $("form").addEventListener("submit",function(e){e.preventDefault();CRED={user:$("u").value.trim(),pass:$("p").value};load(true)});
 $("refresh").addEventListener("click",function(){load(false)});
 $("out").addEventListener("click",function(){CRED=null;try{sessionStorage.removeItem("ingaAdm")}catch(e){}$("dash").hidden=true;$("login").hidden=false;$("p").value=""});
-document.querySelector(".range").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;RANGE=+b.dataset.r;this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",x===b)});render()});
+function tab(w){$("t-vis").setAttribute("aria-selected",w==="vis");$("t-ped").setAttribute("aria-selected",w==="ped");$("p-vis").hidden=w!=="vis";$("p-ped").hidden=w!=="ped"}
+$("t-vis").addEventListener("click",function(){tab("vis")});$("t-ped").addEventListener("click",function(){tab("ped")});
+document.querySelector(".filter").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;RANGE=+b.dataset.r;CUSTOM=null;this.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});load(false)});
+$("apply").addEventListener("click",function(){if(!$("de").value||!$("ate").value)return;CUSTOM={de:$("de").value,ate:$("ate").value};document.querySelectorAll(".filter .chip").forEach(function(x){x.setAttribute("aria-pressed","false")});load(false)});
+document.querySelector(".ped-filter").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;PF=b.dataset.f;this.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});peds()});
 
+function period(){if(CUSTOM)return CUSTOM;var t=new Date();return {de:day(new Date(t.getTime()-(RANGE-1)*864e5)),ate:day(t)}}
+function call(extra){var b=Object.assign({},CRED,extra||{});return fetch("/api/stats",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b),cache:"no-store"}).then(function(r){return r.json().catch(function(){return {erro:"Resposta inesperada do servidor."}}).then(function(j){return {ok:r.ok,j:j}})})}
 function load(fromForm){
-  if(!CRED)return;
-  var go=$("go");go.disabled=true;go.textContent="Entrando…";$("err").hidden=true;
-  fetch("/api/stats",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(CRED),cache:"no-store"})
-  .then(function(r){return r.json().catch(function(){return {erro:"Resposta inesperada do servidor."}}).then(function(j){return {ok:r.ok,j:j}})})
-  .then(function(x){
-    go.disabled=false;go.textContent="Entrar";
-    if(!x.ok){if(!fromForm){$("dash").hidden=true;$("login").hidden=false}$("err").textContent=x.j.erro||"Não foi possível entrar.";$("err").hidden=false;return}
+  if(!CRED)return;var go=$("go");go.disabled=true;go.textContent="Entrando…";$("err").hidden=true;
+  var pr=period();
+  call(pr).then(function(x){go.disabled=false;go.textContent="Entrar";
+    if(!x.ok){$("dash").hidden=true;$("login").hidden=false;$("err").textContent=x.j.erro||"Não foi possível entrar.";$("err").hidden=false;return}
     try{sessionStorage.setItem("ingaAdm",JSON.stringify(CRED))}catch(e){}
-    DATA=x.j;$("login").hidden=true;$("dash").hidden=false;render();
-  }).catch(function(){go.disabled=false;go.textContent="Entrar";$("err").textContent="Sem conexão com o servidor. Tente de novo.";$("err").hidden=false;$("login").hidden=false;$("dash").hidden=true});
-}
+    DATA=x.j;$("login").hidden=true;$("dash").hidden=false;$("de").value=DATA.de;$("ate").value=DATA.ate;render();peds();
+  }).catch(function(){go.disabled=false;go.textContent="Entrar";$("err").textContent="Sem conexão com o servidor. Tente de novo.";$("err").hidden=false})}
 
 function render(){
-  var d=DATA,days=d.dias.slice(-RANGE),today=d.dias[d.dias.length-1]||{};
-  $("upd").textContent="Atualizado às "+new Date(d.agora).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-  $("k-hoje").textContent=fmt(today.pessoas);$("k-hoje-s").textContent=fmt(today.view)+" aberturas do site";
-  $("k-per-l").textContent="Últimos "+RANGE+" dias";$("k-per").textContent=fmt(sum(days,"pessoas"));$("k-per-s").textContent=fmt(sum(days,"view"))+" aberturas do site";
-  $("k-all").textContent=fmt(d.pessoasTotal);
-  $("k-conv").textContent=fmt(sum(days,"whatsapp")+sum(days,"reserva"));$("k-conv-s").textContent="WhatsApp e pedidos de reserva em "+RANGE+" dias";
+  var d=DATA,days=d.dias,n=days.length;
+  $("upd").textContent=br(d.de)+(d.de!==d.ate?" a "+br(d.ate):"")+" · atualizado às "+new Date(d.agora).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  $("k-per").textContent=fmt(d.pessoasPeriodo);$("k-per-s").textContent="pessoas diferentes · "+fmt(d.pessoasTotal)+" desde o início";
+  $("k-views").textContent=fmt(sum(days,"view"));$("k-views-s").textContent=n>1?"média de "+fmt(Math.round(sum(days,"view")/n))+" por dia":"hoje";
+  var nv=d.retorno.novos||0,vt=d.retorno.voltaram||0;$("k-new").textContent=fmt(nv);$("k-new-s").textContent="primeira visita · "+fmt(vt)+" voltaram";
+  $("k-conv").textContent=fmt(sum(days,"whatsapp")+sum(days,"reserva"));
   chart(days);
-  var A=[["reserva","Pedidos de reserva enviados","Montaram a reserva e mandaram no WhatsApp","#B06C80"],["whatsapp","Cliques no WhatsApp","Botões de falar com a pousada","#1F8F5A"],["voos","Buscas de voos","Google Voos e Skyscanner","#1C6A72"],["rota","Rotas abertas","Google Maps, Waze e Apple Mapas","#4A7A27"],["tour360","Tour 360° aberto","Passeio pelas fotos 360°","#2B3122"]];
-  $("acts-note").textContent="Nos últimos "+RANGE+" dias.";
+  var A=[["reserva","Reservas enviadas","Montaram a reserva e mandaram no WhatsApp","#B06C80"],["whatsapp","Cliques no WhatsApp","Botões de falar com a pousada","#1F8F5A"],["voos","Buscas de voos","Google Voos e Skyscanner","#1C6A72"],["rota","Rotas abertas","Google Maps, Waze e Apple Mapas","#4A7A27"],["tour360","Tour 360° aberto","Passeio pelas fotos 360°","#2B3122"]];
   $("acts").innerHTML=A.map(function(a){return '<div class="act"><span class="ic" style="background:'+a[3]+'">'+icon(a[0])+'</span><div><b>'+a[1]+'</b><small>'+a[2]+'</small></div><span class="n">'+fmt(sum(days,a[0]))+'</span></div>'}).join("");
-  bars("src",d.origem,{direto:"Link direto",instagram:"Instagram",google:"Google",facebook:"Facebook",whatsapp:"WhatsApp"});
-  bars("dev",d.dispositivo,{celular:"Celular",computador:"Computador"});
+  bars("cid",d.cidade,function(k){var p=k.split("|");return p[0]+(p[1]?" – "+p[1]:"")+(p[2]&&p[2]!=="BR"?" ("+(PAISES[p[2]]||p[2])+")":"")},8);
+  bars("est",d.estado,function(k){var p=k.split("|");return p[0]+(p[1]&&p[1]!=="BR"?" ("+(PAISES[p[1]]||p[1])+")":"")},8);
+  bars("pai",d.pais,function(k){return PAISES[k]||k},8);
+  bars("src",d.origem,function(k){return {direto:"Link direto",instagram:"Instagram",google:"Google",facebook:"Facebook",whatsapp:"WhatsApp",booking:"Booking",tripadvisor:"Tripadvisor"}[k]||k},6);
+  bars("dev",d.dispositivo,function(k){return {celular:"Celular",computador:"Computador"}[k]||k},3);
 }
-function bars(id,obj,names){
-  var e=Object.entries(obj||{}).sort(function(a,b){return b[1]-a[1]}).slice(0,6),tot=e.reduce(function(a,x){return a+x[1]},0);
-  if(!tot){$(id).innerHTML='<p class="empty">Ainda sem dados.</p>';return}
-  $(id).innerHTML=e.map(function(x){var p=Math.round(x[1]/tot*100);return '<div class="srow"><span>'+esc(names[x[0]]||x[0])+'</span><span class="tr"><i style="width:'+p+'%"></i></span><b>'+p+'%</b></div>'}).join("");
-}
+function bars(id,obj,name,lim){var e=Object.entries(obj||{}).sort(function(a,b){return b[1]-a[1]}),tot=e.reduce(function(a,x){return a+x[1]},0);
+  if(!tot){$(id).innerHTML='<p class="empty">Ainda sem dados no período.</p>';return}
+  $(id).innerHTML=e.slice(0,lim).map(function(x){var p=Math.round(x[1]/tot*100);return '<div class="srow"><span title="'+esc(name(x[0]))+'">'+esc(name(x[0]))+'</span><span class="tr"><i style="width:'+Math.max(2,p)+'%"></i></span><b>'+fmt(x[1])+'</b></div>'}).join("")+(e.length>lim?'<p class="empty">e mais '+(e.length-lim)+'</p>':'')}
 function icon(k){var p={reserva:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',whatsapp:'<path d="M5 19l1.3-3.6A7.5 7.5 0 1 1 9 18.4Z"/>',voos:'<path d="M2 16l20-8-4 10-6-3-3 4v-5"/>',rota:'<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/>',tour360:'<ellipse cx="12" cy="12" rx="9" ry="4"/><path d="M12 3a4 9 0 0 1 0 18M12 3a4 9 0 0 0 0 18"/>'}[k];
   return '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'}
 function chart(days){
   var W=720,H=240,L=34,R=8,T=12,B=28,n=days.length,max=Math.max(4,...days.map(function(d){return Math.max(d.view||0,d.pessoas||0)}));
-  var step=Math.pow(10,Math.floor(Math.log10(max))),nice=Math.ceil(max/step)*step;if(nice/step>6)step*=2;nice=Math.ceil(max/step)*step;
-  var cw=(W-L-R)/n,bw=Math.max(3,Math.min(14,cw/2-2)),y=function(v){return T+(H-T-B)*(1-v/nice)},h="";
-  for(var v=0;v<=nice;v+=step){h+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#D3DCD6" stroke-width="1"/><text x="'+(L-6)+'" y="'+(y(v)+3)+'" text-anchor="end">'+v+'</text>'}
+  var step=Math.pow(10,Math.floor(Math.log10(max))),nice=Math.ceil(max/step)*step;if(nice/step>6){step*=2;nice=Math.ceil(max/step)*step}
+  var cw=(W-L-R)/n,bw=Math.max(1,Math.min(14,cw/2-1)),y=function(v){return T+(H-T-B)*(1-v/nice)},h="";
+  for(var v=0;v<=nice;v+=step)h+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="#D3DCD6"/><text x="'+(L-6)+'" y="'+(y(v)+3)+'" text-anchor="end">'+v+'</text>';
+  var every=Math.ceil(n/8);
   days.forEach(function(d,i){var cx=L+cw*i+cw/2,p=d.pessoas||0,o=d.view||0,lab=d.dia.slice(8,10)+"/"+d.dia.slice(5,7);
-    h+='<g data-t="'+lab+': '+p+' pessoa'+(p===1?'':'s')+' · '+o+' abertura'+(o===1?'':'s')+'"><rect x="'+(L+cw*i)+'" y="'+T+'" width="'+cw+'" height="'+(H-T-B)+'" fill="transparent"/>'+
-      '<rect class="bar" x="'+(cx-bw-1)+'" y="'+y(p)+'" width="'+bw+'" height="'+Math.max(0,H-B-y(p))+'" rx="2"/><rect class="bar2" x="'+(cx+1)+'" y="'+y(o)+'" width="'+bw+'" height="'+Math.max(0,H-B-y(o))+'" rx="2"/></g>';
-    if(n<=7||i%Math.ceil(n/8)===0||i===n-1)h+='<text x="'+cx+'" y="'+(H-10)+'" text-anchor="middle">'+lab+'</text>'});
-  var c=$("chart");c.setAttribute("viewBox","0 0 "+W+" "+H);c.innerHTML=h;
-}
+    h+='<g data-t="'+lab+': '+p+' pessoa'+(p===1?'':'s')+' · '+o+' abertura'+(o===1?'':'s')+'"><rect x="'+(L+cw*i)+'" y="'+T+'" width="'+cw+'" height="'+(H-T-B)+'" fill="transparent"/><rect class="bar" x="'+(cx-bw-.5)+'" y="'+y(p)+'" width="'+bw+'" height="'+Math.max(0,H-B-y(p))+'" rx="2"/><rect class="bar2" x="'+(cx+.5)+'" y="'+y(o)+'" width="'+bw+'" height="'+Math.max(0,H-B-y(o))+'" rx="2"/></g>';
+    if(i%every===0||(i===n-1&&(n-1)%every>=every/2))h+='<text x="'+cx+'" y="'+(H-10)+'" text-anchor="middle">'+lab+'</text>'});
+  var c=$("chart");c.setAttribute("viewBox","0 0 "+W+" "+H);c.innerHTML=h}
 var tip=$("tip");
-$("chart").addEventListener("pointermove",function(e){var g=e.target.closest("g[data-t]");if(!g){tip.hidden=true;return}tip.textContent=g.dataset.t;tip.hidden=false;
-  var x=Math.min(innerWidth-tip.offsetWidth-8,e.clientX+12);tip.style.left=x+"px";tip.style.top=(e.clientY-40)+"px"});
+$("chart").addEventListener("pointermove",function(e){var g=e.target.closest("g[data-t]");if(!g){tip.hidden=true;return}tip.textContent=g.dataset.t;tip.hidden=false;tip.style.left=Math.min(innerWidth-tip.offsetWidth-8,e.clientX+12)+"px";tip.style.top=(e.clientY-40)+"px"});
 $("chart").addEventListener("pointerleave",function(){tip.hidden=true});
+
+/* pedidos */
+function status(p){return p.contatado?"done":p.enviado==="sim"?"sent":"pend"}
+function peds(){
+  var all=(DATA&&DATA.pedidos)||[],pend=all.filter(function(p){return status(p)==="pend"});
+  $("ped-count").textContent=pend.length;$("ped-count").hidden=!pend.length;
+  var list=PF==="all"?all:all.filter(function(p){return status(p)===PF});
+  if(!list.length){$("peds").innerHTML='<div class="card"><p class="empty" style="margin:0">'+(PF==="pend"?"Nenhum pedido sem envio. Ótimo sinal!":"Nada por aqui ainda.")+'</p></div>';return}
+  $("peds").innerHTML=list.map(function(p){var st=status(p),n=(+p.ad||0),c=(+p.ch||0);
+    var who=n+" adulto"+(n===1?"":"s")+(c?" + "+c+" criança"+(c===1?"":"s"):"");
+    var when=new Date(+p.atualizado||+p.criado||Date.now()).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+    var ph=p.phone||"",waN=ph.length>=10?(ph.length<=11?"55"+ph:ph):"";
+    var msg="Olá, "+(p.name||"")+"! Aqui é da Pousada Ingá. Vimos que você começou uma reserva no nosso site"+(p.start?" para "+br(p.start)+" a "+br(p.end):"")+". Podemos te ajudar a finalizar?";
+    var pill=st==="pend"?'<span class="pill">Não enviou</span>':st==="sent"?'<span class="pill ok">Enviou no WhatsApp</span>':'<span class="pill gray">Contatado</span>';
+    return '<article class="ped '+st+'"><div><h3>'+esc(p.name||"Sem nome")+' '+pill+'</h3><div class="meta">'+
+      (p.start?'<span>Datas: <b>'+br(p.start)+' a '+br(p.end)+'</b></span>':'')+'<span>Hóspedes: <b>'+who+'</b></span>'+(p.room?'<span>Quarto: <b>'+esc(p.room)+'</b></span>':'')+
+      (p.pet==="sim"?'<span><b>Com pet</b></span>':'')+(ph?'<span>WhatsApp: <b>'+esc(ph)+'</b></span>':'')+
+      ((p.cidadeInformada||p.cidadeAprox)?'<span>De: <b>'+esc(p.cidadeInformada||p.cidadeAprox)+(p.estadoAprox&&!p.cidadeInformada?" – "+esc(p.estadoAprox):"")+'</b></span>':'')+
+      (p.occ?'<span>Motivo: <b>'+esc(p.occ)+'</b></span>':'')+(p.lang&&p.lang!=="pt"?'<span>Idioma: <b>'+(p.lang==="en"?"inglês":"espanhol")+'</b></span>':'')+
+      '<span>Em '+when+'</span></div>'+(p.obs?'<p class="obs">“'+esc(p.obs)+'”</p>':'')+'</div>'+
+      '<div class="pa">'+(waN?'<a class="btn wa sm" target="_blank" rel="noopener" href="https://wa.me/'+waN+'?text='+encodeURIComponent(msg)+'"><svg width="16" height="16"><use href="#wa"/></svg>Chamar no WhatsApp</a>':'<span class="nophone">Não deixou WhatsApp. Ela pode ter mandado mensagem direto para a pousada.</span>')+
+      '<button type="button" class="btn ghost sm" data-mark="'+esc(p.id)+'" data-v="'+(st==="done"?0:1)+'">'+(st==="done"?"Desmarcar":"Marcar como contatado")+'</button>'+
+      '<button type="button" class="btn ghost sm" data-del="'+esc(p.id)+'">Apagar</button></div></article>'}).join("");
+}
+$("peds").addEventListener("click",function(e){var m=e.target.closest("[data-mark]"),d=e.target.closest("[data-del]");
+  if(m){m.disabled=true;call({acao:"contatado",id:m.dataset.mark,valor:m.dataset.v==="1"}).then(function(){var p=DATA.pedidos.find(function(x){return x.id===m.dataset.mark});if(p)p.contatado=m.dataset.v==="1"?String(Date.now()):"";peds()})}
+  if(d){if(d.dataset.sure!=="1"){d.dataset.sure="1";d.textContent="Confirmar apagar";setTimeout(function(){d.dataset.sure="";d.textContent="Apagar"},3000);return}
+    d.disabled=true;call({acao:"apagar",id:d.dataset.del}).then(function(){DATA.pedidos=DATA.pedidos.filter(function(x){return x.id!==d.dataset.del});peds()})}});
 if(CRED)load(false);
 })();
 </script>

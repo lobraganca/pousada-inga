@@ -166,13 +166,13 @@ main>*,.grid2>*,.grid3>*{min-width:0}
 .custom .btn{height:44px}
 @media (max-width:560px){.custom{grid-template-columns:repeat(2,minmax(0,1fr))}.custom .btn{grid-column:1/-1;width:100%}}
 /* instalar o app */
-.inst{display:flex;align-items:center;gap:14px;background:var(--olive);color:#EEF1EC;border-radius:22px;padding:14px 16px 14px 14px}
+.inst{display:flex;align-items:center;gap:14px;background:linear-gradient(120deg,#F6E3E8,#F1DDE3 55%,#EAD2DA);color:var(--ink);border:1px solid #E6C7D0;border-radius:22px;padding:14px 16px 14px 14px}
 .inst .ic{flex:none;width:46px;height:46px;border-radius:12px;background:#FBFCFA url(/admin-icon-192.png) center/cover;box-shadow:0 6px 14px -8px #000}
 .inst b{display:block;font-size:15px}
-.inst span{display:block;font-size:13px;opacity:.8;line-height:1.35}
+.inst span{display:block;font-size:13px;color:var(--ink-soft);line-height:1.35}
 .inst .tx{flex:1;min-width:0}
-.inst .btn{background:#EEF1EC;color:var(--olive);padding:10px 16px;font-size:13px;flex:none}
-.inst .x{flex:none;border:0;background:none;color:#EEF1EC;opacity:.7;font-size:22px;line-height:1;cursor:pointer;padding:6px}
+.inst .btn{background:var(--rose);color:#fff;padding:10px 16px;font-size:13px;flex:none}
+.inst .x{flex:none;border:0;background:none;color:var(--ink-soft);font-size:22px;line-height:1;cursor:pointer;padding:6px}
 @media (max-width:520px){.inst{flex-wrap:wrap;position:relative}.inst .tx{flex:1 1 calc(100% - 100px);padding-right:26px}.inst .btn{flex:1 1 100%;order:5}.inst .x{position:absolute;top:8px;right:8px}}
 .linkbtn{border:0;background:none;color:var(--ink-soft);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:6px;justify-self:center}
 .howto{border:0;padding:0;border-radius:26px;width:min(440px,calc(100% - 24px));max-height:calc(100% - 24px);background:var(--paper);color:var(--ink);box-shadow:0 40px 80px -30px rgba(10,30,20,.6)}

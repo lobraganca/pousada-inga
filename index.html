@@ -1161,6 +1161,19 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 @keyframes breathUp{0%,100%{transform:none}50%{transform:translateY(-3px)}}
 @keyframes breathDown{0%,100%{transform:none}50%{transform:translateY(3px)}}
 
+
+/* o que tem de bom no mês */
+.good-t{margin:4px 0 2px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--rose)}
+.good{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.good li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--sand);font-size:14.5px;line-height:1.4}
+.wcount .good li span,.wcount .good li b{display:inline;font:inherit;text-transform:none;letter-spacing:0;color:inherit;opacity:1;white-space:normal}
+.wcount .good li b{font-weight:800}
+.wcount .good li .gi{display:grid;color:#fff}
+#mo-p{display:none}
+.gi{flex:none;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:#fff;background:var(--olive)}
+.g-whale{background:#1C6A72}.g-sun{background:#D9933F}.g-party{background:#B06C80}.g-wave{background:#3A8C95}.g-calm{background:#4A7A27}.g-moon{background:#2B3160}.g-fire{background:#C9622F}.g-kids{background:#8A6BB0}
+@media (max-width:560px){.good li{font-size:13.5px;padding:9px 10px;gap:10px}.gi{width:32px;height:32px;border-radius:10px}}
+
 /* ---- dinâmica extra ---- */
 .sprog{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:3px;z-index:31;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--logo-leaf),var(--logo-rose))}
 .marquee{background:var(--olive);color:var(--on-dark);overflow:hidden;border-block:1px solid rgba(255,255,255,.08)}
@@ -2058,6 +2071,29 @@ var MODES={
   calm:{sky:["#0B1530","#2B3A66"],sea:["rgba(16,36,60,.92)","rgba(6,18,32,.98)"],night:1,badge:"Noites tranquilas",hint:"Toque no céu e faça um pedido",aria:"Toque no céu para ver uma estrela cadente"}};
 function wSize(){wd=Math.min(2,devicePixelRatio||1);WW=wcv.clientWidth;WH=wcv.clientHeight;wcv.width=WW*wd;wcv.height=WH*wd;wx.setTransform(wd,0,0,wd,0,0)}
 function newWhale(i,n){return {x:WW*((i+.5)/n)+(Math.random()-.5)*40,dir:Math.random()<.5?-1:1,sp:8+Math.random()*10,s:.55+Math.random()*.35,cyc:Math.random()*7,br:-1,bx:0}}
+
+var GICON={
+ sun:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+ whale:'<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 21c-.6 0-1-.4-1-1v-6.2C9.6 12.6 7 11.5 3.5 11.2c-.6 0-.8-.7-.3-1 1.8-1.3 5.6-2 8.8.6 3.2-2.6 7-1.9 8.8-.6.5.3.3 1-.3 1-3.5.3-6.1 1.4-7.5 2.6V20c0 .6-.4 1-1 1Z"/></svg>',
+ party:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l5-14 9 9-14 5Z"/><path d="M14 4l1-2M19 9l2-1M17 6l3-3"/></svg>',
+ wave:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2M2 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/></svg>',
+ calm:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21c0-9 5-14 15-16-1 10-6 15-15 16Z"/><path d="M5 21 13 13"/></svg>',
+ moon:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>',
+ fire:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4 0 7-3 7-7 0-5-5-7-5-12-3 2-5 5-5 8-1-1-2-2-2-4-2 2-2 5-2 8 0 4 3 7 7 7Z"/></svg>',
+ kids:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 21v-3a5 5 0 0 1 10 0v3M14 21v-2.5a3.5 3.5 0 0 1 7 0V21"/></svg>'};
+var GOOD=[
+ [["sun","Alto verão: dias longos e mar quente para passar o dia na praia."],["kids","Férias escolares: ótimo para vir com a família."],["party","A vila fica animada, com mais movimento à noite."]],
+ [["sun","Calor e mar bom para banho o dia inteiro."],["party","Em alguns anos, o Carnaval cai em fevereiro."],["wave","Maré baixa revela as piscinas naturais da região."]],
+ [["sun","Ainda é verão, com sol e mar morno."],["calm","Depois do Carnaval, a vila fica mais tranquila."],["wave","Bom mês para caminhar pelas praias com pouca gente."]],
+ [["calm","Baixa temporada: praias vazias e muito sossego."],["sun","Temperatura agradável, sem o calor forte do verão."],["moon","Noites calmas, boas para descansar de verdade."]],
+ [["calm","Um dos meses mais tranquilos do ano."],["moon","Ótimo para casais que querem desacelerar."],["wave","Praias quase só para você."]],
+ [["fire","Mês de São João, a festa mais querida da Bahia."],["sun","Clima ameno, bom para caminhar e passear."],["calm","Vila sossegada antes da chegada das baleias."]],
+ [["whale","Começo da temporada: as primeiras jubartes chegam à costa."],["kids","Férias de julho: bom para vir com as crianças."],["sun","Dias amenos e noites frescas."]],
+ [["whale","Auge da temporada: um dos melhores meses para ver baleias."],["calm","Vila tranquila, sem o movimento do verão."],["sun","Clima agradável para passeios pela praia."]],
+ [["whale","Auge da temporada: um dos melhores meses para ver baleias."],["sun","O calor começa a voltar e os dias ficam mais longos."],["calm","Praias tranquilas, antes da alta temporada."]],
+ [["whale","Ainda é temporada: as jubartes seguem passando pela costa."],["sun","Primavera com mais dias de sol."],["calm","Ótimo equilíbrio entre clima bom e sossego."]],
+ [["whale","Últimas semanas da temporada das baleias."],["sun","Começo do clima de verão, com mar mais quente."],["calm","Ainda tranquilo, antes das festas de fim de ano."]],
+ [["party","Natal e Réveillon pé na areia."],["sun","Começa o verão: sol e mar o dia inteiro."],["kids","Férias escolares: reserve com antecedência."]]];
 function setWhaleMonth(m){
   wMonth=m;var n=DENS[m];whales=[];for(var i=0;i<n;i++)whales.push(newWhale(i,n));
   wMode=n?"whale":(m===11?"fest":(m<=2?"sun":"calm"));boats=[];sparks=[];shoots=[];
@@ -2069,15 +2105,10 @@ function setWhaleMonth(m){
   $("whint").textContent=inSeason?"Toque no mar":md.hint;$("whint-w").style.opacity=1;wSeen=0;
   $("sea-sc").setAttribute("aria-label",inSeason?"Toque no mar para ver uma baleia saltar":md.aria);
   // contagem real a partir de hoje
-  var nm=MES[m],cur=(m===today.getMonth()),line,sub;
-  var SEA={6:"Começo da temporada: as primeiras jubartes chegam à costa.",7:"Auge da temporada: é um dos melhores meses para ver baleias.",8:"Auge da temporada: é um dos melhores meses para ver baleias.",9:"Ainda é temporada: as jubartes seguem passando pela costa.",10:"Últimas semanas da temporada das baleias."};
-  if(n){line=SEA[m];
-    if(cur){var dl=Math.max(0,Math.ceil((new Date(y,10,30)-today)/864e5));line+=dl?' Faltam <b>'+dl+' dias</b> para acabar este ano.':''}
-    sub='As jubartes passam por aqui de <b>julho a novembro</b> e chegam a <b>16 metros</b> de comprimento.';}
-  else{line='Em '+nm+' as baleias não passam por aqui. A temporada vai de <b>julho a novembro</b>.';
-    if(cur){var st=new Date(today.getMonth()>10?y+1:y,6,1);line+=' Faltam <b>'+Math.ceil((st-today)/864e5)+' dias</b> para elas voltarem.'}
-    sub='';}
-  $("wcount").innerHTML='<p class="wl'+(n?'':' off')+'"><svg viewBox="0 0 120 70" width="26" height="16" aria-hidden="true"><use href="#whale"/></svg><span>'+line+'</span></p>'+(sub?'<p class="wl sub">'+sub+'</p>':'');
+  var cur=(m===today.getMonth()),items=GOOD[m].slice();
+  if(n&&cur){var dl=Math.max(0,Math.ceil((new Date(y,10,30)-today)/864e5));if(dl)items[0]=["whale",items[0][1]+" Faltam <b>"+dl+" dias</b> para acabar a temporada deste ano."]}
+  if(!n&&cur){var st=new Date(today.getMonth()>10?y+1:y,6,1);items.push(["whale","Faltam <b>"+Math.ceil((st-today)/864e5)+" dias</b> para as baleias voltarem."])}
+  $("wcount").innerHTML='<p class="good-t">O que tem de bom em '+MES[m]+'</p><ul class="good">'+items.map(function(it){return '<li><span class="gi g-'+it[0]+'">'+GICON[it[0]]+'</span><span>'+it[1]+'</span></li>'}).join("")+'</ul>';
   if(reduce)wDraw(0);
 }
 function whaleBody(s,belly){ // de lado, cabeça para a direita

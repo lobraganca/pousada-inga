@@ -1,7 +1,9 @@
 // Conexão com o banco Upstash Redis.
 // Aceita as variáveis da integração da Vercel (KV_*) ou as do site da Upstash (UPSTASH_*),
 // e tolera erros comuns de colagem: aspas, espaços, barra no fim, ou a URL "rediss://".
-const clean = (v) => String(v || "").trim().replace(/^["'`]+|["'`]+$/g, "").trim();
+const clean = (v) => String(v || "").trim()
+  .replace(/^(export\s+)?(UPSTASH|KV|REDIS)[A-Z_]*\s*=\s*/, "") // colaram "NOME=valor" no campo do valor
+  .replace(/^["'`]+|["'`]+$/g, "").trim();
 
 function resolve() {
   let url = clean(process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL);
@@ -24,6 +26,7 @@ export const dbReady = () => Boolean(URL_ && TOKEN);
 export const dbMissing = () => [!URL_ && "UPSTASH_REDIS_REST_URL", !TOKEN && "UPSTASH_REDIS_REST_TOKEN"].filter(Boolean).join(" e ");
 
 export async function pipeline(cmds) {
+  if (!/^https?:\/\/[a-z0-9.-]+(:\d+)?$/i.test(URL_)) throw new Error(`O valor da UPSTASH_REDIS_REST_URL na Vercel está errado. No campo "Value" deve ficar só o endereço, algo como https://nome-123.upstash.io (sem o nome da variável). Hoje ele começa com: "${URL_.replace(/^https:\/\//, "").slice(0, 26)}…"`);
   let r;
   try {
     r = await fetch(`${URL_}/pipeline`, {

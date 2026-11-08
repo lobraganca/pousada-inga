@@ -6,6 +6,12 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#2B3122">
+<link rel="manifest" href="/admin.webmanifest">
+<link rel="apple-touch-icon" href="/admin-apple-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Painel Ingá">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Painel Pousada Ingá</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cpath d='M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z' fill='%23B06C80'/%3E%3Cpath d='M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z' fill='%234A7A27'/%3E%3Cpath d='M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z' fill='%232F3424'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -128,6 +134,43 @@ main>*,.grid2>*,.grid3>*{min-width:0}
 .nophone{font-size:12.5px;color:var(--ink-soft);max-width:180px;text-align:right}
 @media (max-width:860px){.kpis{grid-template-columns:1fr 1fr}.grid2,.grid3{grid-template-columns:1fr}}
 @media (max-width:560px){.kpi b{font-size:34px}.kpi{padding:14px}.top small{display:none}.card{padding:18px 16px}.ped{grid-template-columns:1fr}.ped .pa{justify-content:flex-start}.nophone{text-align:left;max-width:none}.tabs button{padding:9px 12px;font-size:13px}}
+
+/* celular: nada passa da largura da tela */
+#p-vis,#p-ped{grid-template-columns:minmax(0,1fr)}
+#p-vis>*,#p-ped>*,.kpis>*{min-width:0}
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:860px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.custom input{min-width:0;width:150px;max-width:100%}
+@media (max-width:560px){.custom{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 8px}.custom input{width:100%}.custom .btn{grid-column:1/-1}}
+/* instalar o app */
+.inst{display:flex;align-items:center;gap:14px;background:var(--olive);color:#EEF1EC;border-radius:22px;padding:14px 16px 14px 14px}
+.inst .ic{flex:none;width:46px;height:46px;border-radius:12px;background:#FBFCFA url(/admin-icon-192.png) center/cover;box-shadow:0 6px 14px -8px #000}
+.inst b{display:block;font-size:15px}
+.inst span{display:block;font-size:13px;opacity:.8;line-height:1.35}
+.inst .tx{flex:1;min-width:0}
+.inst .btn{background:#EEF1EC;color:var(--olive);padding:10px 16px;font-size:13px;flex:none}
+.inst .x{flex:none;border:0;background:none;color:#EEF1EC;opacity:.7;font-size:22px;line-height:1;cursor:pointer;padding:6px}
+@media (max-width:520px){.inst{flex-wrap:wrap;position:relative}.inst .tx{flex:1 1 calc(100% - 100px);padding-right:26px}.inst .btn{flex:1 1 100%;order:5}.inst .x{position:absolute;top:8px;right:8px}}
+.linkbtn{border:0;background:none;color:var(--ink-soft);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:6px;justify-self:center}
+.howto{border:0;padding:0;border-radius:26px;width:min(440px,calc(100% - 24px));max-height:calc(100% - 24px);background:var(--paper);color:var(--ink);box-shadow:0 40px 80px -30px rgba(10,30,20,.6)}
+.howto::backdrop{background:rgba(16,30,22,.55);backdrop-filter:blur(3px)}
+.howto .in{padding:24px 22px 22px;display:grid;gap:16px}
+.howto .hd{display:flex;align-items:center;gap:12px}
+.howto .hd .ic{width:52px;height:52px;border-radius:14px;background:#FBFCFA url(/admin-icon-192.png) center/cover;box-shadow:0 0 0 1px var(--line);flex:none}
+.howto h2{font-size:24px}
+.howto .hd p{margin:2px 0 0;font-size:13px;color:var(--ink-soft)}
+.howto .close{margin-left:auto;align-self:flex-start;border:0;background:var(--sand-2);border-radius:999px;width:34px;height:34px;font-size:18px;cursor:pointer;color:var(--ink)}
+.os{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--sand-2);border-radius:999px;padding:4px}
+.os button{border:0;background:none;padding:10px;border-radius:999px;font-weight:800;font-size:14px;color:var(--ink-soft);cursor:pointer}
+.os button[aria-selected=true]{background:var(--paper);color:var(--ink);box-shadow:0 2px 8px -4px rgba(0,0,0,.3)}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:st}
+.steps li{counter-increment:st;display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start;background:var(--sand);border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.45}
+.steps li::before{content:counter(st);width:30px;height:30px;border-radius:50%;background:var(--olive);color:#EEF1EC;display:grid;place-items:center;font-weight:800;font-size:14px}
+.steps b{font-weight:800}
+.steps .k{display:inline-flex;align-items:center;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:1px 7px;font-weight:800;font-size:13px;white-space:nowrap;vertical-align:middle}
+.steps .k svg{width:15px;height:15px}
+.howto .note{margin:0;font-size:12.5px;color:var(--ink-soft);background:var(--leaf-soft);border-radius:14px;padding:10px 12px}
+.howto .now{width:100%}
 </style>
 </head>
 <body>
@@ -145,6 +188,7 @@ main>*,.grid2>*,.grid3>*{min-width:0}
     <div class="fld"><label for="p">Senha</label><div class="pw"><input id="p" name="password" type="password" autocomplete="current-password" required><button type="button" id="show">Mostrar</button></div></div>
     <p class="err" id="err" hidden></p>
     <button class="btn" id="go" type="submit">Entrar</button>
+    <button class="linkbtn" type="button" data-howto>📲 Como instalar o painel no celular</button>
   </form>
 </section>
 
@@ -154,6 +198,12 @@ main>*,.grid2>*,.grid3>*{min-width:0}
     <div class="acts"><button class="btn ghost" id="refresh" type="button">Atualizar</button><button class="btn" id="out" type="button">Sair</button></div>
   </div></header>
   <main class="wrap">
+    <div class="inst" id="inst" hidden>
+      <i class="ic" aria-hidden="true"></i>
+      <div class="tx"><b>Tenha o painel como app</b><span>Um ícone na tela do celular, sem precisar procurar o link.</span></div>
+      <button class="btn" type="button" data-howto>Ver como instalar</button>
+      <button class="x" type="button" id="inst-x" aria-label="Fechar aviso">×</button>
+    </div>
     <div class="tabs" role="tablist" aria-label="Seções do painel">
       <button type="button" role="tab" id="t-vis" aria-selected="true">Visitas</button>
       <button type="button" role="tab" id="t-ped" aria-selected="false">Pedidos de reserva <span class="count" id="ped-count" hidden>0</span></button>
@@ -211,9 +261,34 @@ main>*,.grid2>*,.grid3>*{min-width:0}
       <div class="peds" id="peds"></div>
       <p class="info">Os pedidos ficam guardados por 120 dias. O WhatsApp só aparece quando a pessoa preencheu o campo opcional.</p>
     </section>
+    <button class="linkbtn" type="button" data-howto>📲 Como instalar o painel no celular</button>
   </main>
 </div>
 <div class="tip" id="tip" hidden></div>
+
+<dialog class="howto" id="howto" aria-labelledby="howto-t">
+  <div class="in">
+    <div class="hd"><i class="ic" aria-hidden="true"></i><div><h2 id="howto-t">Instalar o painel</h2><p>Fica com ícone na tela inicial, igual a um app.</p></div><button class="close" type="button" id="howto-x" aria-label="Fechar">✕</button></div>
+    <button class="btn wa now" type="button" id="install-now" hidden>Instalar agora</button>
+    <div class="os" role="tablist" aria-label="Tipo de celular">
+      <button type="button" role="tab" id="os-ios" aria-selected="true">iPhone</button>
+      <button type="button" role="tab" id="os-and" aria-selected="false">Android</button>
+    </div>
+    <ol class="steps" id="st-ios">
+      <li><span>Abra este painel no <b>Safari</b> (o navegador da bússola azul).</span></li>
+      <li><span>Toque no botão <span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>Compartilhar</span> na barra de baixo (ou em <span class="k">⋯</span> e depois Compartilhar).</span></li>
+      <li><span>Role a lista e toque em <span class="k">＋ Adicionar à Tela de Início</span>.</span></li>
+      <li><span>Confira o nome <b>Painel Ingá</b> e toque em <span class="k">Adicionar</span>. Pronto: o ícone aparece na tela do celular.</span></li>
+    </ol>
+    <ol class="steps" id="st-and" hidden>
+      <li><span>Abra este painel no <b>Chrome</b>.</span></li>
+      <li><span>Toque nos três pontinhos <span class="k">⋮</span> no canto de cima.</span></li>
+      <li><span>Toque em <span class="k">Instalar app</span> ou <span class="k">Adicionar à tela inicial</span>.</span></li>
+      <li><span>Confirme em <span class="k">Instalar</span>. O ícone <b>Painel Ingá</b> aparece junto dos outros apps.</span></li>
+    </ol>
+    <p class="note">Ao abrir pelo ícone, é só entrar com o mesmo login e senha. O celular pode oferecer para lembrar a senha. Os números são sempre os mais recentes.</p>
+  </div>
+</dialog>
 
 <script>
 (function(){
@@ -312,6 +387,30 @@ $("peds").addEventListener("click",function(e){var m=e.target.closest("[data-mar
   if(d){if(d.dataset.sure!=="1"){d.dataset.sure="1";d.textContent="Confirmar apagar";setTimeout(function(){d.dataset.sure="";d.textContent="Apagar"},3000);return}
     d.disabled=true;call({acao:"apagar",id:d.dataset.del}).then(function(){DATA.pedidos=DATA.pedidos.filter(function(x){return x.id!==d.dataset.del});peds()})}});
 if(CRED)load(false);
+})();
+
+/* instalar como app */
+(function(){
+  var standalone=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+  if("serviceWorker" in navigator&&location.protocol==="https:"){navigator.serviceWorker.register("/admin-sw.js").catch(function(){})}
+  var ua=navigator.userAgent||"",isIOS=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),isAnd=/Android/.test(ua);
+  var dlg=document.getElementById("howto"),inst=document.getElementById("inst"),now=document.getElementById("install-now"),deferred=null;
+  function os(w){document.getElementById("os-ios").setAttribute("aria-selected",w==="ios");document.getElementById("os-and").setAttribute("aria-selected",w==="and");document.getElementById("st-ios").hidden=w!=="ios";document.getElementById("st-and").hidden=w!=="and"}
+  os(isAnd?"and":"ios");
+  document.getElementById("os-ios").addEventListener("click",function(){os("ios")});
+  document.getElementById("os-and").addEventListener("click",function(){os("and")});
+  function open(){if(dlg.showModal){dlg.showModal()}else{dlg.setAttribute("open","")}}
+  function close(){if(dlg.close){dlg.close()}else{dlg.removeAttribute("open")}}
+  document.querySelectorAll("[data-howto]").forEach(function(b){b.addEventListener("click",open)});
+  document.getElementById("howto-x").addEventListener("click",close);
+  dlg.addEventListener("click",function(e){if(e.target===dlg)close()});
+  var hid=false;try{hid=localStorage.getItem("ingaInstX")==="1"}catch(e){}
+  if(standalone){document.querySelectorAll("[data-howto]").forEach(function(b){b.hidden=true})}
+  else if(!hid){inst.hidden=false}
+  document.getElementById("inst-x").addEventListener("click",function(){inst.hidden=true;try{localStorage.setItem("ingaInstX","1")}catch(e){}});
+  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferred=e;now.hidden=false});
+  now.addEventListener("click",function(){if(!deferred)return;deferred.prompt();deferred.userChoice.then(function(c){if(c.outcome==="accepted"){close();inst.hidden=true}deferred=null;now.hidden=true})});
+  window.addEventListener("appinstalled",function(){inst.hidden=true;now.hidden=true});
 })();
 </script>
 </body>

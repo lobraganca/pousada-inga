@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     const vid = String(body?.v || "").slice(0, 64);
     if (!ev || !vid) return res.status(400).end();
     const ua = String(req.headers["user-agent"] || "");
-    if (/bot|crawler|spider|preview|facebookexternalhit|whatsapp/i.test(ua)) return res.status(204).end();
+    if (/bot|crawl|spider|preview|facebookexternalhit|whatsapp|headless|lighthouse|screenshot|puppeteer|playwright|phantom|selenium|python|curl|wget|node-fetch|axios|go-http|vercel|slack|telegram|discord|skype|linkedin|pinterest|embedly|google-inspectiontool|chrome-lighthouse/i.test(ua) || !ua) return res.status(204).end();
 
     const day = dayKey();
     const k = (name) => `inga:${name}:${day}`;

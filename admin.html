@@ -160,7 +160,7 @@ main>*,.grid2>*,.grid3>*{min-width:0}
 .custom{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,170px)) auto;gap:8px;align-items:end;justify-content:start;border-top:1px solid var(--line);padding-top:10px;margin-top:2px}
 .custom .df{display:grid;gap:4px;min-width:0}
 .custom .df span{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);padding-left:2px}
-.custom input{-webkit-appearance:none;appearance:none;display:block;box-sizing:border-box;width:100%;min-width:0;max-width:100%;height:44px;margin:0;padding:0 12px;line-height:44px;text-align:left;font:700 15px var(--body)}
+.custom input{-webkit-appearance:none;appearance:none;display:block;box-sizing:border-box;width:100%;min-width:0;max-width:100%;height:auto;min-height:46px;margin:0;padding:12px 12px;line-height:20px;text-align:left;font:700 15px var(--body)}
 .custom input::-webkit-date-and-time-value{text-align:left;margin:0}
 .custom input::-webkit-datetime-edit{padding:0}
 .custom .btn{height:44px}
@@ -405,8 +405,10 @@ function dd(days){
   $("dd-more").hidden=rows.length<=7;$("dd-more").textContent=DDALL?"Mostrar menos":"Ver todos os "+rows.length+" dias com visita"}
 $("dd-more").addEventListener("click",function(){DDALL=!DDALL;dd(DATA.dias)});
 var tip=$("tip");var rz;addEventListener("resize",function(){clearTimeout(rz);rz=setTimeout(function(){if(DATA&&!$("dash").hidden)chart(DATA.dias)},200)});
-$("chart").addEventListener("click",function(e){var g=e.target.closest("g[data-t]");if(!g)return;tip.textContent=g.dataset.t;tip.hidden=false;var r=g.getBoundingClientRect();tip.style.left=Math.max(8,Math.min(innerWidth-tip.offsetWidth-8,r.left+r.width/2-tip.offsetWidth/2))+"px";tip.style.top=(r.top+20)+"px"});
-$("chart").addEventListener("pointermove",function(e){var g=e.target.closest("g[data-t]");if(!g){tip.hidden=true;return}tip.textContent=g.dataset.t;tip.hidden=false;tip.style.left=Math.min(innerWidth-tip.offsetWidth-8,e.clientX+12)+"px";tip.style.top=(e.clientY-40)+"px"});
+var tipT;function hideTip(){clearTimeout(tipT);tip.hidden=true}
+addEventListener("scroll",hideTip,{passive:true});document.addEventListener("pointerdown",function(e){if(!e.target.closest("#chart"))hideTip()});
+$("chart").addEventListener("click",function(e){var g=e.target.closest("g[data-t]");if(!g)return;clearTimeout(tipT);tipT=setTimeout(hideTip,2500);tip.textContent=g.dataset.t;tip.hidden=false;var r=g.getBoundingClientRect();tip.style.left=Math.max(8,Math.min(innerWidth-tip.offsetWidth-8,r.left+r.width/2-tip.offsetWidth/2))+"px";tip.style.top=(r.top+20)+"px"});
+$("chart").addEventListener("pointermove",function(e){if(e.pointerType!=="mouse")return;var g=e.target.closest("g[data-t]");if(!g){tip.hidden=true;return}tip.textContent=g.dataset.t;tip.hidden=false;tip.style.left=Math.min(innerWidth-tip.offsetWidth-8,e.clientX+12)+"px";tip.style.top=(e.clientY-40)+"px"});
 $("chart").addEventListener("pointerleave",function(){tip.hidden=true});
 
 /* pedidos */

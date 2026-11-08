@@ -41,6 +41,15 @@ async function main(req, res) {
     await pipeline([["HSET", `inga:lead:${id}`, "contatado", body.valor ? String(Date.now()) : ""]]);
     return res.status(200).json({ ok: true });
   }
+  if (body.acao === "zerar" && body.confirma === "ZERAR") {
+    let cursor = "0", apagados = 0, voltas = 0;
+    do {
+      const [r] = await pipeline([["SCAN", cursor, "MATCH", "inga:*", "COUNT", 500]]);
+      cursor = String(r[0]); const keys = r[1] || [];
+      if (keys.length) { await pipeline([["DEL", ...keys]]); apagados += keys.length; }
+    } while (cursor !== "0" && ++voltas < 200);
+    return res.status(200).json({ ok: true, apagados });
+  }
   if (body.acao === "apagar" && body.id) {
     const id = String(body.id).replace(/[^\w-]/g, "").slice(0, 40);
     await pipeline([["DEL", `inga:lead:${id}`], ["ZREM", "inga:leads", id]]);

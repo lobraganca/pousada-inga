@@ -165,6 +165,14 @@ main>*,.grid2>*,.grid3>*{min-width:0}
 .custom input::-webkit-datetime-edit{padding:0}
 .custom .btn{height:44px}
 @media (max-width:560px){.custom{grid-template-columns:repeat(2,minmax(0,1fr))}.custom .btn{grid-column:1/-1;width:100%}}
+/* zerar */
+.reset{border-color:#E8C9BF}
+.reset h3{font-family:var(--body);font-weight:800;font-size:16px}
+.reset .rs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.reset input{flex:1 1 200px;min-width:0;font:700 15px var(--body);padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--sand);color:var(--ink)}
+.btn.danger{background:var(--err)}
+.btn.danger[disabled]{opacity:.4;cursor:not-allowed}
+.rs-msg{margin:10px 0 0;font-weight:700;font-size:14px}
 /* instalar o app */
 .inst{display:flex;align-items:center;gap:14px;background:var(--olive);color:#EEF1EC;border-radius:22px;padding:14px 16px 14px 14px}
 .inst .ic{flex:none;width:46px;height:46px;border-radius:12px;background:#FBFCFA url(/admin-icon-192.png) center/cover;box-shadow:0 6px 14px -8px #000}
@@ -287,6 +295,12 @@ main>*,.grid2>*,.grid3>*{min-width:0}
       <p class="info">Aparece aqui quem chegou na etapa <b>“Quem é você?”</b> da reserva e escreveu o nome. Quem só tocou no botão do WhatsApp ou saiu antes dessa etapa não deixa nome nem telefone. Essas pessoas aparecem só como número na aba Visitas. O WhatsApp aparece quando a pessoa preencheu o campo (é opcional). Os pedidos ficam guardados por 120 dias.</p>
     </section>
     <button class="linkbtn" type="button" data-howto>📲 Como instalar o painel no celular</button>
+    <div class="reset card">
+      <h3>Zerar os dados</h3>
+      <p class="note">Apaga todas as visitas, cidades, gráficos e pedidos de reserva, e o contador recomeça do zero. Não dá para desfazer.</p>
+      <div class="rs"><input id="rs-in" placeholder="Digite ZERAR para confirmar" autocomplete="off" autocapitalize="characters"><button class="btn sm danger" type="button" id="rs-go" disabled>Zerar tudo</button></div>
+      <p class="rs-msg" id="rs-msg" hidden></p>
+    </div>
   </main>
 </div>
 <div class="tip" id="tip" hidden></div>
@@ -436,6 +450,15 @@ $("peds").addEventListener("click",function(e){var m=e.target.closest("[data-mar
   if(m){m.disabled=true;call({acao:"contatado",id:m.dataset.mark,valor:m.dataset.v==="1"}).then(function(){var p=DATA.pedidos.find(function(x){return x.id===m.dataset.mark});if(p)p.contatado=m.dataset.v==="1"?String(Date.now()):"";peds()})}
   if(d){if(d.dataset.sure!=="1"){d.dataset.sure="1";d.textContent="Confirmar apagar";setTimeout(function(){d.dataset.sure="";d.textContent="Apagar"},3000);return}
     d.disabled=true;call({acao:"apagar",id:d.dataset.del}).then(function(){DATA.pedidos=DATA.pedidos.filter(function(x){return x.id!==d.dataset.del});peds()})}});
+/* zerar dados */
+(function(){var i=$("rs-in"),b=$("rs-go"),m=$("rs-msg");
+  i.addEventListener("input",function(){b.disabled=i.value.trim().toUpperCase()!=="ZERAR"});
+  b.addEventListener("click",function(){if(i.value.trim().toUpperCase()!=="ZERAR")return;b.disabled=true;b.textContent="Zerando…";
+    call({acao:"zerar",confirma:"ZERAR"}).then(function(x){b.textContent="Zerar tudo";i.value="";m.hidden=false;
+      if(x.ok){m.style.color="var(--leaf)";m.textContent="Pronto: dados zerados. O contador começa de novo agora.";load(false)}
+      else{m.style.color="var(--err)";m.textContent=x.j.erro||"Não consegui zerar. Tente de novo."}
+    }).catch(function(){b.textContent="Zerar tudo";m.hidden=false;m.style.color="var(--err)";m.textContent="Sem conexão. Tente de novo."})});
+})();
 if(CRED)load(false);
 })();
 
@@ -462,6 +485,8 @@ if(CRED)load(false);
   now.addEventListener("click",function(){if(!deferred)return;deferred.prompt();deferred.userChoice.then(function(c){if(c.outcome==="accepted"){close();inst.hidden=true}deferred=null;now.hidden=true})});
   window.addEventListener("appinstalled",function(){inst.hidden=true;now.hidden=true});
 })();
+
+
 </script>
 </body>
 </html>

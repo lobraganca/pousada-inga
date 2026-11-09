@@ -1,4 +1,4 @@
-import { dbReady, pipeline, dayKey } from "./_db.js";
+import { dbReady, pipeline, dayKey, V } from "./_db.js";
 
 const EVENTS = new Set(["view", "whatsapp", "reserva", "voos", "rota", "tour360"]);
 const TTL = 60 * 60 * 24 * 400; // guarda cada dia por ~13 meses
@@ -18,10 +18,10 @@ export default async function handler(req, res) {
     if (/bot|crawl|spider|preview|facebookexternalhit|whatsapp|headless|lighthouse|screenshot|puppeteer|playwright|phantom|selenium|python|curl|wget|node-fetch|axios|go-http|vercel|slack|telegram|discord|skype|linkedin|pinterest|embedly|google-inspectiontool|chrome-lighthouse/i.test(ua) || !ua) return res.status(204).end();
 
     const day = dayKey();
-    const k = (name) => `inga:${name}:${day}`;
-    const cmds = [["HINCRBY", "inga:total", ev, 1], ["HINCRBY", `inga:day:${day}`, ev, 1], ["EXPIRE", `inga:day:${day}`, TTL]];
+    const k = (name) => `${V}${name}:${day}`;
+    const cmds = [["HINCRBY", `${V}total`, ev, 1], ["HINCRBY", `${V}day:${day}`, ev, 1], ["EXPIRE", `${V}day:${day}`, TTL]];
     if (ev === "view") {
-      cmds.push(["PFADD", `inga:uniq:${day}`, vid], ["EXPIRE", `inga:uniq:${day}`, TTL], ["PFADD", "inga:uniq:all", vid]);
+      cmds.push(["PFADD", `${V}uniq:${day}`, vid], ["EXPIRE", `${V}uniq:${day}`, TTL], ["PFADD", `${V}uniq:all`, vid]);
       const device = /Mobi|Android|iPhone/i.test(ua) ? "celular" : "computador";
       const ref = String(body?.r || "").replace(/^www\./, "").slice(0, 60);
       const src = !ref ? "direto" : /instagram/.test(ref) ? "instagram" : /facebook|fb\./.test(ref) ? "facebook" : /google/.test(ref) ? "google" : /whatsapp|wa\.me/.test(ref) ? "whatsapp" : /booking/.test(ref) ? "booking" : /tripadvisor/.test(ref) ? "tripadvisor" : ref.includes("vercel.app") || ref.includes("pousada") ? null : ref;
@@ -36,12 +36,12 @@ export default async function handler(req, res) {
       if (region && country) add("estado", `${region}|${country}`);
       if (city) add("cidade", `${city}|${region}|${country}`);
       // novo ou de volta
-      cmds.push(["SADD", "inga:seen", vid]);
+      cmds.push(["SADD", `${V}seen`, vid]);
     }
     const r = await pipeline(cmds);
     if (ev === "view") {
       const added = r[r.length - 1];
-      await pipeline([["HINCRBY", `inga:ret:${day}`, added ? "novos" : "voltaram", 1], ["EXPIRE", `inga:ret:${day}`, TTL]]);
+      await pipeline([["HINCRBY", `${V}ret:${day}`, added ? "novos" : "voltaram", 1], ["EXPIRE", `${V}ret:${day}`, TTL]]);
     }
     return res.status(204).end();
   } catch (e) {

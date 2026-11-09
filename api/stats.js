@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { dbReady, dbMissing, pipeline, dayKey } from "./_db.js";
+import { dbReady, dbMissing, pipeline, dayKey, V } from "./_db.js";
 
 // Login e senha ficam nas variáveis ADMIN_USER e ADMIN_PASS da Vercel (nunca no código).
 function same(a, b) {
@@ -55,8 +55,8 @@ async function main(req, res) {
   for (let d = new Date(from + "T12:00:00Z"); d <= new Date(to + "T12:00:00Z") && days.length < 400; d = new Date(d.getTime() + 864e5)) days.push(d.toISOString().slice(0, 10));
 
   const per = ["day", "dev", "src", "pais", "estado", "cidade", "ret"];
-  const cmds = [["PFCOUNT", "inga:uniq:all"], ["PFCOUNT", ...days.map((d) => `inga:uniq:${d}`)]];
-  days.forEach((d) => { cmds.push(["PFCOUNT", `inga:uniq:${d}`]); per.forEach((p) => cmds.push(["HGETALL", `inga:${p}:${d}`])); });
+  const cmds = [["PFCOUNT", `${V}uniq:all`], ["PFCOUNT", ...days.map((d) => `${V}uniq:${d}`)]];
+  days.forEach((d) => { cmds.push(["PFCOUNT", `${V}uniq:${d}`]); per.forEach((p) => cmds.push(["HGETALL", `${V}${p}:${d}`])); });
   cmds.push(["ZREVRANGE", "inga:leads", 0, 199]);
   const r = await pipeline(cmds);
 

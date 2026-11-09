@@ -50,3 +50,7 @@ export async function pipeline(cmds) {
 export function dayKey(d = new Date()) {
   return new Date(d.getTime() - 3 * 3600e3).toISOString().slice(0, 10);
 }
+
+// Prefixo das chaves da contagem de visitas. Trocar o número zera a contagem
+// (os pedidos de reserva usam "inga:lead" e não são afetados). Zerada em 09/11/2026.
+export const V = "inga:c2:";

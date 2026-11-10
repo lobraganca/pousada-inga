@@ -2806,11 +2806,11 @@ document.addEventListener("click",function(e){var a=e.target.closest('a[href^="#
     try{if(navigator.sendBeacon&&navigator.sendBeacon("/api/hit",new Blob([body],{type:"text/plain"})))return}catch(e){}
     try{fetch("/api/hit",{method:"POST",body:body,keepalive:true,headers:{"Content-Type":"text/plain"}})}catch(e){}}
   /* só conta quando é uma pessoa de verdade: mexeu na página ou ficou alguns segundos com ela aberta */
-  var counted=false,tm=null,acts=["scroll","pointerdown","touchstart","keydown","mousemove"];
-  function view(){if(counted)return;counted=true;clearTimeout(tm);acts.forEach(function(t){removeEventListener(t,view,true)});send("view")}
-  acts.forEach(function(t){addEventListener(t,view,{capture:true,passive:true})});
-  function arm(){clearTimeout(tm);if(document.visibilityState==="visible")tm=setTimeout(view,8000)}
-  document.addEventListener("visibilitychange",arm);arm();
+  /* robôs (prévia da Vercel, verificadores de link, buscadores) abrem a página mas não rolam nem tocam nela */
+  var counted=false,y0=-1,acts=["scroll","pointerdown","touchstart","keydown"];
+  function view(e){if(counted)return;if(e&&e.type==="scroll"){if(y0<0)y0=scrollY;if(Math.abs(scrollY-y0)<120)return}
+    if(e&&e.isTrusted===false)return;counted=true;acts.forEach(function(t){removeEventListener(t,view,true)});send("view")}
+  setTimeout(function(){y0=scrollY;acts.forEach(function(t){addEventListener(t,view,{capture:true,passive:true})})},1200);
   document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;
     if(a.id==="send")send("reserva");else if(/wa\.me\/557335731214/.test(a.href))send("whatsapp");
     else if(/google\.com\/travel|skyscanner/.test(a.href))send("voos");

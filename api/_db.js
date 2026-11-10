@@ -52,5 +52,5 @@ export function dayKey(d = new Date()) {
 }
 
 // Prefixo das chaves da contagem de visitas. Trocar o número zera a contagem
-// (os pedidos de reserva usam "inga:lead" e não são afetados). Zerada em 09/11/2026.
-export const V = "inga:c2:";
+// (os pedidos de reserva usam "inga:lead" e não são afetados). Zerada em 10/11/2026.
+export const V = "inga:c3:";

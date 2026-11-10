@@ -6,7 +6,7 @@ import { pipeline } from "./_db.js";
 // As chaves são criadas sozinhas na primeira vez e guardadas no banco: nada para configurar na Vercel.
 const KEY = "inga:g:vapid";
 const SUBS = "inga:g:push"; // hash id -> JSON {sub, login, nome, prefs, criado}
-export const PREFS = { pedidos: true, reservas: true, resumo: true };
+export const PREFS = { pedidos: true, reservas: true, tarefas: true, resumo: true };
 
 let ready = null;
 export async function vapid() {

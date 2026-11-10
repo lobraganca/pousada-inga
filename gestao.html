@@ -243,7 +243,39 @@ main{padding-top:22px;padding-bottom:110px}
 .mem:last-child{border-bottom:0}
 .mem b{display:block}
 .mem span{font-size:13px;color:var(--ink-soft)}
-.qrow{display:grid;grid-template-columns:minmax(0,1fr) 90px auto;gap:8px;align-items:end;margin-bottom:8px}
+.qrow{display:grid;grid-template-columns:minmax(0,1fr) 72px 104px auto;gap:8px;align-items:end;margin-bottom:8px}
+@media (max-width:420px){.qrow{grid-template-columns:minmax(0,1fr) 58px 86px auto}}
+/* tarefas */
+.tasks{display:grid;gap:6px}
+.tk{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--sand)}
+.tk.done{opacity:.55}.tk.done b{text-decoration:line-through}
+.tk .ck{width:28px;height:28px;border-radius:9px;border:2px solid var(--leaf);background:var(--paper);display:grid;place-items:center;cursor:pointer;color:#fff;font-weight:900;font-size:15px;padding:0}
+.tk.done .ck{background:var(--leaf)}
+.tk b{display:block;font-size:14px}.tk span{font-size:12px;color:var(--ink-soft)}
+.tk .tdel{border:0;background:none;color:var(--ink-soft);font-size:18px;cursor:pointer;padding:4px}
+.tk.urg{background:var(--warn-soft)}
+.mr .dirty{font-size:11px;font-weight:800;color:var(--warn)}
+/* previsão */
+.pv{display:grid;gap:10px}
+.pr{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 14px;border-radius:16px;background:var(--sand)}
+.pr b{display:block;font-size:14.5px}.pr .d{font-size:12.5px;color:var(--ink-soft)}
+.pr .bar2{height:10px;border-radius:99px;background:var(--paper);overflow:hidden}.pr .bar2 i{display:block;height:100%;border-radius:99px;background:var(--leaf)}
+.pr .cmp{font-size:12px;font-weight:700;color:var(--ink-soft);margin-top:4px}
+.pr .rt{text-align:right;display:grid;gap:4px;justify-items:end}
+.chipst{font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap}
+.chipst.hot{background:#FBE3CF;color:#A4471A}.chipst.ok{background:var(--leaf-soft);color:#3A6320}.chipst.low{background:var(--err-soft);color:var(--err)}.chipst.na{background:var(--sand-2);color:var(--ink-soft)}
+.pr .tip{grid-column:1/-1;font-size:13px;color:var(--ink);background:var(--paper);border-radius:12px;padding:8px 12px}
+@media (max-width:600px){.pr{grid-template-columns:minmax(0,1fr) auto}.pr .barw{grid-column:1/-1;order:3}}
+.sugg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#F5ECD6;color:#5E4512;border-radius:14px;padding:10px 14px;font-size:13.5px}
+.sugg b{font-size:16px}
+.sugg button{border:0;background:#7B5A16;color:#fff;border-radius:99px;padding:6px 12px;font-weight:800;font-size:12.5px;cursor:pointer;margin-left:auto}
+/* lista de espera */
+.wl{display:grid;gap:8px}
+.wi{display:grid;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px}
+.wi.match{border-color:var(--leaf);box-shadow:0 0 0 3px var(--leaf-soft)}
+.wi .hd{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.wi .acts{display:flex;gap:6px;flex-wrap:wrap}
+
 .log{display:grid;gap:0}
 .log div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
 .log div span{color:var(--ink-soft);white-space:nowrap;font-size:12px}
@@ -411,6 +443,37 @@ function conflicts(r,ignoreId){return S.reservas.filter(function(x){return x.id!
 function freeRooms(a,b,ignoreId){return S.quartos.filter(function(q){return !conflicts({quarto:q.id,entrada:a,saida:b},ignoreId).length})}
 function bestRoom(a,b,pax,ignoreId){var f=freeRooms(a,b,ignoreId).filter(function(q){return q.cap>=pax});f.sort(function(x,y){return x.cap-y.cap});return f[0]||null}
 
+/* ---------- inteligência: períodos, ocupação, preço ---------- */
+function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return y+"-"+String(mo).padStart(2,"0")+"-"+String(da).padStart(2,"0")}
+function periods(from,days){var out=[],y0=+from.slice(0,4),end=add(from,days||365);
+  for(var y=y0-1;y<=y0+1;y++){var e=easter(y);
+    out.push({k:"rev",nome:"Réveillon",a:y+"-12-28",b:(y+1)+"-01-02",pico:2});
+    out.push({k:"car",nome:"Carnaval",a:add(e,-51),b:add(e,-45),pico:2});
+    out.push({k:"ss",nome:"Semana Santa",a:add(e,-3),b:add(e,1),pico:1});
+    out.push({k:"cc",nome:"Corpus Christi",a:add(e,60),b:add(e,64),pico:1});
+    out.push({k:"jul",nome:"Férias de julho",a:y+"-07-01",b:y+"-08-01",pico:1});
+    out.push({k:"nat",nome:"Natal",a:y+"-12-23",b:y+"-12-27",pico:1});
+    out.push({k:"bal",nome:"Temporada das baleias (pico)",a:y+"-08-15",b:y+"-10-15",pico:0})}
+  /* próximos 3 fins de semana */
+  var wk=0;for(var i=0;i<28&&wk<3;i++){var d=add(from,i);if(wd(d)===5){out.push({k:"fds",nome:"Fim de semana",a:d,b:add(d,2),pico:0,fds:1});wk++}}
+  return out.filter(function(p){return p.b>from&&p.a<end}).sort(function(x,y){return x.a<y.a?-1:1})}
+function peakOf(d){var ps=periods(add(d,-40),80);for(var i=0;i<ps.length;i++){var p=ps[i];if(!p.fds&&p.pico&&d>=p.a&&d<p.b)return p}return null}
+/* noites vendidas no período; com asOf, como estava naquela data (para comparar com o ano passado) */
+function bookedNights(a,b,asOf){var n=0;S.reservas.forEach(function(r){if(asOf){if((r.criadoEm||0)>asOf)return;if(r.status==="cancelada"&&(r.alteradoEm||0)<=asOf)return}else if(!act(r))return;
+  var x=r.entrada>a?r.entrada:a,y=r.saida<b?r.saida:b;if(y>x)n+=diff(x,y)});return n}
+function occNight(d){return bookedNights(d,add(d,1))/S.quartos.length}
+function priceFor(q,d){var base=+q.preco||0;if(!base)return null;var f=1,why=[],pk=peakOf(d),o=occNight(d),away=diff(today(),d),w=wd(d);
+  if(pk){f+=pk.pico===2?.25:.15;why.push(pk.nome)}
+  if(w===5||w===6){f+=.1;why.push(w===5?"sexta":"sábado")}
+  if(o>=.85){f+=.2;why.push("quase lotado")}else if(o>=.6){f+=.1;why.push(Math.round(o*100)+"% ocupado")}
+  if(away<=7&&o<=.3&&!pk){f-=.15;why.push("perto e com quartos vazios")}
+  f=Math.max(.8,Math.min(1.6,f));return{v:Math.round(base*f/10)*10,base:base,why:why,f:f}}
+function stayPrice(q,a,b){var n=diff(a,b);if(n<=0)return null;var tot=0,why={},ok=false;for(var i=0;i<n;i++){var p=priceFor(q,add(a,i));if(!p)return null;ok=true;tot+=p.v;p.why.forEach(function(x){why[x]=1})}
+  return ok?{dia:Math.round(tot/n/10)*10,total:tot,why:Object.keys(why),base:+q.preco}:null}
+function esperaMatch(e){if(e.status!=="esperando"||e.saida<=today())return null;return bestRoom(e.entrada,e.saida,+e.pessoas||2)}
+function tasksOpen(){return(S.tarefas||[]).filter(function(t){return!t.feito})}
+function dirty(qid){return tasksOpen().some(function(t){return t.tipo==="limpeza"&&t.quarto===qid})}
+
 /* ---------- API ---------- */
 function api(acao,extra){var b=Object.assign({acao:acao,token:TK},extra||{});
   return fetch("/api/g",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(function(r){return r.json().catch(function(){return{erro:"Resposta inesperada do servidor."}}).then(function(j){if(r.status===401&&acao!=="entrar"){logout(true);throw new Error(j.erro||"Entre de novo.")}if(!r.ok)throw new Error(j.erro||"Erro "+r.status);return j})})}
@@ -453,6 +516,9 @@ function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
   R.filter(function(r){return r.entrada===tm&&(r.status==="confirmada"||r.status==="pre")}).forEach(function(r){al.push({c:"rose",i:"💬",t:"Chega amanhã: "+r.nome,s:"Mande o lembrete com endereço e horário de check-in.",a:r.tel?'<a class="btn wa sm" target="_blank" rel="noopener" href="'+waLink(r.tel,msg("lembrete",r))+'"><svg><use href="#wa"/></svg>Lembrete</a>':'<button class="btn soft sm" data-open="'+r.id+'">Ver</button>'})});
   R.filter(function(r){return r.status==="pre"&&Date.now()-r.criadoEm>2*864e5&&r.entrada>=t}).forEach(function(r){al.push({c:"warn",i:"⏳",t:"Pré-reserva parada: "+r.nome,s:"Criada há "+ago(r.criadoEm)+" e ainda não confirmada. "+room(r.quarto).nome+", "+br(r.entrada)+" a "+br(r.saida)+".",a:(r.tel?'<a class="btn wa sm" target="_blank" rel="noopener" href="'+waLink(r.tel,msg("sinal",r))+'"><svg><use href="#wa"/></svg>Cobrar sinal</a>':"")+'<button class="btn soft sm" data-st="confirmada" data-id="'+r.id+'">Confirmar</button>'})});
   R.filter(function(r){return r.status==="saiu"&&diff(r.saida,t)>=0&&diff(r.saida,t)<=2&&r.tel}).forEach(function(r){al.push({c:"leaf",i:"⭐",t:r.nome+" saiu "+(r.saida===t?"hoje":"há "+plural(diff(r.saida,t),"dia","dias")),s:"Bom momento para agradecer e pedir uma avaliação.",a:'<a class="btn wa sm" target="_blank" rel="noopener" href="'+waLink(r.tel,msg("avaliacao",r))+'"><svg><use href="#wa"/></svg>Agradecer</a>'})});
+  chegam.filter(function(r){return r.status!=="hospedado"&&dirty(r.quarto)}).forEach(function(r){al.unshift({c:"warn",i:"🧹",t:room(r.quarto).nome+" ainda não foi arrumado",s:r.nome+" chega hoje nesse quarto.",a:'<button class="btn sm" data-go="hoje" data-scroll="tarefas">Ver tarefas</button>'})});
+  (S.espera||[]).forEach(function(e){var q=esperaMatch(e);if(q)al.push({c:"leaf",i:"✨",t:"Vagou para "+e.nome+"!",s:"Está na lista de espera para "+br(e.entrada)+" a "+br(e.saida)+". "+q.nome+" está livre.",a:(e.tel?'<a class="btn wa sm" target="_blank" rel="noopener" data-espav="'+e.id+'" href="'+waLink(e.tel,msgEspera(e,q))+'"><svg><use href="#wa"/></svg>Avisar</a>':"")+'<button class="btn sm" data-esprv="'+e.id+'">Criar reserva</button>'})});
+  if(S.reservas.length>=15)periods(t,75).filter(function(p){return p.pico&&p.a>t}).forEach(function(p){var tot=diff(p.a,p.b)*S.quartos.length,o=bookedNights(p.a,p.b)/tot,dd=diff(t,p.a);if(o<=.3&&dd<=45)al.push({c:"warn",i:"📉",t:p.nome+" com só "+Math.round(o*100)+"% ocupado",s:"Faltam "+dd+" dias. Bom momento para divulgar ou fazer uma oferta.",a:'<button class="btn soft sm" data-go="caixa">Ver previsão</button>'})});
   if(S.pedidos.length)al.push({c:"rose",i:"📥",t:plural(S.pedidos.length,"pedido do site","pedidos do site")+" esperando",s:"Pessoas que começaram uma reserva no site. Transforme em reserva com um toque.",a:'<button class="btn rose sm" data-go="pedidos">Ver pedidos</button>'});
   var nome=first(S.me.nome);
   var h='<div class="sec"><div class="ph"><div><h1>'+hello()+(nome?", "+esc(nome):"")+'.</h1><p>'+dlong(t).replace(/^./,function(c){return c.toUpperCase()})+' · '+plural(ocup,"quarto ocupado","quartos ocupados")+' de '+nq+'</p></div></div>';
@@ -464,11 +530,17 @@ function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
   h+='<div class="card"><h3>O que precisa de atenção</h3>'+(al.length?'<div class="alerts">'+al.map(function(a){return'<div class="al '+a.c+'"><span class="ic">'+a.i+'</span><div><b>'+esc(a.t)+'</b><span>'+esc(a.s)+'</span></div><div class="acts">'+a.a+'</div></div>'}).join("")+'</div>':'<div class="calm">🌿 Tudo em dia por aqui. Nenhuma pendência agora.</div>')+'</div>';
   function lst(arr,lab){return arr.length?'<div class="dl">'+arr.map(function(r){return'<button class="ri" data-open="'+r.id+'"><span class="rm">'+esc(room(r.quarto).nome)+'</span><span><b>'+esc(r.nome)+'</b><span>'+lab(r)+'</span></span><span class="pill st-'+r.status+'">'+ST[r.status]+'</span></button>'}).join("")+'</div>':'<p class="empty">Ninguém.</p>'}
   var prox=R.filter(function(r){return r.entrada>t&&r.entrada<=add(t,7)&&r.status!=="saiu"}).sort(function(a,b){return a.entrada<b.entrada?-1:1});
+  h+=tasksCard();
   h+='<div class="cols3"><div class="card"><h3>Hospedados agora</h3>'+lst(dentro,function(r){return"até "+dlong(r.saida)})+'</div><div class="card"><h3>Chegam nos próximos 7 dias</h3>'+lst(prox,function(r){return dlong(r.entrada)+" · "+plural(nights(r),"noite","noites")})+'</div><div class="card"><h3>Quartos livres hoje</h3>'+freeToday(t)+'</div></div></div>';
   return h}
+function tasksCard(){var L=(S.tarefas||[]).slice().sort(function(a,b){return(a.feito-b.feito)||((b.criadoEm||0)-(a.criadoEm||0))}),open=L.filter(function(t){return!t.feito}),done=L.filter(function(t){return t.feito}).slice(0,3),t0=today();
+  function it(t){var urg=!t.feito&&((t.tipo==="limpeza"&&S.reservas.some(function(r){return act(r)&&r.quarto===t.quarto&&r.entrada===t0&&r.status!=="hospedado"}))||(t.prazo&&t.prazo<=t0));
+    return'<div class="tk'+(t.feito?" done":"")+(urg?" urg":"")+'"><button class="ck" data-tk="'+t.id+'" aria-label="'+(t.feito?"Desmarcar":"Marcar como feita")+'">'+(t.feito?"✓":"")+'</button><span><b>'+(t.tipo==="limpeza"?"🧹 ":"")+esc(t.titulo)+'</b><span>'+(t.feito?"feito por "+esc(t.feitoPor)+" · há "+ago(t.feitoEm):(t.tipo==="limpeza"&&t.hospede?esc(first(t.hospede))+" saiu · ":"")+(t.para?"para "+esc(t.para)+" · ":"")+(t.prazo?"até "+dlong(t.prazo)+" · ":"")+"há "+ago(t.criadoEm))+(urg?' · <b style="display:inline;color:var(--warn)">urgente: chega hóspede hoje</b>':"")+'</span></span><button class="tdel" data-tkdel="'+t.id+'" aria-label="Apagar tarefa">×</button></div>'}
+  return'<div class="card" id="tarefas"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px"><h3 style="margin:0">Tarefas da equipe'+(open.length?' · '+open.length:"")+'</h3><button class="btn soft sm" data-tknew>+ Tarefa</button></div>'+
+    (open.length||done.length?'<div class="tasks">'+open.map(it).join("")+done.map(it).join("")+'</div>':'<p class="empty">Nenhuma tarefa. Quando alguém fizer check-out, a tarefa de arrumar o quarto aparece aqui sozinha.</p>')+'</div>'}
 function freeToday(t){var f=freeRooms(t,add(t,1));if(!f.length)return'<p class="empty">Pousada lotada hoje 🎉</p>';
   return'<div class="dl">'+f.map(function(q){var nx=S.reservas.filter(function(r){return act(r)&&r.quarto===q.id&&r.entrada>t}).sort(function(a,b){return a.entrada<b.entrada?-1:1})[0];
-    return'<button class="ri" data-new="'+q.id+'" data-d="'+t+'"><span class="rm">'+esc(q.nome)+'</span><span><b>Livre</b><span>'+(nx?"até "+dlong(nx.entrada):"sem reservas futuras")+' · até '+q.cap+' pessoas</span></span><span class="pill st-confirmada" style="background:var(--paper)">+ reservar</span></button>'}).join("")+'</div>'}
+    return'<button class="ri" data-new="'+q.id+'" data-d="'+t+'"><span class="rm">'+esc(q.nome)+'</span><span><b>Livre'+(dirty(q.id)?' <span style="color:var(--warn);font-size:12px">· 🧹 arrumar</span>':"")+'</b><span>'+(nx?"até "+dlong(nx.entrada):"sem reservas futuras")+' · até '+q.cap+' pessoas</span></span><span class="pill st-confirmada" style="background:var(--paper)">+ reservar</span></button>'}).join("")+'</div>'}
 
 /* ---------- MAPA ---------- */
 function vMapa(){var t=today();if(!MAPSTART)MAPSTART=add(t,-2);var N=window.innerWidth<600?21:35,s=MAPSTART,e=add(s,N);
@@ -478,7 +550,7 @@ function vMapa(){var t=today();if(!MAPSTART)MAPSTART=add(t,-2);var N=window.inne
   h+='<div class="map" id="map"><div class="mgrid" style="--n:'+N+'">';
   h+='<div class="mr corner">Quarto</div>';
   for(var i=0;i<N;i++){var d=add(s,i),w=wd(d);h+='<div class="mh'+(w===0||w===6?" we":"")+(d===t?" td":"")+(d.slice(8)==="01"?" mon":"")+'">'+WK[w]+'<b>'+d.slice(8,10)+'</b>'+(d.slice(8)==="01"?MO[+d.slice(5,7)-1].slice(0,3):"")+'</div>'}
-  S.quartos.forEach(function(q){h+='<div class="mr"><b>'+esc(q.nome)+'</b><span>'+q.cap+' pessoas</span></div>';
+  S.quartos.forEach(function(q){h+='<div class="mr"><b>'+esc(q.nome)+'</b><span>'+(dirty(q.id)?'<span class="dirty">🧹 arrumar</span>':q.cap+' pessoas')+'</span></div>';
     for(var i=0;i<N;i++){var d=add(s,i),w=wd(d);h+='<button class="mc'+(w===0||w===6?" we":"")+(d===t?" td":"")+'" data-new="'+q.id+'" data-d="'+d+'" aria-label="Reservar '+esc(q.nome)+' em '+br(d)+'"></button>'}});
   h+='<div class="mr ft">Livres</div>';
   for(var i=0;i<N;i++){var d=add(s,i),f=freeRooms(d,add(d,1)).length;h+='<div class="mfree'+(f?"":" zero")+'">'+f+'</div>'}
@@ -511,13 +583,16 @@ function rlist(){var t=today(),q=QUERY.toLowerCase().normalize("NFD").replace(/[
 /* ---------- PEDIDOS ---------- */
 function vPedidos(){var P=S.pedidos.slice().sort(function(a,b){return(+b.atualizado||0)-(+a.atualizado||0)});
   var h='<div class="sec"><div class="ph"><div><h1>Pedidos do site</h1><p>Quem começou uma reserva no site. Responda rápido e transforme em reserva com um toque.</p></div></div>';
-  if(!P.length)return h+'<div class="calm">📭 Nenhum pedido novo do site agora.</div></div>';
+  var W=(S.espera||[]).slice().sort(function(a,b){return a.entrada<b.entrada?-1:1});
+  var wl='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px"><h3 style="margin:0">Lista de espera'+(W.length?" · "+W.length:"")+'</h3><button class="btn soft sm" data-espnew>+ Adicionar</button></div>'+
+    (W.length?'<div class="wl">'+W.map(function(e){var q=esperaMatch(e),past=e.saida<=today();return'<div class="wi'+(q?" match":"")+'"><div class="hd"><b>'+esc(e.nome)+'</b><span class="pill '+(q?"st-confirmada":e.status==="avisado"?"st-hospedado":past?"st-saiu":"st-pre")+'">'+(q?"Vagou quarto!":e.status==="avisado"?"Já avisado":past?"Data passou":"Esperando")+'</span></div><div class="muted" style="font-size:13px">📅 '+br(e.entrada)+' a '+br(e.saida)+' · 👥 '+e.pessoas+(e.flex?" · aceita outras datas":"")+(e.tel?" · "+phoneFmt(e.tel):"")+'</div>'+(e.obs?'<div class="muted" style="font-size:13px">“'+esc(e.obs)+'”</div>':"")+(q?'<div class="sug">✓ '+esc(q.nome)+' está livre nessas datas</div>':"")+'<div class="acts">'+(q&&e.tel?'<a class="btn wa sm" target="_blank" rel="noopener" data-espav="'+e.id+'" href="'+waLink(e.tel,msgEspera(e,q))+'"><svg><use href="#wa"/></svg>Avisar que vagou</a>':"")+(q?'<button class="btn sm" data-esprv="'+e.id+'">Criar reserva</button>':"")+'<button class="btn danger sm" data-esprm="'+e.id+'">Remover</button></div></div>'}).join("")+'</div>':'<p class="empty">Ninguém esperando. Quando não houver quarto para alguém, coloque a pessoa aqui. O sistema avisa quando vagar.</p>')+'</div>';
+  if(!P.length)return h+'<div class="calm">📭 Nenhum pedido novo do site agora.</div>'+wl+'</div>';
   h+='<div class="rlist">'+P.map(function(p){var a=p.start,b=p.end,pax=(+p.ad||2)+(+p.ch||0),sug=a&&b&&b>a?bestRoom(a,b,pax):null,env=p.enviado==="sim";
     return'<div class="pd"><div class="hd"><div><b>'+esc(p.name||"Sem nome")+'</b><div class="muted" style="font-size:13px">'+(p.phone?phoneFmt(p.phone)+" · ":"")+(p.cidadeInformada||p.cidadeAprox||"")+' · há '+ago(+p.atualizado||+p.criado||Date.now())+'</div></div><span class="pill '+(env?"st-confirmada":"st-pre")+'">'+(env?"Enviou no WhatsApp":"Não enviou")+'</span></div>'+
       '<div class="meta">'+(a?'<span>📅 '+br(a)+(b?" a "+br(b)+" · "+plural(diff(a,b),"noite","noites"):"")+'</span>':"")+'<span>👥 '+plural(+p.ad||0,"adulto","adultos")+(+p.ch?" + "+plural(+p.ch,"criança","crianças"):"")+'</span>'+(p.pet==="sim"?'<span>🐾 pet</span>':"")+(p.room?'<span>🛏️ '+esc(p.room)+'</span>':"")+'</div>'+
       (p.obs?'<div class="muted" style="font-size:13.5px">“'+esc(p.obs)+'”</div>':"")+
       (a&&b?'<div class="sug'+(sug?"":" no")+'">'+(sug?"✓ "+esc(sug.nome)+" está livre nessas datas":"✕ Nenhum quarto livre para "+pax+" pessoas nessas datas")+'</div>':"")+
-      '<div class="acts"><button class="btn sm" data-conv="'+esc(p.id)+'">Criar reserva</button>'+(p.phone?'<a class="btn wa sm" target="_blank" rel="noopener" href="'+waLink(p.phone,"Olá, "+first(p.name)+"! Aqui é da Pousada Ingá 🌿 Vi que você começou uma reserva pelo site"+(a?" para "+br(a)+(b?" a "+br(b):""):"")+". Posso te ajudar a finalizar?")+'"><svg><use href="#wa"/></svg>Chamar</a>':"")+'<button class="btn danger sm" data-disc="'+esc(p.id)+'">Descartar</button></div></div>'}).join("")+'</div></div>';
+      '<div class="acts">'+(a&&b&&!sug?'<button class="btn soft sm" data-espfromlead="'+esc(p.id)+'">Lista de espera</button>':"")+'<button class="btn sm" data-conv="'+esc(p.id)+'">Criar reserva</button>'+(p.phone?'<a class="btn wa sm" target="_blank" rel="noopener" href="'+waLink(p.phone,"Olá, "+first(p.name)+"! Aqui é da Pousada Ingá 🌿 Vi que você começou uma reserva pelo site"+(a?" para "+br(a)+(b?" a "+br(b):""):"")+". Posso te ajudar a finalizar?")+'"><svg><use href="#wa"/></svg>Chamar</a>':"")+'<button class="btn danger sm" data-disc="'+esc(p.id)+'">Descartar</button></div></div>'}).join("")+'</div>'+wl+'</div>';
   return h}
 
 /* ---------- CAIXA ---------- */
@@ -530,19 +605,31 @@ function vCaixa(){var t=today();if(!FINM)FINM=t.slice(0,7);var y=+FINM.slice(0,4
   var pends=R.filter(function(r){return saldo(r)>0&&r.status!=="cancelada"}).sort(function(a,b){return a.entrada<b.entrada?-1:1});
   var h='<div class="sec"><div class="ph"><div><h1>Caixa</h1><p>Reservas com entrada em '+MO[m-1]+' de '+y+'.</p></div><div class="mapbar"><button class="btn ghost sm" data-fm="-1">‹</button><span class="mt" style="min-width:0;text-align:center">'+MO[m-1].replace(/^./,function(c){return c.toUpperCase()})+'</span><button class="btn ghost sm" data-fm="1">›</button></div></div>';
   h+='<div class="kpis"><div class="kpi dark"><small>Faturamento</small><b style="font-size:30px">'+money(fat)+'</b><span>'+plural(doMes.length,"reserva","reservas")+'</span></div><div class="kpi"><small>Recebido</small><b style="font-size:30px;color:var(--leaf)">'+money(rec)+'</b><span>'+(fat?Math.round(rec/fat*100):0)+'% do total</span></div><div class="kpi"><small>A receber</small><b style="font-size:30px;color:'+(pend?"var(--warn)":"var(--ink)")+'">'+money(pend)+'</b><span>destas reservas</span></div><div class="kpi"><small>Ocupação do mês</small><b>'+occ+'%</b><span>'+nts+' de '+(S.quartos.length*dim)+' noites · diária média '+money(dm)+'</span></div></div>';
+  h+=forecast();
   h+='<div class="cols2"><div class="card"><h3>De onde vieram</h3>'+(Object.keys(byO).length?'<div class="fin-bars">'+Object.keys(byO).sort(function(a,b){return byO[b].v-byO[a].v}).map(function(k){return'<div class="fb"><span>'+OR[k]+' <span class="muted">('+byO[k].n+')</span></span><span class="tr"><i style="width:'+Math.max(3,byO[k].v/mx*100)+'%"></i></span><b>'+money(byO[k].v)+'</b></div>'}).join("")+'</div>':'<p class="empty">Sem reservas neste mês.</p>')+'</div>';
   h+='<div class="card"><h3>Falta receber (todas as datas)</h3>'+(pends.length?'<div class="dl">'+pends.slice(0,12).map(function(r){return'<button class="ri" data-open="'+r.id+'"><span class="rm">'+br(r.entrada)+'</span><span><b>'+esc(r.nome)+'</b><span>'+esc(room(r.quarto).nome)+' · '+ST[r.status]+'</span></span><b style="color:var(--warn)">'+money(saldo(r))+'</b></button>'}).join("")+'</div>':'<p class="empty">Nada pendente. 👏</p>')+'</div></div></div>';
   return h}
 
 /* ---------- AJUSTES ---------- */
+var FCALL=false;
+function forecast(){var t=today(),P=periods(t,365),PN=P.length,nq=S.quartos.length,avg=S.quartos.reduce(function(s,q){return s+(+q.preco||0)},0)/nq;
+  if(!FCALL)P=P.slice(0,5);
+  var rows=P.map(function(p){var tot=diff(p.a,p.b)*nq,now=bookedNights(p.a,p.b),o=now/tot,ly=add(p.a,-364),lyb=add(p.b,-364),asOf=Date.now()-364*864e5,then=bookedNights(ly,lyb,asOf),lyFinal=bookedNights(ly,lyb),dd=diff(t,p.a),hasHist=S.reservas.some(function(r){return r.entrada<add(t,-300)});
+    var st,stc,tip="";
+    if(o>=.6){st="🔥 Procura alta";stc="hot";if(avg)tip="Quase cheio: dá para cobrar mais. Diária sugerida em torno de "+money(Math.round(avg*(1+(p.pico===2?.25:p.pico?.15:.1)+.1)/10)*10)+"."}
+    else if(o<=.25&&dd<=(p.pico?60:14)&&dd>=0){st="⚠︎ Fraco";stc="low";tip=p.pico?"Ainda tem muita vaga. Divulgue no Instagram e responda rápido os pedidos.":"Fim de semana vazio: que tal um post ou uma oferta de última hora?"}
+    else{st=o>0?"No ritmo":"Sem reservas";stc=o>0?"ok":"na"}
+    var cmp=hasHist?(then?((now>=then?"▲ ":"▼ ")+Math.abs(Math.round((now-then)/then*100))+"% vs. mesma época do ano passado"):(lyFinal?"Ano passado nesta altura: nenhuma reserva":"Sem dados do ano passado")):"Comparação com o ano passado começa quando houver 1 ano de histórico";
+    return'<div class="pr"><div><b>'+(p.fds?"Fim de semana":esc(p.nome))+'</b><div class="d">'+dlong(p.a)+' a '+dlong(add(p.b,-1))+(dd>0?" · em "+dd+" dias":dd===0?" · começa hoje":" · em andamento")+'</div></div><div class="barw"><div class="bar2"><i style="width:'+Math.max(2,Math.round(o*100))+'%"></i></div><div class="cmp">'+Math.round(o*100)+'% ocupado · '+now+' de '+tot+' noites · '+cmp+'</div></div><div class="rt"><span class="chipst '+stc+'">'+st+'</span></div>'+(tip?'<div class="tip">💡 '+tip+'</div>':"")+'</div>'}).join("");
+  return'<div class="card"><h3>Previsão: as próximas datas importantes</h3><div class="pv">'+(rows||'<p class="empty">Nada nos próximos meses.</p>')+'</div>'+(PN>5?'<div style="text-align:center;margin-top:10px"><button class="btn soft sm" data-fcall>'+(FCALL?"Mostrar menos":"Ver o ano todo ("+PN+" datas)")+'</button></div>':"")+(avg?"":'<p class="muted" style="font-size:13px;margin:10px 0 0">💡 Coloque a diária base de cada quarto em Ajustes para ver as sugestões de preço.</p>')+'</div>'}
 function vAjustes(){var h='<div class="sec"><div class="ph"><div><h1>Ajustes</h1><p>Equipe, quartos e histórico do que foi feito.</p></div></div><div class="cols2">';
   h+='<div class="card"><h3>Equipe</h3><div class="mem"><span class="av">'+esc((S.me.nome||"D").charAt(0))+'</span><div><b>'+esc(S.me.login==="dona"?S.me.nome:"Dona")+'</b><span>Administradora · login da Vercel</span></div><span></span></div>'+
      S.equipe.map(function(u){return'<div class="mem"><span class="av" style="background:'+(u.ativo?"var(--sea)":"#A9B5AD")+'">'+esc((u.nome||u.login).charAt(0).toUpperCase())+'</span><div><b>'+esc(u.nome)+(u.ativo?"":' <span class="muted">(bloqueado)</span>')+'</b><span>login: '+esc(u.login)+' · '+(u.papel==="admin"?"Administradora":"Equipe")+'</span></div><button class="btn soft sm" data-mem="'+esc(u.login)+'">Editar</button></div>'}).join("")+
      '<div style="margin-top:14px"><button class="btn sm" data-mem="">+ Adicionar pessoa</button></div></div>';
-  h+='<div class="card"><h3>Quartos</h3><div id="qedit">'+S.quartos.map(function(q,i){return'<div class="qrow" data-qid="'+esc(q.id)+'"><label class="fld"><span>'+(i?"":"Nome")+'</span><input value="'+esc(q.nome)+'" data-qn></label><label class="fld"><span>'+(i?"":"Pessoas")+'</span><input type="number" min="1" max="12" value="'+q.cap+'" data-qc inputmode="numeric"></label><button class="btn danger sm" data-qdel title="Remover quarto">✕</button></div>'}).join("")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn soft sm" id="qadd">+ Quarto</button><button class="btn sm" id="qsave">Salvar quartos</button></div></div></div>';
+  h+='<div class="card"><h3>Quartos</h3><p class="muted" style="font-size:13px;margin:-6px 0 12px">A diária base é usada para sugerir preços conforme a data e a ocupação.</p><div id="qedit">'+S.quartos.map(function(q,i){return'<div class="qrow" data-qid="'+esc(q.id)+'"><label class="fld"><span>'+(i?"":"Nome")+'</span><input value="'+esc(q.nome)+'" data-qn></label><label class="fld"><span>'+(i?"":"Pessoas")+'</span><input type="number" min="1" max="12" value="'+q.cap+'" data-qc inputmode="numeric"></label><label class="fld"><span>'+(i?"":"Diária base")+'</span><input value="'+(q.preco||"")+'" data-qp inputmode="decimal" placeholder="R$"></label><button class="btn danger sm" data-qdel title="Remover quarto">✕</button></div>'}).join("")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn soft sm" id="qadd">+ Quarto</button><button class="btn sm" id="qsave">Salvar quartos</button></div></div></div>';
   h+='<div class="card"><h3>Histórico recente</h3>'+(S.log.length?'<div class="log">'+S.log.map(function(l){return'<div>'+esc(logTxt(l))+'<span>há '+ago(l.em)+'</span></div>'}).join("")+'</div>':'<p class="empty">Nada ainda.</p>')+'</div></div>';
   return h}
-function logTxt(l){var n=l.nome||"",p=l.por||"";switch(l.tipo){case"criou":return p+" criou a reserva de "+n+(l.entrada?" ("+br(l.entrada)+" a "+br(l.saida)+")":"");case"editou":return p+" editou a reserva de "+n;case"hospedado":return p+" fez o check-in de "+n;case"saiu":return p+" fez o check-out de "+n;case"cancelada":return p+" cancelou a reserva de "+n;case"confirmada":return p+" confirmou a reserva de "+n;case"pre":return p+" voltou "+n+" para pré-reserva";case"pagamento":return p+" registrou "+money(l.valor)+" de "+n;case"apagou":return p+" apagou a reserva de "+n;case"quartos":return p+" alterou os quartos";case"membro-novo":return p+" adicionou "+n+" à equipe";case"membro-editado":return p+" editou o acesso de "+n;case"membro-removido":return p+" removeu "+n+" da equipe";default:return p+" "+l.tipo}}
+function logTxt(l){var n=l.nome||"",p=l.por||"";switch(l.tipo){case"criou":return p+" criou a reserva de "+n+(l.entrada?" ("+br(l.entrada)+" a "+br(l.saida)+")":"");case"editou":return p+" editou a reserva de "+n;case"hospedado":return p+" fez o check-in de "+n;case"saiu":return p+" fez o check-out de "+n;case"cancelada":return p+" cancelou a reserva de "+n;case"confirmada":return p+" confirmou a reserva de "+n;case"pre":return p+" voltou "+n+" para pré-reserva";case"pagamento":return p+" registrou "+money(l.valor)+" de "+n;case"apagou":return p+" apagou a reserva de "+n;case"quartos":return p+" alterou os quartos";case"espera":return p+" colocou "+n+" na lista de espera";case"tarefa":return p+" concluiu: "+n;case"membro-novo":return p+" adicionou "+n+" à equipe";case"membro-editado":return p+" editou o acesso de "+n;case"membro-removido":return p+" removeu "+n+" da equipe";default:return p+" "+l.tipo}}
 
 /* ---------- mensagens WhatsApp ---------- */
 function msg(k,r){var q=room(r.quarto).nome,n=first(r.nome),sd=saldo(r);
@@ -588,7 +675,7 @@ function formSheet(id,pre){var r=id?S.reservas.find(function(x){return x.id===id
     '<div id="cf"></div>'+
     '<div class="grid2"><label class="fld"><span>Veio por</span><select name="origem">'+opt(OR,x.origem)+'</select></label><label class="fld"><span>Situação</span><select name="status">'+opt(ST,x.status)+'</select></label></div>'+
     '<div class="grid2"><label class="fld"><span>Valor total (R$)</span><input name="valor" value="'+(x.valor||"")+'" inputmode="decimal" placeholder="0"></label><label class="fld"><span>Já pago (R$)</span><input name="pago" value="'+(x.pago||"")+'" inputmode="decimal" placeholder="0"></label></div>'+
-    '<div class="calc">Calcular: diária de R$ <input id="dia" inputmode="decimal" placeholder="350"> × <b id="cn">0</b> noites <button type="button" id="calc">= usar no total</button></div>'+
+    '<div id="sugg"></div><div class="calc">Calcular: diária de R$ <input id="dia" inputmode="decimal" placeholder="350"> × <b id="cn">0</b> noites <button type="button" id="calc">= usar no total</button></div>'+
     '<label class="fld"><span>Observações</span><textarea name="obs" placeholder="Ex.: aniversário de casamento, chega tarde, alergia a camarão…">'+esc(x.obs)+'</textarea></label>'+
     '<p class="err" id="ferr" style="text-align:left"></p>'+
     '<div class="sheet-foot"><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn" id="fsave" type="submit">'+(r?"Salvar alterações":"Criar reserva")+'</button></div></form>';
@@ -598,7 +685,8 @@ function formSheet(id,pre){var r=id?S.reservas.find(function(x){return x.id===id
   function upd(){var a=val("entrada"),b2=val("saida"),q=val("quarto"),pax=(+val("adultos")||1)+(+val("criancas")||0),n=a&&b2?diff(a,b2):0;
     $("nn").textContent=n>0?"🌙 "+plural(n,"noite","noites")+" · "+dlong(a)+" → "+dlong(b2):"";$("cn").textContent=Math.max(0,n);
     var sel=$("fq"),cur=q||x.quarto;sel.innerHTML=S.quartos.map(function(qq){var busy=n>0&&conflicts({quarto:qq.id,entrada:a,saida:b2},id).length;return'<option value="'+qq.id+'"'+(qq.id===cur?" selected":"")+'>'+esc(qq.nome)+' · '+qq.cap+' pessoas'+(busy?" — ocupado":"")+'</option>'}).join("");
-    var fr=n>0?freeRooms(a,b2,id):[];$("free").innerHTML=n>0?(fr.length?'<span class="muted" style="font-size:12.5px;font-weight:700;align-self:center">Livres:</span>'+fr.map(function(qq){return'<button type="button" class="'+(qq.id===sel.value?"on":"")+'" data-pick="'+qq.id+'">'+esc(qq.nome)+(qq.cap<pax?" ⚠︎":"")+'</button>'}).join(""):'<span class="warnbox" style="padding:6px 12px">Nenhum quarto livre nessas datas</span>'):"";
+    var fr=n>0?freeRooms(a,b2,id):[];$("free").innerHTML=n>0?(fr.length?'<span class="muted" style="font-size:12.5px;font-weight:700;align-self:center">Livres:</span>'+fr.map(function(qq){return'<button type="button" class="'+(qq.id===sel.value?"on":"")+'" data-pick="'+qq.id+'">'+esc(qq.nome)+(qq.cap<pax?" ⚠︎":"")+'</button>'}).join(""):'<span class="warnbox" style="padding:6px 12px">Nenhum quarto livre nessas datas</span><button type="button" data-espform>+ Lista de espera</button>'):"";
+    var sp=n>0?stayPrice(room(sel.value),a,b2):null;$("sugg").innerHTML=sp?'<div class="sugg">💡 Diária sugerida <b>'+money(sp.dia)+'</b><span>'+(sp.why.length?"("+esc(sp.why.join(", "))+")":"(diária base)")+' · total '+money(sp.total)+'</span><button type="button" data-usesugg="'+sp.dia+'">Usar</button></div>':"";
     var st=val("status"),msgs="",block=false;
     if(n<=0){msgs='<div class="warnbox">A saída precisa ser depois da entrada.</div>';block=true}
     else if(st!=="cancelada"){var c=conflicts({quarto:sel.value,entrada:a,saida:b2},id);if(c.length){block=true;msgs='<div class="warnbox">⚠︎ '+esc(room(sel.value).nome)+' já está com '+esc(c[0].nome)+' de '+br(c[0].entrada)+' a '+br(c[0].saida)+'. Escolha um quarto livre acima.</div>'}else if(room(sel.value).cap<pax)msgs='<div class="warnbox" style="background:var(--warn-soft);color:var(--warn)">Esse quarto é para até '+room(sel.value).cap+' pessoas e a reserva tem '+pax+'.</div>'}
@@ -608,6 +696,8 @@ function formSheet(id,pre){var r=id?S.reservas.find(function(x){return x.id===id
   f.addEventListener("input",function(e){if(e.target.name==="tel"&&!f.elements.cidade.value){var tel=val("tel").replace(/\D/g,""),p=S.reservas.find(function(z){return z.tel===tel&&z.cidade});if(p&&!r){f.elements.cidade.value=p.cidade;if(!f.elements.nome.value)f.elements.nome.value=p.nome}}upd()});
   f.addEventListener("change",upd);
   $("free").addEventListener("click",function(e){var p=e.target.closest("[data-pick]");if(p){$("fq").value=p.dataset.pick;upd()}});
+  $("sugg").addEventListener("click",function(e){var u=e.target.closest("[data-usesugg]");if(!u)return;$("dia").value=u.dataset.usesugg;var n=+$("cn").textContent||0;if(n)f.elements.valor.value=String(+u.dataset.usesugg*n)});
+  $("free").addEventListener("click",function(e){if(e.target.closest("[data-espform]"))espSheet({nome:val("nome"),tel:val("tel"),entrada:val("entrada"),saida:val("saida"),pessoas:(+val("adultos")||1)+(+val("criancas")||0),obs:val("obs")})});
   $("calc").addEventListener("click",function(){var d=parseFloat(String($("dia").value).replace(",","."))||0,n=+$("cn").textContent||0;if(d&&n){f.elements.valor.value=(d*n).toFixed(0)}});
   upd();
   f.addEventListener("submit",function(e){e.preventDefault();$("ferr").textContent="";var o={id:id||"",lead:x.lead||""};["nome","tel","cidade","entrada","saida","adultos","criancas","quarto","origem","status","valor","pago","obs"].forEach(function(k){o[k]=val(k)});o.pet=f.elements.pet.checked;
@@ -616,11 +706,19 @@ function formSheet(id,pre){var r=id?S.reservas.find(function(x){return x.id===id
     api("salvar",{reserva:o}).then(function(j){var i=S.reservas.findIndex(function(z){return z.id===j.reserva.id});if(i>=0)S.reservas[i]=j.reserva;else S.reservas.push(j.reserva);if(o.lead)S.pedidos=S.pedidos.filter(function(p){return p.id!==o.lead});me();render();detail(j.reserva.id);toast(id?"Reserva atualizada":"Reserva criada ✨");load(true)})
     .catch(function(err){$("ferr").textContent=err.message;$("fsave").disabled=false;$("fsave").textContent=id?"Salvar alterações":"Criar reserva"})})}
 
-function setStatus(id,st,quitar){return api("status",{id:id,status:st,quitar:!!quitar}).then(function(j){var i=S.reservas.findIndex(function(z){return z.id===id});S.reservas[i]=j.reserva;render();var lab={hospedado:"Check-in feito 🛎️",saiu:"Check-out feito 🧳",confirmada:"Reserva confirmada ✅",cancelada:"Reserva cancelada",pre:"Voltou para pré-reserva"}[st];toast(lab);return j.reserva}).catch(function(e){toast(e.message,true)})}
+function setStatus(id,st,quitar){return api("status",{id:id,status:st,quitar:!!quitar}).then(function(j){var i=S.reservas.findIndex(function(z){return z.id===id});S.reservas[i]=j.reserva;if(j.tarefa){S.tarefas=(S.tarefas||[]).concat([j.tarefa])}render();var lab={hospedado:"Check-in feito 🛎️",saiu:"Check-out feito 🧳 · tarefa de arrumar criada",confirmada:"Reserva confirmada ✅",cancelada:"Reserva cancelada",pre:"Voltou para pré-reserva"}[st];toast(lab);return j.reserva}).catch(function(e){toast(e.message,true)})}
 function checkout(id){var r=S.reservas.find(function(x){return x.id===id}),sd=saldo(r);
   if(!sd){setStatus(id,"saiu").then(function(){closeSheet()});return}
   openSheet("Check-out de "+esc(first(r.nome)),'<div class="dv"><div class="money"><div class="l"><span>Falta receber</span><b style="color:var(--warn)">'+money(sd)+'</b></div></div><p style="margin:0">O hóspede pagou o saldo agora?</p><div class="acts-grid"><button class="btn" data-co="'+id+'" data-q="1">Sim, recebi '+money(sd)+'</button><button class="btn ghost" data-co="'+id+'" data-q="0">Ainda não, fica pendente</button></div></div>')}
 
+function msgEspera(e,q){return"Olá, "+first(e.nome)+"! 🌿 Aqui é da Pousada Ingá. Boa notícia: vagou um quarto ("+q.nome+") para "+br(e.entrada)+" a "+br(e.saida)+", as datas que você queria. Quer que eu reserve para você?"}
+function espSheet(x){x=x||{};var t=today();
+  openSheet("Lista de espera",'<form class="form" id="ef"><label class="fld"><span>Nome</span><input name="nome" value="'+esc(x.nome||"")+'" required></label><label class="fld"><span>WhatsApp</span><input name="tel" value="'+esc(phoneFmt(x.tel||""))+'" inputmode="tel"></label><div class="grid2"><label class="fld"><span>Entrada</span><input type="date" name="entrada" value="'+(x.entrada||t)+'"></label><label class="fld"><span>Saída</span><input type="date" name="saida" value="'+(x.saida||add(t,2))+'"></label></div><div class="grid2"><label class="fld"><span>Pessoas</span><input type="number" name="pessoas" min="1" max="12" value="'+(x.pessoas||2)+'"></label><label class="chk" style="align-self:end"><input type="checkbox" name="flex"> Aceita outras datas</label></div><label class="fld"><span>Observação</span><input name="obs" value="'+esc(x.obs||"")+'"></label><p class="muted" style="font-size:13px;margin:0">Quando vagar um quarto nessas datas, o sistema avisa no celular e mostra em Hoje.</p><p class="err" id="eerr" style="text-align:left"></p><div class="sheet-foot"><button class="btn" type="submit">Colocar na lista</button></div></form>');
+  $("ef").addEventListener("submit",function(e){e.preventDefault();var f=this,o={};["nome","tel","entrada","saida","pessoas","obs"].forEach(function(k){o[k]=f.elements[k].value});o.flex=f.elements.flex.checked;
+    api("esperaSalvar",{espera:o}).then(function(j){S.espera=(S.espera||[]).concat([j.espera]);if(x.lead){api("descartarPedido",{id:x.lead});S.pedidos=S.pedidos.filter(function(p){return p.id!==x.lead});me()}closeSheet();render();toast("Na lista de espera ✓"+(esperaMatch(j.espera)?" · e já tem quarto livre!":""))}).catch(function(err){$("eerr").textContent=err.message})})}
+function taskSheet(){var t=today();
+  openSheet("Nova tarefa",'<form class="form" id="tf"><label class="fld"><span>O que precisa ser feito</span><input name="titulo" placeholder="Ex.: trocar lâmpada da varanda, comprar café…" required></label><div class="grid2"><label class="fld"><span>Quarto (opcional)</span><select name="quarto"><option value="">—</option>'+S.quartos.map(function(q){return'<option value="'+q.id+'">'+esc(q.nome)+'</option>'}).join("")+'</select></label><label class="fld"><span>Para quem (opcional)</span><input name="para" list="eqlist" placeholder="Nome"><datalist id="eqlist">'+(S.equipe||[]).map(function(u){return'<option value="'+esc(u.nome)+'">'}).join("")+'</datalist></label></div><label class="fld"><span>Até quando (opcional)</span><input type="date" name="prazo"></label><p class="err" id="terr" style="text-align:left"></p><div class="sheet-foot"><button class="btn" type="submit">Criar tarefa</button></div></form>');
+  $("tf").addEventListener("submit",function(e){e.preventDefault();var f=this;api("tarefaSalvar",{tarefa:{titulo:f.elements.titulo.value,quarto:f.elements.quarto.value,para:f.elements.para.value,prazo:f.elements.prazo.value}}).then(function(j){S.tarefas=(S.tarefas||[]).concat([j.tarefa]);closeSheet();render();toast("Tarefa criada · a equipe foi avisada")}).catch(function(err){$("terr").textContent=err.message})})}
 function memSheet(login){var u=login?S.equipe.find(function(x){return x.login===login}):null;
   var b='<form class="form" id="mf"><label class="fld"><span>Nome</span><input name="nome" value="'+esc(u?u.nome:"")+'" required></label><label class="fld"><span>Login (sem espaço)</span><input name="login" value="'+esc(u?u.login:"")+'" '+(u?"readonly":"")+' autocapitalize="none" required></label><label class="fld"><span>'+(u?"Nova senha (deixe vazio para manter)":"Senha (mínimo 6)")+'</span><input name="senha" type="text" autocomplete="new-password" '+(u?"":"required")+'></label><div class="grid2"><label class="fld"><span>Acesso</span><select name="papel"><option value="equipe"'+(u&&u.papel==="admin"?"":" selected")+'>Equipe</option><option value="admin"'+(u&&u.papel==="admin"?" selected":"")+'>Administradora</option></select></label>'+(u?'<label class="chk" style="align-self:end"><input type="checkbox" name="ativo"'+(u.ativo?" checked":"")+'> Acesso liberado</label>':"")+'</div><p class="muted" style="font-size:13px;margin:0">Equipe vê e lança reservas e pagamentos. Administradora também apaga reservas, mexe nos quartos e na equipe.</p><p class="err" id="merr" style="text-align:left"></p><div class="sheet-foot">'+(u?'<button type="button" class="btn danger" id="mdel">Remover</button>':"")+'<button class="btn" type="submit">Salvar</button></div></form>';
   openSheet(u?"Editar acesso":"Adicionar pessoa",b);var f=$("mf");
@@ -634,9 +732,20 @@ function pwSheet(){if(S.me.login==="dona"){openSheet("Trocar senha",'<p style="m
 function bind(root){root=root||$("main");
   if(VIEW==="mapa"&&root===$("main")){drawBars();var m=$("map");if(m){var t=today(),off=diff(MAPSTART,t);if(off>0)m.scrollLeft=Math.max(0,(off-1)*parseFloat(getComputedStyle(m).getPropertyValue("--dw")))}}
   var q=$("q");if(q&&root===$("main"))q.addEventListener("input",function(){QUERY=q.value;$("rlist").innerHTML=rlist()});
-  var qa=$("qadd");if(qa&&root===$("main")){qa.addEventListener("click",function(){var d=document.createElement("div");d.className="qrow";d.dataset.qid="";d.innerHTML='<label class="fld"><input placeholder="Nome do quarto" data-qn></label><label class="fld"><input type="number" min="1" max="12" value="2" data-qc></label><button class="btn danger sm" data-qdel>✕</button>';$("qedit").appendChild(d)});
-    $("qsave").addEventListener("click",function(){var L=[].map.call(document.querySelectorAll("#qedit .qrow"),function(r){return{id:r.dataset.qid,nome:r.querySelector("[data-qn]").value,cap:r.querySelector("[data-qc]").value}});
+  var qa=$("qadd");if(qa&&root===$("main")){qa.addEventListener("click",function(){var d=document.createElement("div");d.className="qrow";d.dataset.qid="";d.innerHTML='<label class="fld"><input placeholder="Nome do quarto" data-qn></label><label class="fld"><input type="number" min="1" max="12" value="2" data-qc></label><label class="fld"><input data-qp inputmode="decimal" placeholder="R$"></label><button class="btn danger sm" data-qdel>✕</button>';$("qedit").appendChild(d)});
+    $("qsave").addEventListener("click",function(){var L=[].map.call(document.querySelectorAll("#qedit .qrow"),function(r){return{id:r.dataset.qid,nome:r.querySelector("[data-qn]").value,cap:r.querySelector("[data-qc]").value,preco:(r.querySelector("[data-qp]")||{}).value}});
       api("quartos",{quartos:L}).then(function(j){S.quartos=j.quartos;toast("Quartos salvos ✓");render()}).catch(function(e){toast(e.message,true)})})}}
+document.addEventListener("click",function(e){var x=e.target.closest("[data-tk],[data-tkdel],[data-tknew],[data-espnew],[data-esprm],[data-esprv],[data-espav],[data-espfromlead],[data-scroll],[data-fcall]");if(x){var d0=x.dataset;
+  if(d0.tk!==undefined){var tk=(S.tarefas||[]).find(function(z){return z.id===d0.tk});if(!tk)return;var nv=!tk.feito;tk.feito=nv;tk.feitoPor=S.me.nome;tk.feitoEm=Date.now();render();api("tarefaFeita",{id:tk.id,feito:nv}).then(function(j){Object.assign(tk,j.tarefa);if(nv)toast(tk.tipo==="limpeza"?"Quarto pronto ✨":"Tarefa feita ✓")}).catch(function(err){tk.feito=!nv;render();toast(err.message,true)});return}
+  if(d0.tkdel!==undefined){if(!confirm("Apagar esta tarefa?"))return;S.tarefas=S.tarefas.filter(function(z){return z.id!==d0.tkdel});render();api("tarefaApagar",{id:d0.tkdel});return}
+  if(d0.tknew!==undefined){taskSheet();return}
+  if(d0.espnew!==undefined){espSheet({});return}
+  if(d0.espfromlead!==undefined){var pl=S.pedidos.find(function(z){return z.id===d0.espfromlead});if(pl)espSheet({nome:pl.name,tel:pl.phone,entrada:pl.start,saida:pl.end,pessoas:(+pl.ad||2)+(+pl.ch||0),obs:pl.obs,lead:pl.id});return}
+  if(d0.esprm!==undefined){if(!confirm("Tirar da lista de espera?"))return;S.espera=S.espera.filter(function(z){return z.id!==d0.esprm});render();api("esperaStatus",{id:d0.esprm,status:"removido"});return}
+  if(d0.espav!==undefined){var ea=(S.espera||[]).find(function(z){return z.id===d0.espav});if(ea){ea.status="avisado";api("esperaStatus",{id:ea.id,status:"avisado"});setTimeout(render,300)}return}
+  if(d0.esprv!==undefined){var er=(S.espera||[]).find(function(z){return z.id===d0.esprv});if(!er)return;var q=esperaMatch(er)||bestRoom(er.entrada,er.saida,1);formSheet(null,{nome:er.nome,tel:er.tel,entrada:er.entrada,saida:er.saida,adultos:er.pessoas,quarto:q?q.id:"",status:"confirmada",obs:er.obs||""});S.espera=S.espera.filter(function(z){return z.id!==er.id});api("esperaStatus",{id:er.id,status:"removido"});return}
+  if(d0.fcall!==undefined){FCALL=!FCALL;render();return}
+  if(d0.scroll!==undefined){setTimeout(function(){var el=$(d0.scroll);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})},50);return}}});
 document.addEventListener("click",function(e){var el=e.target.closest("[data-open],[data-new],[data-st],[data-out],[data-co],[data-edit],[data-cancel],[data-del],[data-pay],[data-payall],[data-conv],[data-disc],[data-mv],[data-f],[data-fm],[data-mem],[data-qdel]");if(!el)return;var d=el.dataset;
   if(d.open!==undefined){detail(d.open);return}
   if(d.new!==undefined){formSheet(null,{quarto:d.new,entrada:d.d,saida:add(d.d,1)});return}
@@ -676,12 +785,12 @@ function pushOn(prefs){if(!("PushManager" in window))return Promise.reject(new E
     return Promise.all([swReg(),api("pushChave")])}).then(function(x){var reg=x[0],key=x[1].publicKey;return reg.pushManager.getSubscription().then(function(old){return old||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64(key)})})})
   .then(function(sub){PUSH.sub=sub;return api("pushAtivar",{sub:sub.toJSON(),prefs:prefs})}).then(function(j){PUSH.on=true;PUSH.prefs=j.prefs})}
 function pushOff(){var sub=PUSH.sub;PUSH.on=false;if(!sub)return Promise.resolve();return api("pushDesativar",{endpoint:sub.endpoint}).then(function(){return sub.unsubscribe()}).catch(function(){})}
-function notifSheet(){var P=PUSH.prefs||{pedidos:true,reservas:true,resumo:true};
+function notifSheet(){var P=PUSH.prefs||{pedidos:true,reservas:true,tarefas:true,resumo:true};
   if(IOS&&!STANDALONE){openSheet("Avisos no iPhone",'<div class="dv"><p style="margin:0">No iPhone, os avisos só funcionam com a Gestão <b>instalada como app</b>. Leva 30 segundos:</p><ol class="steps"><li>Abra esta página no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> (o quadrado com a seta para cima).</li><li>Toque em <b>Adicionar à Tela de Início</b> e depois em <b>Adicionar</b>.</li><li>Abra a <b>Gestão Ingá</b> pelo ícone novo, entre e volte aqui em 🔔 Notificações.</li></ol><p class="muted" style="margin:0;font-size:13px">Precisa do iOS 16.4 ou mais novo.</p></div>');return}
   if(!PUSH.ok){openSheet("Notificações",'<p style="margin:0">Este navegador não recebe notificações. No Android, use o <b>Chrome</b>. No computador, Chrome, Edge ou Firefox.</p>');return}
   function tg(k,t,d){return'<label class="tg"><span class="tx"><b>'+t+'</b><span>'+d+'</span></span><span class="sw"><input type="checkbox" data-pref="'+k+'"'+(P[k]!==false?" checked":"")+'><i></i></span></label>'}
   var b='<div class="dv"><div class="'+(PUSH.on?"okbox":"warnbox")+'" style="'+(PUSH.on?"":"background:var(--sand-2);color:var(--ink)")+'">'+(PUSH.on?"🔔 Avisos ligados neste aparelho.":"🔕 Avisos desligados neste aparelho.")+'</div>'+
-    '<div>'+tg("pedidos","📥 Pedido novo no site","Quando alguém deixa nome e WhatsApp na reserva do site.")+tg("reservas","🛏️ Reservas da equipe","Quando outra pessoa lança ou cancela uma reserva.")+tg("resumo","☀️ Resumo do dia às 7h","Quem chega, quem sai, o que cobrar e dicas do dia.")+'</div>'+
+    '<div>'+tg("pedidos","📥 Pedido novo no site","Quando alguém deixa nome e WhatsApp na reserva do site.")+tg("reservas","🛏️ Reservas e lista de espera","Quando outra pessoa lança ou cancela uma reserva, ou quando vaga quarto para alguém da lista de espera.")+tg("tarefas","🧹 Tarefas da equipe","Quarto para arrumar depois do check-out e tarefas novas.")+tg("resumo","☀️ Resumo do dia às 7h","Quem chega, quem sai, o que cobrar e dicas do dia.")+'</div>'+
     '<p class="err" id="nerr" style="text-align:left"></p><div class="sheet-foot">'+(PUSH.on?'<button class="btn danger" id="noff">Desligar</button><button class="btn ghost" id="ntest">Enviar teste</button><button class="btn" id="nsave">Salvar</button>':'<button class="btn rose" id="non">🔔 Ligar avisos neste aparelho</button>')+'</div>'+
     '<p class="muted" style="font-size:12.5px;margin:0">Cada pessoa liga no próprio celular. Os avisos chegam mesmo com o app fechado.</p></div>';
   openSheet("Notificações",b);

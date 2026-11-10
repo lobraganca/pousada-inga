@@ -11,6 +11,8 @@ const K = {
   rooms: "inga:g:rooms",       // string JSON [{id,nome,cap}]
   res: "inga:g:res",           // hash id -> JSON reserva
   log: "inga:g:log",           // lista de eventos
+  espera: "inga:g:espera",     // hash id -> JSON lista de espera
+  tarefas: "inga:g:tarefas",   // hash id -> JSON tarefa da equipe
 };
 const SESS_TTL = 60 * 60 * 24 * 30;
 const DEFAULT_ROOMS = [
@@ -86,7 +88,10 @@ async function quem(token) {
 }
 
 async function carregar() {
-  const [rooms, resv, leadIds, users] = await pipeline([["GET", K.rooms], ["HGETALL", K.res], ["ZREVRANGE", "inga:leads", 0, 99], ["HGETALL", K.users]]);
+  const [rooms, resv, leadIds, users, esp, tar] = await pipeline([["GET", K.rooms], ["HGETALL", K.res], ["ZREVRANGE", "inga:leads", 0, 99], ["HGETALL", K.users], ["HGETALL", K.espera], ["HGETALL", K.tarefas]]);
+  const vals = (h) => { const o = []; if (Array.isArray(h)) for (let i = 1; i < h.length; i += 2) { const x = J(h[i], null); if (x) o.push(x); } return o; };
+  const espera = vals(esp).filter((e) => e.status !== "removido");
+  const tarefas = vals(tar).filter((t) => !t.feito || Date.now() - (t.feitoEm || 0) < 3 * 864e5);
   const R = J(rooms, null) || DEFAULT_ROOMS;
   const reservas = [];
   if (Array.isArray(resv)) for (let i = 1; i < resv.length; i += 2) { const r = J(resv[i], null); if (r) reservas.push(r); }
@@ -99,7 +104,7 @@ async function carregar() {
   }
   const equipe = [];
   if (Array.isArray(users)) for (let i = 0; i < users.length; i += 2) { const u = J(users[i + 1], {}); equipe.push({ login: users[i], nome: u.nome, papel: u.papel, ativo: u.ativo !== false }); }
-  return { quartos: R, reservas, pedidos, equipe };
+  return { quartos: R, reservas, pedidos, equipe, espera, tarefas };
 }
 
 function validar(r, todas) {
@@ -111,13 +116,56 @@ function validar(r, todas) {
     if (c) throw new Err(409, `Esse quarto já está reservado para ${c.nome} de ${br(c.entrada)} a ${br(c.saida)}.`);
   }
 }
-const br = (d) => d.split("-").reverse().join("/");
+const br = (d) => String(d).slice(8, 10) + "/" + String(d).slice(5, 7);
 
 async function logar(me, o) {
   await pipeline([["LPUSH", K.log, JSON.stringify({ em: Date.now(), por: me.nome, ...o })], ["LTRIM", K.log, 0, 299]]);
 }
 
+// Check-out cria a tarefa de arrumar o quarto e avisa a equipe.
+async function limpeza(me, r) {
+  const [rooms] = await pipeline([["GET", K.rooms]]);
+  const q = (J(rooms, null) || DEFAULT_ROOMS).find((x) => x.id === r.quarto) || { nome: "quarto" };
+  const t = { id: "T" + Date.now().toString(36) + crypto.randomBytes(2).toString("hex"), titulo: `Arrumar ${q.nome}`, quarto: r.quarto, tipo: "limpeza", res: r.id, hospede: r.nome, feito: false, criadoPor: me.nome, criadoEm: Date.now() };
+  await pipeline([["HSET", K.tarefas, t.id, JSON.stringify(t)]]);
+  await avisar("tarefas", { title: `🧹 Arrumar ${q.nome}`, body: `${String(r.nome).split(" ")[0]} fez check-out. Quarto liberado para limpeza.`, url: "/gestao#hoje", tag: "t-" + t.id });
+  return t;
+}
+
+// Quando um quarto vaga (cancelamento), avisa se alguém da lista de espera cabe nas datas.
+async function vagou(r, reservas) {
+  try {
+    const [esp, rooms] = await pipeline([["HGETALL", K.espera], ["GET", K.rooms]]);
+    const Q = J(rooms, null) || DEFAULT_ROOMS;
+    const lista = [];
+    if (Array.isArray(esp)) for (let i = 1; i < esp.length; i += 2) { const e = J(esp[i], null); if (e && e.status === "esperando") lista.push(e); }
+    const hoje = new Date(Date.now() - 3 * 36e5).toISOString().slice(0, 10);
+    const ok = lista.filter((e) => e.saida > hoje && e.entrada < r.saida && r.entrada < e.saida && Q.some((q) => q.cap >= e.pessoas && !reservas.some((x) => x.status !== "cancelada" && x.quarto === q.id && x.entrada < e.saida && e.entrada < x.saida)));
+    for (const e of ok.slice(0, 3)) await avisar("reservas", { title: `✨ Vagou para ${e.nome}!`, body: `Está na lista de espera para ${br(e.entrada)} a ${br(e.saida)} e agora tem quarto. Chame no WhatsApp!`, url: "/gestao#pedidos", tag: "esp-" + e.id });
+  } catch {}
+}
+
+// Trava: só uma gravação de reserva por vez. Evita que duas pessoas, ao mesmo tempo,
+// reservem o mesmo quarto nas mesmas datas (as duas checariam "livre" antes de gravar).
+async function comTrava(fn) {
+  const tk = crypto.randomBytes(8).toString("hex");
+  let ok = false;
+  for (let i = 0; i < 40 && !ok; i++) {
+    const [r] = await pipeline([["SET", "inga:g:lock", tk, "NX", "PX", 8000]]);
+    ok = r === "OK";
+    if (!ok) await new Promise((z) => setTimeout(z, 150));
+  }
+  if (!ok) throw new Err(503, "O sistema está salvando outra reserva. Tente de novo em instantes.");
+  try { return await fn(); }
+  finally { const [cur] = await pipeline([["GET", "inga:g:lock"]]); if (cur === tk) await pipeline([["DEL", "inga:g:lock"]]); }
+}
+
 async function acao(me, b) {
+  if (b.acao === "salvar" || b.acao === "status") return comTrava(() => acaoBase(me, b));
+  return acaoBase(me, b);
+}
+
+async function acaoBase(me, b) {
   const admin = me.papel === "admin";
   switch (b.acao) {
     case "dados": {
@@ -167,8 +215,13 @@ async function acao(me, b) {
       validar(n, reservas);
       await pipeline([["HSET", K.res, r.id, JSON.stringify(n)]]);
       await logar(me, { tipo: b.status, res: r.id, nome: r.nome, quarto: r.quarto });
-      if (b.status === "cancelada") await avisar("reservas", { title: `Reserva cancelada: ${r.nome}`, body: `${br(r.entrada)} a ${br(r.saida)} · o quarto ficou livre · por ${me.nome}`, url: "/gestao#mapa", tag: "res-" + r.id }, { exceto: me.login });
-      return { ok: true, reserva: n };
+      if (b.status === "cancelada") {
+        await avisar("reservas", { title: `Reserva cancelada: ${r.nome}`, body: `${br(r.entrada)} a ${br(r.saida)} · o quarto ficou livre · por ${me.nome}`, url: "/gestao#mapa", tag: "res-" + r.id }, { exceto: me.login });
+        await vagou(r, reservas.map((x) => (x.id === n.id ? n : x)));
+      }
+      let tarefa = null;
+      if (b.status === "saiu" && r.status !== "saiu") tarefa = await limpeza(me, n);
+      return { ok: true, reserva: n, tarefa };
     }
     case "pagamento": {
       const { reservas } = await carregar();
@@ -186,7 +239,7 @@ async function acao(me, b) {
       const { reservas } = await carregar();
       const r = reservas.find((x) => x.id === b.id);
       await pipeline([["HDEL", K.res, String(b.id)]]);
-      if (r) await logar(me, { tipo: "apagou", nome: r.nome });
+      if (r) { await logar(me, { tipo: "apagou", nome: r.nome }); if (r.status !== "cancelada" && r.status !== "saiu") await vagou(r, reservas.filter((x) => x.id !== r.id)); }
       return { ok: true };
     }
     case "descartarPedido": {
@@ -196,7 +249,7 @@ async function acao(me, b) {
     }
     case "quartos": {
       if (!admin) throw new Err(403, "Só a administradora pode alterar os quartos.");
-      const list = (Array.isArray(b.quartos) ? b.quartos : []).slice(0, 20).map((q, i) => ({ id: txt(q.id, 10).replace(/\W/g, "") || "r" + (i + 1) + Date.now().toString(36), nome: txt(q.nome, 40) || "Quarto " + (i + 1), cap: Math.max(1, Math.min(12, parseInt(q.cap) || 2)) }));
+      const list = (Array.isArray(b.quartos) ? b.quartos : []).slice(0, 20).map((q, i) => ({ id: txt(q.id, 10).replace(/\W/g, "") || "r" + (i + 1) + Date.now().toString(36), nome: txt(q.nome, 40) || "Quarto " + (i + 1), cap: Math.max(1, Math.min(12, parseInt(q.cap) || 2)), preco: num(q.preco) }));
       if (!list.length) throw new Err(400, "Precisa ter pelo menos um quarto.");
       await pipeline([["SET", K.rooms, JSON.stringify(list)]]);
       await logar(me, { tipo: "quartos" });
@@ -229,6 +282,52 @@ async function acao(me, b) {
       if (String(b.nova || "").length < 6) throw new Err(400, "A nova senha precisa ter pelo menos 6 caracteres.");
       u.salt = crypto.randomBytes(12).toString("hex"); u.hash = hashPw(b.nova, u.salt);
       await pipeline([["HSET", K.users, me.login, JSON.stringify(u)]]);
+      return { ok: true };
+    }
+    case "esperaSalvar": {
+      const x = b.espera || {};
+      const e = {
+        id: x.id ? txt(x.id, 30).replace(/[^\w-]/g, "") : "E" + Date.now().toString(36) + crypto.randomBytes(2).toString("hex"),
+        nome: txt(x.nome, 80), tel: txt(x.tel, 20).replace(/\D/g, ""), entrada: txt(x.entrada, 10), saida: txt(x.saida, 10),
+        pessoas: Math.max(1, Math.min(12, parseInt(x.pessoas) || 2)), flex: !!x.flex, obs: txt(x.obs, 300),
+        status: x.status === "avisado" ? "avisado" : "esperando", criadoPor: me.nome, criadoEm: Date.now(),
+      };
+      if (!e.nome) throw new Err(400, "Escreva o nome.");
+      if (!isDay(e.entrada) || !isDay(e.saida) || e.saida <= e.entrada) throw new Err(400, "Confira as datas.");
+      await pipeline([["HSET", K.espera, e.id, JSON.stringify(e)]]);
+      await logar(me, { tipo: "espera", nome: e.nome, entrada: e.entrada, saida: e.saida });
+      return { ok: true, espera: e };
+    }
+    case "esperaStatus": {
+      const id = txt(b.id, 30).replace(/[^\w-]/g, "");
+      const [raw] = await pipeline([["HGET", K.espera, id]]);
+      const e = J(raw, null);
+      if (!e) throw new Err(404, "Não encontrado na lista de espera.");
+      if (b.status === "removido") await pipeline([["HDEL", K.espera, id]]);
+      else { e.status = b.status === "avisado" ? "avisado" : "esperando"; e.avisadoEm = Date.now(); await pipeline([["HSET", K.espera, id, JSON.stringify(e)]]); }
+      return { ok: true };
+    }
+    case "tarefaSalvar": {
+      const x = b.tarefa || {};
+      const { quartos } = await carregar();
+      const t = { id: "T" + Date.now().toString(36) + crypto.randomBytes(2).toString("hex"), titulo: txt(x.titulo, 120), quarto: quartos.some((q) => q.id === x.quarto) ? x.quarto : "", para: txt(x.para, 40), prazo: isDay(x.prazo) ? x.prazo : "", tipo: "manual", feito: false, criadoPor: me.nome, criadoEm: Date.now() };
+      if (!t.titulo) throw new Err(400, "Escreva a tarefa.");
+      await pipeline([["HSET", K.tarefas, t.id, JSON.stringify(t)]]);
+      await avisar("tarefas", { title: `📋 Nova tarefa${t.para ? " para " + t.para : ""}`, body: t.titulo + (t.prazo ? ` · até ${br(t.prazo)}` : "") + ` · por ${me.nome}`, url: "/gestao#hoje", tag: "t-" + t.id }, { exceto: me.login });
+      return { ok: true, tarefa: t };
+    }
+    case "tarefaFeita": {
+      const id = txt(b.id, 30).replace(/[^\w-]/g, "");
+      const [raw] = await pipeline([["HGET", K.tarefas, id]]);
+      const t = J(raw, null);
+      if (!t) throw new Err(404, "Tarefa não encontrada.");
+      t.feito = !!b.feito; t.feitoPor = t.feito ? me.nome : ""; t.feitoEm = t.feito ? Date.now() : 0;
+      await pipeline([["HSET", K.tarefas, id, JSON.stringify(t)]]);
+      if (t.feito) await logar(me, { tipo: "tarefa", nome: t.titulo });
+      return { ok: true, tarefa: t };
+    }
+    case "tarefaApagar": {
+      await pipeline([["HDEL", K.tarefas, txt(b.id, 30).replace(/[^\w-]/g, "")]]);
       return { ok: true };
     }
     case "pushChave": {

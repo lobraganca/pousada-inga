@@ -18,7 +18,9 @@ export default async function handler(req, res) {
   const [lock] = await pipeline([["SET", `inga:g:resumo:${t}`, "1", "NX", "EX", 60 * 60 * 30]]);
   if (lock !== "OK") return res.status(200).json({ ok: true, motivo: "já enviado hoje" });
 
-  const [rooms, resv, leadIds] = await pipeline([["GET", "inga:g:rooms"], ["HGETALL", "inga:g:res"], ["ZREVRANGE", "inga:leads", 0, 99]]);
+  const [rooms, resv, leadIds, tar] = await pipeline([["GET", "inga:g:rooms"], ["HGETALL", "inga:g:res"], ["ZREVRANGE", "inga:leads", 0, 99], ["HGETALL", "inga:g:tarefas"]]);
+  const abertas = [];
+  if (Array.isArray(tar)) for (let i = 1; i < tar.length; i += 2) { try { const x = JSON.parse(tar[i]); if (!x.feito) abertas.push(x); } catch {} }
   let nq = 7;
   try { nq = (JSON.parse(rooms) || []).length || 7; } catch {}
   const R = [];
@@ -39,6 +41,9 @@ export default async function handler(req, res) {
   linhas.push(chegam.length ? `🛎️ Chegam: ${chegam.map((r) => first(r.nome)).join(", ")}` : "🛎️ Ninguém chega hoje");
   if (saem.length) linhas.push(`🧳 Saem: ${saem.map((r) => first(r.nome)).join(", ")}${cobrar ? ` (cobrar R$ ${cobrar.toLocaleString("pt-BR")})` : ""}`);
   linhas.push(`🛏️ ${ocup} de ${nq} quartos ocupados`);
+  const sujos = chegam.filter((r) => abertas.some((x) => x.tipo === "limpeza" && x.quarto === r.quarto));
+  if (sujos.length) linhas.push(`⚠️ Chega hóspede em quarto ainda não arrumado: ${sujos.map((r) => first(r.nome)).join(", ")}`);
+  if (abertas.length) linhas.push(`📋 ${abertas.length} tarefa${abertas.length > 1 ? "s" : ""} da equipe em aberto`);
   if (pedidos) linhas.push(`📥 ${pedidos} pedido${pedidos > 1 ? "s" : ""} do site esperando resposta`);
   if (paradas) linhas.push(`⏳ ${paradas} pré-reserva${paradas > 1 ? "s" : ""} sem confirmar há mais de 2 dias`);
 

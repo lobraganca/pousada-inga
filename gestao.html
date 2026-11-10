@@ -335,94 +335,6 @@ main{padding-top:22px;padding-bottom:110px}
 .sw input:checked+i{background:var(--leaf)}
 .sw input:checked+i::after{transform:translateX(20px)}
 .steps{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14.5px}
-
-/* ================= VISUAL PREMIUM ================= */
-body{background:radial-gradient(1200px 600px at 100% -10%,#E6EDE4 0,transparent 60%),var(--sand)}
-.card{border:1px solid rgba(211,220,214,.8);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 18px 40px -32px rgba(20,40,30,.45);border-radius:26px}
-.card h2{font-size:24px}
-.ch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-.ch .cnt{min-width:26px;height:26px;border-radius:99px;background:var(--rose);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;padding:0 8px}
-main>.sec>*{animation:rise .55s cubic-bezier(.2,.8,.2,1) both}
-main>.sec>*:nth-child(2){animation-delay:.05s}main>.sec>*:nth-child(3){animation-delay:.1s}main>.sec>*:nth-child(4){animation-delay:.15s}main>.sec>*:nth-child(5){animation-delay:.2s}main>.sec>*:nth-child(6){animation-delay:.25s}main>.sec>*:nth-child(n+7){animation-delay:.3s}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}}
-@media (prefers-reduced-motion:reduce){main>.sec>*{animation:none}}
-/* hero */
-.home{gap:18px}
-.hero{position:relative;border-radius:32px;overflow:hidden;min-height:300px;display:flex;align-items:flex-end;color:#fff;background:#2B3122 var(--img) center/cover no-repeat;box-shadow:0 30px 60px -40px rgba(10,30,20,.8)}
-.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,26,18,.05) 0%,rgba(16,26,18,.25) 40%,rgba(16,26,18,.82) 100%)}
-.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(600px 300px at 0% 100%,rgba(176,108,128,.35),transparent 70%)}
-.hero-in{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;width:100%;padding:28px 30px 72px}
-.hero .eyebrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85)}
-.hero h1{font-size:clamp(36px,6vw,58px);line-height:1;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.25)}
-.hero-sub{margin:12px 0 0;font-size:15.5px;color:rgba(255,255,255,.9);max-width:46ch}
-.wx{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:4px 10px;letter-spacing:.02em;text-transform:none;font-size:12.5px}
-.wx:empty{display:none}
-.ring{position:relative;width:132px;height:132px;flex:none}
-.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
-.ring circle{fill:none;stroke-width:8}
-.ring .rt{stroke:rgba(255,255,255,.18)}
-.ring .rv{stroke:#C6E28E;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1);animation:ringIn 1.3s cubic-bezier(.2,.8,.2,1) both}
-@keyframes ringIn{from{stroke-dashoffset:276}}
-.ring>div{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
-.ring b{font-family:var(--display);font-weight:400;font-size:40px;line-height:1}
-.ring b small{font-size:18px;opacity:.7}
-.ring span{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
-@media (max-width:600px){.hero{min-height:300px;border-radius:28px}.hero-in{padding:22px 20px 58px;display:block}.hero h1{font-size:40px}.hero-sub{font-size:14.5px;max-width:none}.ring{position:absolute;top:18px;right:16px;width:84px;height:84px}.ring b{font-size:26px}.ring b small{font-size:13px}.ring span{font-size:8.5px;letter-spacing:.06em}.hero .eyebrow{padding-right:96px}}
-/* glance */
-.glance{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:-44px;padding:0 14px;position:relative;z-index:2}
-.gl{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;align-items:center;justify-items:start;background:rgba(251,252,250,.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.9);border-radius:22px;padding:14px 16px;box-shadow:0 16px 34px -20px rgba(10,30,20,.45);cursor:pointer;text-align:left;transition:transform .2s}
-.gl:hover{transform:translateY(-3px)}
-.gl .gi{grid-row:span 2;font-size:24px;width:44px;height:44px;border-radius:14px;background:var(--sand);display:grid;place-items:center}
-.gl b{font-family:var(--display);font-weight:400;font-size:32px;line-height:1.05}
-.gl b.m{font-size:22px;line-height:1.5}
-.gl>span:last-child{font-size:12px;font-weight:700;color:var(--ink-soft)}
-@media (max-width:600px){.glance{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 10px;margin-top:-40px}.gl{grid-template-columns:auto minmax(0,1fr);column-gap:10px;align-items:center;padding:10px 12px;border-radius:18px}.gl .gi{grid-row:span 2;margin:0;font-size:20px}.gl b{font-size:24px;line-height:1}.gl b.m{font-size:17px;line-height:1.2}.gl>span:last-child{font-size:11.5px}}
-/* alerts refinados */
-.al{border:0;background:var(--sand);border-radius:18px;position:relative;overflow:hidden;padding-left:18px}
-.al::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--line)}
-.al.warn::before{background:var(--warn)}.al.rose::before{background:var(--rose)}.al.sea::before{background:var(--sea)}.al.leaf::before{background:var(--leaf)}
-.al .ic{background:var(--paper)!important;box-shadow:0 4px 10px -6px rgba(0,0,0,.25)}
-.calm{background:linear-gradient(120deg,var(--leaf-soft),#EEF3E6);padding:18px 20px;gap:16px}
-.calm svg{width:70px;flex:none}
-.calm b{display:block;font-family:var(--display);font-weight:400;font-size:22px;color:var(--olive)}
-.calm span{font-weight:600;color:var(--ink-soft)}
-/* quartos agora */
-.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px}
-.room{display:grid;gap:2px;align-content:start;text-align:left;border:0;border-radius:20px;padding:14px 14px 16px;cursor:pointer;background:var(--sand);position:relative;overflow:hidden;min-height:118px;transition:transform .2s,box-shadow .2s}
-.room:hover{transform:translateY(-2px);box-shadow:0 14px 26px -18px rgba(10,30,20,.5)}
-.room::before{content:"";position:absolute;left:14px;right:14px;top:0;height:4px;border-radius:0 0 4px 4px;background:var(--c,var(--line))}
-.room .rn{display:flex;justify-content:space-between;gap:6px;font-size:12px;font-weight:800;color:var(--ink-soft);margin-top:4px}
-.room .rn small{font-size:11px;font-weight:700;opacity:.7}
-.room .rs{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c,var(--ink-soft));margin-top:8px}
-.room b{font-size:15px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.room .rsub{font-size:12px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.room.free{--c:var(--leaf);background:linear-gradient(160deg,#F1F6EC,var(--sand))}
-.room.free b{color:var(--leaf)}
-.room.occ{--c:var(--sea);background:linear-gradient(160deg,#E4F0F1,var(--sand))}
-.room.in{--c:var(--rose);background:linear-gradient(160deg,#F7E7EC,var(--sand))}
-.room.out{--c:var(--warn);background:linear-gradient(160deg,#FAEEE3,var(--sand))}
-.room.dirty{--c:var(--gold);background:linear-gradient(160deg,#F7F0DF,var(--sand))}
-@media (max-width:600px){.rooms{grid-template-columns:repeat(2,minmax(0,1fr))}.room{min-height:108px}}
-.av2{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--rose),#8E5468);flex:none}
-.ri{grid-template-columns:auto minmax(0,1fr) auto}
-.ri .av2,.av2{color:#fff!important;font-size:15px}
-/* barra de abas flutuante no celular */
-@media (max-width:860px){
-  .tabs{left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));border-radius:26px;border:1px solid rgba(255,255,255,.9);background:rgba(251,252,250,.86);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 18px 40px -18px rgba(10,30,20,.45);padding:6px}
-  .tabs button{border-radius:18px}
-  .tabs button[aria-selected=true]{background:var(--olive);color:#EEF1EC}
-  .fab{bottom:calc(var(--tab-h) + 30px + env(safe-area-inset-bottom,0px));border-radius:22px}
-  main{padding-bottom:calc(var(--tab-h) + 120px + env(safe-area-inset-bottom,0px))}
-}
-.fab{background:linear-gradient(135deg,#3A4430,var(--olive));box-shadow:0 18px 34px -14px rgba(43,49,34,.75)}
-/* splash */
-.splash{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--sand);transition:opacity .5s .1s,visibility .6s .1s}
-.splash svg{width:150px;animation:leaf 1.1s cubic-bezier(.2,.8,.2,1) both}
-@keyframes leaf{from{opacity:0;transform:scale(.85) rotate(-6deg)}}
-.splash.off{opacity:0;visibility:hidden}
-/* folha / sheet mais elegante */
-.sheet{border-top:4px solid var(--rose)}
-.sh-h h2{font-size:28px}
 /* fab + toast */
 .fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
 @media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 18px + env(safe-area-inset-bottom,0px));padding:14px 18px}}
@@ -447,7 +359,6 @@ main>.sec>*:nth-child(2){animation-delay:.05s}main>.sec>*:nth-child(3){animation
   <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></g></symbol>
 </defs></svg>
 
-<div class="splash" id="splash" aria-hidden="true"><svg viewBox="0 0 200 120"><use href="#logo"/></svg></div>
 <!-- LOGIN -->
 <section class="login wrap" id="login" hidden>
   <form class="login-card" id="lform" autocomplete="on">
@@ -590,7 +501,7 @@ function render(){if(!S)return;
   document.querySelectorAll(".tabs [data-v]").forEach(function(b){b.setAttribute("aria-selected",b.dataset.v===VIEW)});
   var f={hoje:vHoje,mapa:vMapa,reservas:vReservas,pedidos:vPedidos,caixa:vCaixa,ajustes:vAjustes}[VIEW]||vHoje;
   if(VIEW==="ajustes"&&S.me.papel!=="admin"){VIEW="hoje";f=vHoje}
-  $("main").innerHTML=f();bind();if(VIEW==="hoje")wxLoad()}
+  $("main").innerHTML=f();bind()}
 
 /* ---------- HOJE ---------- */
 function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
@@ -609,29 +520,19 @@ function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
   (S.espera||[]).forEach(function(e){var q=esperaMatch(e);if(q)al.push({c:"leaf",i:"✨",t:"Vagou para "+e.nome+"!",s:"Está na lista de espera para "+br(e.entrada)+" a "+br(e.saida)+". "+q.nome+" está livre.",a:(e.tel?'<a class="btn wa sm" target="_blank" rel="noopener" data-espav="'+e.id+'" href="'+waLink(e.tel,msgEspera(e,q))+'"><svg><use href="#wa"/></svg>Avisar</a>':"")+'<button class="btn sm" data-esprv="'+e.id+'">Criar reserva</button>'})});
   if(S.reservas.length>=15)periods(t,75).filter(function(p){return p.pico&&p.a>t}).forEach(function(p){var tot=diff(p.a,p.b)*S.quartos.length,o=bookedNights(p.a,p.b)/tot,dd=diff(t,p.a);if(o<=.3&&dd<=45)al.push({c:"warn",i:"📉",t:p.nome+" com só "+Math.round(o*100)+"% ocupado",s:"Faltam "+dd+" dias. Bom momento para divulgar ou fazer uma oferta.",a:'<button class="btn soft sm" data-go="caixa">Ver previsão</button>'})});
   if(S.pedidos.length)al.push({c:"rose",i:"📥",t:plural(S.pedidos.length,"pedido do site","pedidos do site")+" esperando",s:"Pessoas que começaram uma reserva no site. Transforme em reserva com um toque.",a:'<button class="btn rose sm" data-go="pedidos">Ver pedidos</button>'});
-  var nome=first(S.me.nome),hr=new Date(Date.now()-3*36e5).getUTCHours(),foto=hr>=5&&hr<10?"11":hr<16?"9":hr<19?"17":"30";
-  var pct=nq?Math.round(ocup/nq*100):0,C=2*Math.PI*44;
-  var h='<div class="sec home">';
-  h+='<section class="hero" style="--img:url(/fotos/'+foto+'.jpg)"><div class="hero-in"><div class="hero-tx"><p class="eyebrow">'+dlong(t).replace(/^./,function(c){return c.toUpperCase()})+'<span id="wx" class="wx"></span></p><h1>'+hello()+(nome?',<br>'+esc(nome):"")+'.</h1><p class="hero-sub">'+daySummary(chegam,saem,al.length)+'</p></div>'+
-     '<div class="ring" role="img" aria-label="'+ocup+' de '+nq+' quartos ocupados"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="rt"/><circle cx="50" cy="50" r="44" class="rv" style="stroke-dasharray:'+C+';stroke-dashoffset:'+(C*(1-pct/100))+'"/></svg><div><b>'+ocup+'<small>/'+nq+'</small></b><span>ocupados</span></div></div></div></section>';
-  h+='<div class="glance"><button class="gl" data-go="mapa"><span class="gi">🛎️</span><b>'+chegam.length+'</b><span>'+(chegam.length===1?"chegada":"chegadas")+'</span></button><button class="gl" data-go="mapa"><span class="gi">🧳</span><b>'+saem.length+'</b><span>'+(saem.length===1?"saída":"saídas")+'</span></button><button class="gl" data-go="reservas"><span class="gi">🌙</span><b>'+dentro.length+'</b><span>'+(dentro.length===1?"hospedado":"hospedados")+'</span></button><button class="gl" data-go="caixa"><span class="gi">💰</span><b class="m">'+money(aReceber)+'</b><span>a receber</span></button></div>';
+  var nome=first(S.me.nome);
+  var h='<div class="sec"><div class="ph"><div><h1>'+hello()+(nome?", "+esc(nome):"")+'.</h1><p>'+dlong(t).replace(/^./,function(c){return c.toUpperCase()})+' · '+plural(ocup,"quarto ocupado","quartos ocupados")+' de '+nq+'</p></div></div>';
   if(PUSH.ok&&!PUSH.on&&!PUSH.x)h+='<div class="nb"><span class="bell">🔔</span><div class="tx"><b>Receba avisos neste celular</b><span>Pedido novo no site, reserva lançada por outra pessoa e o resumo do dia às 7h.</span></div><button class="btn rose sm" data-notif>Ativar avisos</button><button class="x" data-notifx aria-label="Fechar">×</button></div>';
-  h+='<div class="card steps"><div class="ch"><h2>Próximos passos</h2>'+(al.length?'<span class="cnt">'+al.length+'</span>':"")+'</div>'+(al.length?'<div class="alerts">'+al.map(function(a){return'<div class="al '+a.c+'"><span class="ic">'+a.i+'</span><div><b>'+esc(a.t)+'</b><span>'+esc(a.s)+'</span></div><div class="acts">'+a.a+'</div></div>'}).join("")+'</div>':'<div class="calm"><svg viewBox="0 0 200 120" aria-hidden="true"><use href="#logo"/></svg><div><b>Tudo em dia.</b><span>Nenhuma pendência agora. Aproveite o dia na Ingá. 🌿</span></div></div>')+'</div>';
-  h+='<div class="card"><div class="ch"><h2>A pousada agora</h2><button class="btn ghost sm" data-go="mapa">Ver mapa</button></div><div class="rooms">'+S.quartos.map(function(q){return roomTile(q,t,R)}).join("")+'</div></div>';
-  h+=tasksCard();
-  function lst(arr,lab){return arr.length?'<div class="dl">'+arr.map(function(r){return'<button class="ri" data-open="'+r.id+'"><span class="av2">'+esc((r.nome||"?").charAt(0).toUpperCase())+'</span><span><b>'+esc(r.nome)+'</b><span>'+esc(room(r.quarto).nome)+' · '+lab(r)+'</span></span><span class="pill st-'+r.status+'">'+ST[r.status]+'</span></button>'}).join("")+'</div>':'<p class="empty">Ninguém por enquanto.</p>'}
+  h+='<div class="kpis"><div class="kpi dark"><small>Ocupação hoje</small><b>'+ocup+'<span style="font-size:20px;color:rgba(238,241,236,.6)"> / '+nq+'</span></b><div class="occ"><i style="width:'+Math.round(ocup/nq*100)+'%"></i></div></div>'+
+     '<div class="kpi"><small>Chegam hoje</small><b>'+chegam.length+'</b><span>'+(chegam.length?esc(chegam.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
+     '<div class="kpi"><small>Saem hoje</small><b>'+saem.length+'</b><span>'+(saem.length?esc(saem.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
+     '<div class="kpi"><small>A receber</small><b style="font-size:28px">'+money(aReceber)+'</b><span>de hóspedes atuais e futuros</span></div></div>';
+  h+='<div class="card"><h3>O que precisa de atenção</h3>'+(al.length?'<div class="alerts">'+al.map(function(a){return'<div class="al '+a.c+'"><span class="ic">'+a.i+'</span><div><b>'+esc(a.t)+'</b><span>'+esc(a.s)+'</span></div><div class="acts">'+a.a+'</div></div>'}).join("")+'</div>':'<div class="calm">🌿 Tudo em dia por aqui. Nenhuma pendência agora.</div>')+'</div>';
+  function lst(arr,lab){return arr.length?'<div class="dl">'+arr.map(function(r){return'<button class="ri" data-open="'+r.id+'"><span class="rm">'+esc(room(r.quarto).nome)+'</span><span><b>'+esc(r.nome)+'</b><span>'+lab(r)+'</span></span><span class="pill st-'+r.status+'">'+ST[r.status]+'</span></button>'}).join("")+'</div>':'<p class="empty">Ninguém.</p>'}
   var prox=R.filter(function(r){return r.entrada>t&&r.entrada<=add(t,7)&&r.status!=="saiu"}).sort(function(a,b){return a.entrada<b.entrada?-1:1});
-  h+='<div class="cols2"><div class="card"><div class="ch"><h2>Chegam esta semana</h2></div>'+lst(prox,function(r){return dlong(r.entrada)+" · "+plural(nights(r),"noite","noites")})+'</div><div class="card"><div class="ch"><h2>Hospedados</h2></div>'+lst(dentro,function(r){return"até "+dlong(r.saida)})+'</div></div></div>';
+  h+=tasksCard();
+  h+='<div class="cols3"><div class="card"><h3>Hospedados agora</h3>'+lst(dentro,function(r){return"até "+dlong(r.saida)})+'</div><div class="card"><h3>Chegam nos próximos 7 dias</h3>'+lst(prox,function(r){return dlong(r.entrada)+" · "+plural(nights(r),"noite","noites")})+'</div><div class="card"><h3>Quartos livres hoje</h3>'+freeToday(t)+'</div></div></div>';
   return h}
-function daySummary(ch,sa,n){var p=[];if(ch.length)p.push(plural(ch.length,"chegada","chegadas"));if(sa.length)p.push(plural(sa.length,"saída","saídas"));var s=p.length?"Hoje: "+p.join(" e ")+".":"Dia tranquilo, sem chegadas nem saídas.";if(n)s+=" "+plural(n,"coisa pede","coisas pedem")+" sua atenção.";return s}
-function roomTile(q,t,R){var occ=R.find(function(r){return r.quarto===q.id&&r.entrada<=t&&r.saida>t&&r.status!=="saiu"}),out=R.find(function(r){return r.quarto===q.id&&r.saida===t&&r.status==="hospedado"}),dt=dirty(q.id),nx=R.filter(function(r){return r.quarto===q.id&&r.entrada>t&&r.status!=="saiu"}).sort(function(a,b){return a.entrada<b.entrada?-1:1})[0];
-  var st,lab,who="",sub="",attr;
-  if(out&&(!occ||occ.id===out.id)){st="out";lab="Sai hoje";who=out.nome;sub=saldo(out)?"cobrar "+money(saldo(out)):"tudo pago";attr='data-open="'+out.id+'"'}
-  else if(occ&&occ.entrada===t&&occ.status!=="hospedado"){st="in";lab="Chega hoje";who=occ.nome;sub=dt?"🧹 arrumar antes!":people(occ);attr='data-open="'+occ.id+'"'}
-  else if(occ){st="occ";lab="Hospedado";who=occ.nome;sub="até "+dlong(occ.saida);attr='data-open="'+occ.id+'"'}
-  else if(dt){st="dirty";lab="Arrumar";who="Quarto livre";sub=nx?"próxima chegada "+dlong(nx.entrada):"sem reservas";attr='data-go="hoje" data-scroll="tarefas"'}
-  else{st="free";lab="Livre";who="Disponível";sub=nx?"até "+dlong(nx.entrada):"sem reservas futuras";attr='data-new="'+q.id+'" data-d="'+t+'"'}
-  return'<button class="room '+st+'" '+attr+'><span class="rn">'+esc(q.nome)+'<small>'+q.cap+'p</small></span><span class="rs">'+lab+'</span><b>'+esc(who)+'</b><span class="rsub">'+esc(sub)+'</span></button>'}
 function tasksCard(){var L=(S.tarefas||[]).slice().sort(function(a,b){return(a.feito-b.feito)||((b.criadoEm||0)-(a.criadoEm||0))}),open=L.filter(function(t){return!t.feito}),done=L.filter(function(t){return t.feito}).slice(0,3),t0=today();
   function it(t){var urg=!t.feito&&((t.tipo==="limpeza"&&S.reservas.some(function(r){return act(r)&&r.quarto===t.quarto&&r.entrada===t0&&r.status!=="hospedado"}))||(t.prazo&&t.prazo<=t0));
     return'<div class="tk'+(t.feito?" done":"")+(urg?" urg":"")+'"><button class="ck" data-tk="'+t.id+'" aria-label="'+(t.feito?"Desmarcar":"Marcar como feita")+'">'+(t.feito?"✓":"")+'</button><span><b>'+(t.tipo==="limpeza"?"🧹 ":"")+esc(t.titulo)+'</b><span>'+(t.feito?"feito por "+esc(t.feitoPor)+" · há "+ago(t.feitoEm):(t.tipo==="limpeza"&&t.hospede?esc(first(t.hospede))+" saiu · ":"")+(t.para?"para "+esc(t.para)+" · ":"")+(t.prazo?"até "+dlong(t.prazo)+" · ":"")+"há "+ago(t.criadoEm))+(urg?' · <b style="display:inline;color:var(--warn)">urgente: chega hóspede hoje</b>':"")+'</span></span><button class="tdel" data-tkdel="'+t.id+'" aria-label="Apagar tarefa">×</button></div>'}
@@ -640,14 +541,6 @@ function tasksCard(){var L=(S.tarefas||[]).slice().sort(function(a,b){return(a.f
 function freeToday(t){var f=freeRooms(t,add(t,1));if(!f.length)return'<p class="empty">Pousada lotada hoje 🎉</p>';
   return'<div class="dl">'+f.map(function(q){var nx=S.reservas.filter(function(r){return act(r)&&r.quarto===q.id&&r.entrada>t}).sort(function(a,b){return a.entrada<b.entrada?-1:1})[0];
     return'<button class="ri" data-new="'+q.id+'" data-d="'+t+'"><span class="rm">'+esc(q.nome)+'</span><span><b>Livre'+(dirty(q.id)?' <span style="color:var(--warn);font-size:12px">· 🧹 arrumar</span>':"")+'</b><span>'+(nx?"até "+dlong(nx.entrada):"sem reservas futuras")+' · até '+q.cap+' pessoas</span></span><span class="pill st-confirmada" style="background:var(--paper)">+ reservar</span></button>'}).join("")+'</div>'}
-
-/* clima de Cumuruxatiba (Open-Meteo, sem chave) */
-var WX=null;try{WX=JSON.parse(sessionStorage.getItem("ingaWx")||"null")}catch(e){}
-function wxIcon(c){return c===0?"☀️":c<=2?"🌤️":c===3?"☁️":c<=48?"🌫️":c<=67||(c>=80&&c<=82)?"🌧️":c>=95?"⛈️":"🌥️"}
-function wxPaint(){var el=$("wx");if(el&&WX)el.textContent=wxIcon(WX.c)+" "+Math.round(WX.t)+"°"+(WX.s?" · mar "+Math.round(WX.s)+"°":"")}
-function wxLoad(){if(WX&&Date.now()-WX.at<30*6e4){wxPaint();return}
-  Promise.all([fetch("https://api.open-meteo.com/v1/forecast?latitude=-17.10&longitude=-39.18&current=temperature_2m,weather_code&timezone=America%2FBahia").then(function(r){return r.json()}),fetch("https://marine-api.open-meteo.com/v1/marine?latitude=-17.10&longitude=-39.15&current=sea_surface_temperature").then(function(r){return r.json()}).catch(function(){return{}})])
-  .then(function(x){WX={t:x[0].current.temperature_2m,c:x[0].current.weather_code,s:x[1].current&&x[1].current.sea_surface_temperature,at:Date.now()};try{sessionStorage.setItem("ingaWx",JSON.stringify(WX))}catch(e){}wxPaint()}).catch(function(){})}
 
 /* ---------- MAPA ---------- */
 function vMapa(){var t=today();if(!MAPSTART)MAPSTART=add(t,-2);var N=window.innerWidth<600?21:35,s=MAPSTART,e=add(s,N);
@@ -914,10 +807,8 @@ document.addEventListener("visibilitychange",function(){if(document.visibilitySt
 setInterval(function(){if(S&&document.visibilityState==="visible"&&!$("ov"))load(true)},120000);
 
 /* início */
-function unsplash(){var sp=$("splash");if(sp){sp.classList.add("off");setTimeout(function(){sp.remove()},900)}}
-setTimeout(unsplash,2500);
 var h0=(location.hash||"").slice(1);if(["hoje","mapa","reservas","pedidos","caixa","ajustes"].indexOf(h0)>=0)VIEW=h0;
-if(TK){load(true).then(function(){if(!S){$("login").hidden=false}setTimeout(unsplash,300)})}else{$("login").hidden=false;setTimeout(unsplash,500)}
+if(TK){load(true).then(function(){if(!S){$("login").hidden=false}})}else{$("login").hidden=false}
 
 })();
 </script>

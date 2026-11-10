@@ -11,6 +11,15 @@
       ]
     },
     {
+      "source": "/gestao",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
       "source": "/api/(.*)",
       "headers": [
         {
@@ -36,6 +45,32 @@
           "value": "no-cache"
         }
       ]
+    },
+    {
+      "source": "/gestao.webmanifest",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/gest%C3%A3o",
+      "destination": "/gestao",
+      "permanent": false
+    },
+    {
+      "source": "/gestão",
+      "destination": "/gestao",
+      "permanent": false
+    },
+    {
+      "source": "/Gestao",
+      "destination": "/gestao",
+      "permanent": false
     }
   ]
 }

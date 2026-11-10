@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#2B3122">
+<link rel="manifest" href="/gestao.webmanifest">
+<link rel="apple-touch-icon" href="/admin-apple-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gestão Ingá">
+<title>Gestão · Pousada Ingá</title>
+<link rel="icon" href="/admin-icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Yanone+Kaffeesatz:wght@300&family=Manrope:wght@500;600;700;800&display=swap">
+<style>
+:root{
+  --sand:#EEF1EC;--sand-2:#E2E8E2;--paper:#FBFCFA;--ink:#16261E;--ink-soft:#56665E;--line:#D3DCD6;
+  --olive:#2B3122;--rose:#B06C80;--rose-soft:#F1DDE3;--leaf:#4A7A27;--leaf-soft:#E1EBD6;--sea:#1C6A72;--sea-soft:#D7E9EA;--wa:#1F8F5A;--err:#B4432A;--err-soft:#F6E0D9;--warn:#C9622F;--warn-soft:#F8E6D6;--gold:#B8892E;
+  --display:"Gloock",Georgia,serif;--body:"Manrope","Segoe UI",system-ui,sans-serif;
+  --tab-h:64px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--sand);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1.1}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--rose);outline-offset:3px;border-radius:8px}
+[hidden]{display:none!important}
+.logo{width:96px;height:auto;display:block}
+.muted{color:var(--ink-soft)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:12px 20px;font-weight:800;font-size:14px;cursor:pointer;background:var(--olive);color:#EEF1EC;text-decoration:none;transition:transform .15s,background .2s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--paper);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.soft{background:var(--sand-2);color:var(--ink)}
+.btn.wa{background:var(--wa);color:#fff}
+.btn.rose{background:var(--rose);color:#fff}
+.btn.sea{background:var(--sea);color:#fff}
+.btn.danger{background:var(--err-soft);color:var(--err)}
+.btn.sm{padding:8px 14px;font-size:13px}
+.btn svg{width:17px;height:17px;flex:none}
+.btn[disabled]{opacity:.5;pointer-events:none}
+
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding-block:40px}
+.login-card{width:min(400px,100%);background:var(--paper);border:1px solid var(--line);border-radius:28px;padding:32px 28px;display:grid;gap:16px;box-shadow:0 30px 60px -40px rgba(14,40,30,.6)}
+.login-card .logo{width:130px;margin:0 auto}
+.login-card h1{font-size:30px;text-align:center}
+.login-card .sub{text-align:center;color:var(--ink-soft);margin:-8px 0 4px;font-size:14px}
+.err{color:var(--err);font-weight:700;font-size:14px;margin:0;min-height:1em;text-align:center}
+
+/* fields */
+.fld{display:grid;gap:6px;min-width:0}
+.fld>span{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.fld input,.fld select,.fld textarea{-webkit-appearance:none;appearance:none;width:100%;min-width:0;font-size:16px;font-weight:600;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--sand);color:var(--ink);line-height:1.3}
+.fld select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2356665E' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.fld textarea{min-height:76px;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:2px solid var(--leaf);border-color:transparent}
+.fld input[type=date]{min-height:48px}
+.fld input::-webkit-date-and-time-value{text-align:left}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.chk{display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer;padding:10px 0}
+.chk input{width:22px;height:22px;accent-color:var(--leaf)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:30;background:rgba(238,241,236,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px;min-height:64px}
+.top .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.top .brand b{font-family:var(--display);font-weight:400;font-size:20px;padding-left:12px;border-left:1px solid var(--line)}
+.tabs{display:flex;gap:4px;margin-left:auto;background:var(--sand-2);border-radius:999px;padding:4px}
+.tabs button{border:0;background:none;padding:9px 16px;border-radius:999px;font-weight:800;font-size:14px;color:var(--ink-soft);cursor:pointer;position:relative;display:flex;align-items:center;gap:7px}
+.tabs button svg{width:18px;height:18px}
+.tabs button[aria-selected=true]{background:var(--paper);color:var(--ink);box-shadow:0 2px 8px -4px rgba(0,0,0,.25)}
+.badge{min-width:19px;height:19px;padding:0 5px;border-radius:99px;background:var(--rose);color:#fff;font-size:11px;font-weight:800;display:inline-grid;place-items:center;line-height:1}
+.me{position:relative}
+.me>button{border:0;background:var(--paper);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:5px 12px 5px 5px;display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:800;font-size:13px}
+.av{width:30px;height:30px;border-radius:50%;background:var(--rose);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.menu{position:absolute;right:0;top:calc(100% + 8px);background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:8px;min-width:210px;box-shadow:0 20px 40px -20px rgba(0,0,0,.35);display:grid;gap:2px;z-index:40}
+.menu button{border:0;background:none;text-align:left;padding:10px 12px;border-radius:12px;font-weight:700;cursor:pointer}
+.menu button:hover{background:var(--sand)}
+.menu .who{padding:8px 12px 10px;border-bottom:1px solid var(--line);margin-bottom:4px;font-size:13px}
+.menu .who b{display:block;font-size:15px}
+
+/* mobile tab bar */
+@media (max-width:860px){
+  .top{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--sand)}
+  .tabs{position:fixed;left:0;right:0;bottom:0;margin:0;border-radius:0;background:rgba(251,252,250,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px max(6px,env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom,0px));justify-content:space-around;z-index:35}
+  .tabs button{flex-direction:column;gap:2px;font-size:10.5px;padding:6px 4px;flex:1;border-radius:14px}
+  .tabs button svg{width:22px;height:22px}
+  .tabs button[aria-selected=true]{box-shadow:none;background:var(--leaf-soft);color:var(--olive)}
+  .tabs .badge{position:absolute;top:2px;left:calc(50% + 6px);min-width:17px;height:17px;font-size:10px}
+  .me{margin-left:auto}
+  .me>button .nm{display:none}
+  .me>button{padding:4px}
+  main{padding-bottom:calc(var(--tab-h) + 90px + env(safe-area-inset-bottom,0px))}
+  .top .brand b{font-size:18px}
+}
+main{padding-top:22px;padding-bottom:110px}
+
+/* page head */
+.ph{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.ph h1{font-size:clamp(28px,5vw,40px)}
+.ph p{margin:4px 0 0;color:var(--ink-soft)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:20px}
+.card h2{font-size:22px}
+.card h3{font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:12px}
+.sec{display:grid;gap:16px}
+
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:16px 18px;display:grid;gap:2px;min-width:0}
+.kpi small{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+.kpi b{font-family:var(--display);font-weight:400;font-size:36px;line-height:1.05}
+.kpi span{font-size:13px;color:var(--ink-soft)}
+.kpi.dark{background:var(--olive);color:#EEF1EC;border-color:var(--olive)}
+.kpi.dark small,.kpi.dark span{color:rgba(238,241,236,.7)}
+.occ{height:8px;border-radius:99px;background:rgba(238,241,236,.18);overflow:hidden;margin-top:8px}
+.occ i{display:block;height:100%;background:#C6E28E;border-radius:99px}
+@media (max-width:860px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi b{font-size:30px}}
+
+/* alerts */
+.alerts{display:grid;gap:8px}
+.al{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:12px 12px 12px 14px}
+.al .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:19px;background:var(--sand)}
+.al.warn .ic{background:var(--warn-soft)}
+.al.rose .ic{background:var(--rose-soft)}
+.al.sea .ic{background:var(--sea-soft)}
+.al.leaf .ic{background:var(--leaf-soft)}
+.al b{display:block;font-size:14.5px;line-height:1.3}
+.al span{display:block;font-size:13px;color:var(--ink-soft);line-height:1.35}
+.al .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:600px){.al{grid-template-columns:36px minmax(0,1fr)}.al .ic{width:36px;height:36px}.al .acts{grid-column:1/-1;justify-content:stretch}.al .acts .btn{flex:1}}
+.calm{display:flex;gap:12px;align-items:center;background:var(--leaf-soft);border-radius:18px;padding:14px 16px;font-weight:700;color:var(--olive)}
+
+/* day lists */
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:860px){.cols3{grid-template-columns:1fr}}
+.dl{display:grid;gap:8px}
+.ri{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--sand);cursor:pointer;border:0;text-align:left;width:100%}
+.ri:hover{background:var(--sand-2)}
+.ri .rm{font-size:11px;font-weight:800;background:var(--paper);border-radius:8px;padding:4px 8px;white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+.ri b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ri span{font-size:12px;color:var(--ink-soft)}
+.empty{color:var(--ink-soft);font-size:14px;margin:0;padding:6px 2px}
+
+/* pills */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st-pre{background:var(--rose-soft);color:#8A4A5E}
+.st-confirmada{background:var(--leaf-soft);color:#3A6320}
+.st-hospedado{background:var(--sea-soft);color:var(--sea)}
+.st-saiu{background:var(--sand-2);color:var(--ink-soft)}
+.st-cancelada{background:var(--err-soft);color:var(--err)}
+.tag{font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px;background:#F5ECD6;color:#7B5A16;white-space:nowrap}
+
+/* map */
+.mapbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mapbar .mt{font-family:var(--display);font-size:22px;min-width:150px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;font-weight:700;color:var(--ink-soft)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+.map{--dw:46px;--rw:150px;--rh:58px;position:relative;overflow-x:auto;border:1px solid var(--line);border-radius:22px;background:var(--paper);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+@media (max-width:600px){.map{--dw:42px;--rw:104px;--rh:54px}}
+.mgrid{display:grid;grid-template-columns:var(--rw) repeat(var(--n),var(--dw));width:max-content;position:relative}
+.mh{position:sticky;top:0;z-index:3;background:var(--paper);border-bottom:1px solid var(--line);height:56px;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--ink-soft);line-height:1.15;text-align:center}
+.mh b{display:block;font-size:15px;color:var(--ink)}
+.mh.we{background:#F6F7F3}
+.mh.td{background:var(--olive);color:#EEF1EC;border-radius:0}
+.mh.td b{color:#fff}
+.mh.mon{box-shadow:inset 2px 0 0 var(--rose)}
+.mr{position:sticky;left:0;z-index:4;background:var(--paper);border-right:1px solid var(--line);border-bottom:1px solid var(--line);height:var(--rh);display:flex;flex-direction:column;justify-content:center;padding:0 12px;min-width:0}
+.mr b{font-size:13.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mr span{font-size:11px;color:var(--ink-soft)}
+.mr.corner{top:0;z-index:5;height:56px;border-bottom:1px solid var(--line);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.mc{height:var(--rh);border-bottom:1px solid var(--line);border-right:1px dashed #E5EAE6;cursor:pointer;background:none;border-top:0;border-left:0;padding:0}
+.mc:hover{background:var(--leaf-soft)}
+.mc.we{background:#F8F9F6}
+.mc.td{background:rgba(43,49,34,.05)}
+.mfree{height:40px;display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--leaf);border-right:1px dashed #E5EAE6}
+.mfree.zero{color:var(--err)}
+.mr.ft{height:40px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);border-bottom:0}
+.bar{position:absolute;z-index:2;height:calc(var(--rh) - 16px);border-radius:12px;padding:0 10px;display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:#fff;cursor:pointer;border:0;text-align:left;overflow:hidden;white-space:nowrap;box-shadow:0 6px 14px -8px rgba(0,0,0,.45);transition:transform .15s,filter .15s}
+.bar:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.bar span{overflow:hidden;text-overflow:ellipsis}
+.bar small{font-weight:700;opacity:.85}
+.bar.pre{background:repeating-linear-gradient(135deg,#C98A9C 0 8px,#BC7B8E 8px 16px)}
+.bar.confirmada{background:var(--leaf)}
+.bar.hospedado{background:var(--sea)}
+.bar.saiu{background:#A9B5AD}
+.bar.cl{border-top-left-radius:0;border-bottom-left-radius:0}
+.bar.cr{border-top-right-radius:0;border-bottom-right-radius:0}
+.bar .due{width:8px;height:8px;border-radius:50%;background:#FFD27A;flex:none;box-shadow:0 0 0 2px rgba(0,0,0,.12)}
+.maphint{font-size:13px;color:var(--ink-soft);margin:0}
+
+/* reservations list */
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1 1 240px;position:relative}
+.search input{width:100%;font-size:16px;font-weight:600;padding:12px 14px 12px 42px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper)}
+.search svg{position:absolute;left:15px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--ink-soft)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 14px;font-weight:800;font-size:13px;cursor:pointer;color:var(--ink-soft)}
+.chip[aria-pressed=true]{background:var(--olive);border-color:var(--olive);color:#EEF1EC}
+.rlist{display:grid;gap:10px}
+.rc{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:14px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:12px 16px 12px 12px;cursor:pointer;text-align:left;width:100%}
+.rc:hover{border-color:#BFCBC3}
+.rc .dt{background:var(--sand);border-radius:14px;padding:8px 4px;text-align:center;line-height:1.1}
+.rc .dt b{display:block;font-family:var(--display);font-weight:400;font-size:26px}
+.rc .dt span{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--ink-soft)}
+.rc .nm{font-weight:800;font-size:15.5px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rc .inf{font-size:13px;color:var(--ink-soft)}
+.rc .rt{display:grid;gap:6px;justify-items:end;text-align:right}
+.rc .sd{font-size:12.5px;font-weight:800;color:var(--warn)}
+.rc .sd.ok{color:var(--leaf)}
+@media (max-width:600px){.rc{grid-template-columns:60px minmax(0,1fr);padding:12px}.rc .rt{grid-column:2;justify-items:start;text-align:left;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.rc .dt b{font-size:22px}}
+
+/* pedidos */
+.pd{display:grid;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:16px}
+.pd .hd{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.pd .hd b{font-size:17px}
+.pd .meta{display:flex;gap:8px;flex-wrap:wrap}
+.pd .meta span{background:var(--sand);border-radius:10px;padding:6px 10px;font-size:13px;font-weight:700}
+.pd .acts{display:flex;gap:8px;flex-wrap:wrap}
+.pd .sug{font-size:13px;color:var(--leaf);font-weight:700}
+.pd .sug.no{color:var(--err)}
+
+/* finance */
+.fin-bars{display:grid;gap:10px}
+.fb{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;align-items:center;font-size:14px}
+.fb .tr{height:12px;border-radius:99px;background:var(--sand);overflow:hidden}
+.fb .tr i{display:block;height:100%;border-radius:99px;background:var(--leaf)}
+.fb b{font-weight:800;white-space:nowrap}
+.cols2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.cols2{grid-template-columns:1fr}}
+.prog{height:10px;border-radius:99px;background:var(--sand-2);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--leaf);border-radius:99px}
+
+/* settings */
+.mem{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.mem:last-child{border-bottom:0}
+.mem b{display:block}
+.mem span{font-size:13px;color:var(--ink-soft)}
+.qrow{display:grid;grid-template-columns:minmax(0,1fr) 90px auto;gap:8px;align-items:end;margin-bottom:8px}
+.log{display:grid;gap:0}
+.log div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.log div span{color:var(--ink-soft);white-space:nowrap;font-size:12px}
+
+/* sheet */
+.ov{position:fixed;inset:0;z-index:60;background:rgba(16,30,22,.5);backdrop-filter:blur(3px);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--paper);width:min(640px,100%);max-height:92dvh;overflow:auto;border-radius:28px 28px 0 0;padding:8px 22px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 50px -20px rgba(0,0,0,.4);animation:up .32s cubic-bezier(.2,.9,.3,1);overscroll-behavior:contain}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+@media (min-width:700px){.ov{align-items:center}.sheet{border-radius:28px;max-height:88vh;padding-bottom:24px}}
+.grab{width:44px;height:5px;border-radius:99px;background:var(--line);margin:4px auto 10px}
+.sh-h{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;position:sticky;top:-8px;background:var(--paper);padding:8px 0 10px;z-index:2}
+.sh-h h2{font-size:26px;flex:1;min-width:0}
+.sh-h .x{border:0;background:var(--sand-2);border-radius:50%;width:38px;height:38px;font-size:20px;cursor:pointer;flex:none}
+.form{display:grid;gap:14px}
+.nights{font-size:13px;font-weight:800;color:var(--leaf);margin-top:-4px}
+.warnbox{background:var(--err-soft);color:var(--err);border-radius:14px;padding:10px 14px;font-weight:700;font-size:13.5px}
+.okbox{background:var(--leaf-soft);color:#3A6320;border-radius:14px;padding:10px 14px;font-weight:700;font-size:13.5px}
+.free{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.free button{border:1.5px solid var(--leaf);background:var(--paper);color:var(--leaf);border-radius:999px;padding:6px 12px;font-weight:800;font-size:12.5px;cursor:pointer}
+.free button.on{background:var(--leaf);color:#fff}
+.calc{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--ink-soft);flex-wrap:wrap}
+.calc input{width:110px;padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--sand);font-weight:700;font-size:15px}
+.calc button{border:0;background:var(--sand-2);border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
+.sheet-foot{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px}
+.sheet-foot .btn{flex:1 1 140px}
+.dv{display:grid;gap:14px}
+.dv .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dv .it{background:var(--sand);border-radius:16px;padding:10px 14px}
+.dv .it small{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.dv .it b{font-size:15px}
+.money{display:grid;gap:8px;background:var(--sand);border-radius:18px;padding:14px}
+.money .l{display:flex;justify-content:space-between;font-size:14px}
+.money .l b{font-size:16px}
+.acts-grid{display:flex;gap:8px;flex-wrap:wrap}
+.acts-grid .btn{flex:1 1 150px}
+.msgs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.msgs button{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);background:var(--paper);border-radius:14px;padding:10px 12px;font-weight:800;font-size:13px;cursor:pointer;text-align:left}
+.msgs button:hover{border-color:var(--wa)}
+.msgs button i{font-style:normal;font-size:18px}
+.hist{font-size:12.5px;color:var(--ink-soft)}
+
+/* fab + toast */
+.fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
+@media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 18px + env(safe-area-inset-bottom,0px));padding:14px 18px}}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--olive);color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:80;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);max-width:calc(100% - 32px);text-align:center;animation:up .25s}
+.toast.bad{background:var(--err)}
+.loading{display:grid;place-items:center;min-height:50vh;color:var(--ink-soft);font-weight:700}
+.spin{width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--leaf);border-radius:50%;animation:sp 0.8s linear infinite;margin:0 auto 10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="logo" viewBox="0 0 200 120"><path d="M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z" fill="#B06C80"/><path d="M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z" fill="#4A7A27"/><path d="M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z" fill="#2F3424"/><text x="74" y="50" font-size="17" font-weight="300" fill="#fff" font-family="Yanone Kaffeesatz, Arial Narrow, sans-serif">pousada</text><text x="60" y="94" font-size="58" font-weight="300" fill="#fff" font-family="Yanone Kaffeesatz, Arial Narrow, sans-serif">Ingá</text></symbol>
+  <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7 13.5h4M7 17h7"/></g></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor"/></g></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l3-8h12l3 8v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 13h5l1.5 2.5h5L16 13h5"/></g></symbol>
+  <symbol id="i-cash" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></g></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></g></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></g></symbol>
+</defs></svg>
+
+<!-- LOGIN -->
+<section class="login wrap" id="login" hidden>
+  <form class="login-card" id="lform" autocomplete="on">
+    <svg class="logo" viewBox="0 0 200 120" role="img" aria-label="Pousada Ingá"><use href="#logo"/></svg>
+    <h1>Gestão de reservas</h1>
+    <p class="sub">Entre com seu login da equipe.</p>
+    <label class="fld"><span>Login</span><input id="lu" name="username" autocomplete="username" autocapitalize="none" required></label>
+    <label class="fld"><span>Senha</span><input id="lp" name="password" type="password" autocomplete="current-password" required></label>
+    <p class="err" id="lerr"></p>
+    <button class="btn" id="lgo" type="submit">Entrar</button>
+  </form>
+</section>
+
+<!-- APP -->
+<div id="app" hidden>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="#hoje" data-go="hoje"><svg class="logo" viewBox="0 0 200 120" role="img" aria-label="Pousada Ingá"><use href="#logo"/></svg><b>Gestão</b></a>
+      <nav class="tabs" role="tablist" aria-label="Seções">
+        <button role="tab" data-v="hoje"><svg><use href="#i-sun"/></svg>Hoje</button>
+        <button role="tab" data-v="mapa"><svg><use href="#i-cal"/></svg>Mapa</button>
+        <button role="tab" data-v="reservas"><svg><use href="#i-list"/></svg>Reservas</button>
+        <button role="tab" data-v="pedidos"><svg><use href="#i-inbox"/></svg>Pedidos<span class="badge" id="pbadge" hidden></span></button>
+        <button role="tab" data-v="caixa"><svg><use href="#i-cash"/></svg>Caixa</button>
+        <button role="tab" data-v="ajustes" id="tab-aj"><svg><use href="#i-gear"/></svg>Ajustes</button>
+      </nav>
+      <div class="me">
+        <button type="button" id="mebtn" aria-haspopup="true" aria-expanded="false"><span class="av" id="meav">D</span><span class="nm" id="menm"></span></button>
+        <div class="menu" id="menu" hidden>
+          <div class="who"><b id="mewho"></b><span id="merole" class="muted"></span></div>
+          <button type="button" id="m-ref">↻ Atualizar dados</button>
+          <button type="button" id="m-pw">🔑 Trocar minha senha</button>
+          <button type="button" id="m-out">↩ Sair</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main class="wrap" id="main"><div class="loading"><div><div class="spin"></div>Carregando…</div></div></main>
+  <button class="btn fab" id="fab" type="button"><svg><use href="#i-plus"/></svg>Nova reserva</button>
+</div>
+
+<div id="ovl"></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+var TK=null;try{TK=localStorage.getItem("ingaG")}catch(e){}
+var S=null,VIEW="hoje",MAPSTART=null,FILTER="proximas",QUERY="",FINM=null;
+var ST={pre:"Pré-reserva",confirmada:"Confirmada",hospedado:"Hospedado",saiu:"Saiu",cancelada:"Cancelada"};
+var OR={site:"Site",whatsapp:"WhatsApp",telefone:"Telefone",booking:"Booking",airbnb:"Airbnb",balcao:"Direto",outro:"Outro"};
+var WK=["dom","seg","ter","qua","qui","sex","sáb"],MO=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+var ADDR="Alameda Roberto Pompeu, Lote 17, Rio do Peixe Grande, Cumuruxatiba, Prado - BA";
+var MAPS="https://www.google.com/maps/dir/?api=1&destination=Pousada+Ing%C3%A1+Cumuruxatiba";
+var TRIP="https://www.tripadvisor.com.br/Hotel_Review-g1587885-d3452967-Reviews-Pousada_Inga-Cumuruxatiba_Prado_State_of_Bahia.html";
+
+/* ---------- utilidades ---------- */
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function today(){return new Date(Date.now()-3*36e5).toISOString().slice(0,10)}
+function add(d,n){var t=new Date(d+"T12:00:00Z");t.setUTCDate(t.getUTCDate()+n);return t.toISOString().slice(0,10)}
+function diff(a,b){return Math.round((new Date(b+"T12:00:00Z")-new Date(a+"T12:00:00Z"))/864e5)}
+function wd(d){return new Date(d+"T12:00:00Z").getUTCDay()}
+function br(d){return d?d.slice(8,10)+"/"+d.slice(5,7):""}
+function brY(d){return d?d.slice(8,10)+"/"+d.slice(5,7)+"/"+d.slice(0,4):""}
+function dlong(d){return WK[wd(d)]+", "+br(d)}
+function money(v){return (+v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:(+v||0)%1?2:0})}
+function nights(r){return Math.max(1,diff(r.entrada,r.saida))}
+function saldo(r){return Math.max(0,(+r.valor||0)-(+r.pago||0))}
+function room(id){for(var i=0;i<S.quartos.length;i++)if(S.quartos[i].id===id)return S.quartos[i];return{id:id,nome:"(quarto removido)",cap:2}}
+function act(r){return r.status!=="cancelada"}
+function first(n){return String(n||"").trim().split(/\s+/)[0]||""}
+function ago(ms){var m=Math.round((Date.now()-ms)/6e4);if(m<1)return"agora";if(m<60)return m+" min";var h=Math.round(m/60);if(h<24)return h+" h";var d=Math.round(h/24);return d+(d===1?" dia":" dias")}
+function plural(n,a,b){return n+" "+(n===1?a:b)}
+function people(r){var t=plural(+r.adultos||1,"adulto","adultos");if(+r.criancas)t+=" e "+plural(+r.criancas,"criança","crianças");if(r.pet)t+=" + pet 🐾";return t}
+function phoneFmt(t){t=String(t||"").replace(/\D/g,"");if(t.length===11)return"("+t.slice(0,2)+") "+t.slice(2,7)+"-"+t.slice(7);if(t.length===10)return"("+t.slice(0,2)+") "+t.slice(2,6)+"-"+t.slice(6);return t}
+function waLink(tel,msg){tel=String(tel||"").replace(/\D/g,"");if(tel&&tel.length<=11)tel="55"+tel;return"https://wa.me/"+tel+"?text="+encodeURIComponent(msg)}
+function toast(m,bad){var t=document.createElement("div");t.className="toast"+(bad?" bad":"");t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},2800)}
+function hello(){var h=new Date(Date.now()-3*36e5).getUTCHours();return h<12?"Bom dia":h<18?"Boa tarde":"Boa noite"}
+function visits(r){if(!r.tel)return 0;return S.reservas.filter(function(x){return x.id!==r.id&&x.tel===r.tel&&act(x)&&x.entrada<r.entrada}).length}
+function conflicts(r,ignoreId){return S.reservas.filter(function(x){return x.id!==ignoreId&&act(x)&&x.quarto===r.quarto&&x.entrada<r.saida&&r.entrada<x.saida})}
+function freeRooms(a,b,ignoreId){return S.quartos.filter(function(q){return !conflicts({quarto:q.id,entrada:a,saida:b},ignoreId).length})}
+function bestRoom(a,b,pax,ignoreId){var f=freeRooms(a,b,ignoreId).filter(function(q){return q.cap>=pax});f.sort(function(x,y){return x.cap-y.cap});return f[0]||null}
+
+/* ---------- API ---------- */
+function api(acao,extra){var b=Object.assign({acao:acao,token:TK},extra||{});
+  return fetch("/api/g",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(function(r){return r.json().catch(function(){return{erro:"Resposta inesperada do servidor."}}).then(function(j){if(r.status===401&&acao!=="entrar"){logout(true);throw new Error(j.erro||"Entre de novo.")}if(!r.ok)throw new Error(j.erro||"Erro "+r.status);return j})})}
+function load(silent){return api("dados").then(function(d){S=d;$("app").hidden=false;$("login").hidden=true;me();render()}).catch(function(e){if(!silent)toast(e.message,true)})}
+function logout(expired){try{localStorage.removeItem("ingaG")}catch(e){}if(!expired&&TK)api("sair").catch(function(){});TK=null;S=null;$("app").hidden=true;$("login").hidden=false;closeSheet();if(expired)$("lerr").textContent="Sua sessão terminou. Entre de novo."}
+
+/* ---------- login ---------- */
+$("lform").addEventListener("submit",function(e){e.preventDefault();$("lerr").textContent="";$("lgo").disabled=true;$("lgo").textContent="Entrando…";
+  api("entrar",{login:$("lu").value,senha:$("lp").value}).then(function(j){TK=j.token;try{localStorage.setItem("ingaG",TK)}catch(e){}$("lp").value="";return load()}).catch(function(e){$("lerr").textContent=e.message}).then(function(){$("lgo").disabled=false;$("lgo").textContent="Entrar"})});
+
+function me(){var n=S.me.nome||"";$("meav").textContent=n.charAt(0).toUpperCase()||"?";$("menm").textContent=first(n);$("mewho").textContent=n;$("merole").textContent=S.me.papel==="admin"?"Administradora":"Equipe";$("tab-aj").hidden=S.me.papel!=="admin";
+  var np=S.pedidos.length;$("pbadge").hidden=!np;$("pbadge").textContent=np}
+$("mebtn").addEventListener("click",function(e){e.stopPropagation();var m=$("menu");m.hidden=!m.hidden;$("mebtn").setAttribute("aria-expanded",!m.hidden)});
+document.addEventListener("click",function(e){if(!e.target.closest(".me"))$("menu").hidden=true});
+$("m-ref").addEventListener("click",function(){$("menu").hidden=true;load().then(function(){toast("Dados atualizados")})});
+$("m-out").addEventListener("click",function(){logout(false)});
+$("m-pw").addEventListener("click",function(){$("menu").hidden=true;pwSheet()});
+
+/* ---------- navegação ---------- */
+document.querySelectorAll(".tabs [data-v]").forEach(function(b){b.addEventListener("click",function(){go(b.dataset.v)})});
+document.addEventListener("click",function(e){var g=e.target.closest("[data-go]");if(g){e.preventDefault();go(g.dataset.go)}});
+function go(v){VIEW=v;try{history.replaceState(null,"","#"+v)}catch(e){}render();scrollTo(0,0)}
+$("fab").addEventListener("click",function(){formSheet(null,{})});
+function render(){if(!S)return;
+  document.querySelectorAll(".tabs [data-v]").forEach(function(b){b.setAttribute("aria-selected",b.dataset.v===VIEW)});
+  var f={hoje:vHoje,mapa:vMapa,reservas:vReservas,pedidos:vPedidos,caixa:vCaixa,ajustes:vAjustes}[VIEW]||vHoje;
+  if(VIEW==="ajustes"&&S.me.papel!=="admin"){VIEW="hoje";f=vHoje}
+  $("main").innerHTML=f();bind()}
+
+/* ---------- HOJE ---------- */
+function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
+  var chegam=R.filter(function(r){return r.entrada===t&&r.status!=="saiu"}),saem=R.filter(function(r){return r.saida===t&&(r.status==="hospedado"||r.status==="confirmada")}),
+      dentro=R.filter(function(r){return r.entrada<=t&&r.saida>t&&r.status!=="saiu"}),ocup=dentro.length,nq=S.quartos.length;
+  var aReceber=R.filter(function(r){return r.status!=="saiu"&&r.saida>=t}).reduce(function(s,r){return s+saldo(r)},0);
+  var al=[];
+  chegam.filter(function(r){return r.status!=="hospedado"}).forEach(function(r){al.push({c:"sea",i:"🛎️",t:"Chegada hoje: "+r.nome,s:room(r.quarto).nome+" · "+people(r)+(saldo(r)?" · saldo "+money(saldo(r)):""),a:'<button class="btn sea sm" data-st="hospedado" data-id="'+r.id+'">Fazer check-in</button>'})});
+  saem.filter(function(r){return r.status==="hospedado"}).forEach(function(r){al.push({c:saldo(r)?"warn":"leaf",i:"🧳",t:"Saída hoje: "+r.nome,s:room(r.quarto).nome+(saldo(r)?" · falta receber "+money(saldo(r)):" · tudo pago"),a:'<button class="btn sm" data-out="'+r.id+'">Fazer check-out</button>'})});
+  R.filter(function(r){return r.status==="hospedado"&&r.saida<t}).forEach(function(r){al.push({c:"warn",i:"⏰",t:r.nome+" já devia ter saído",s:"Saída era "+dlong(r.saida)+". Fez check-out?",a:'<button class="btn sm" data-out="'+r.id+'">Fazer check-out</button>'})});
+  R.filter(function(r){return r.status==="confirmada"&&r.entrada<t&&r.saida>t}).forEach(function(r){al.push({c:"warn",i:"❔",t:r.nome+" chegou?",s:"Entrada era "+dlong(r.entrada)+" e ainda não teve check-in.",a:'<button class="btn sea sm" data-st="hospedado" data-id="'+r.id+'">Chegou</button><button class="btn soft sm" data-open="'+r.id+'">Ver</button>'})});
+  R.filter(function(r){return r.entrada===tm&&(r.status==="confirmada"||r.status==="pre")}).forEach(function(r){al.push({c:"rose",i:"💬",t:"Chega amanhã: "+r.nome,s:"Mande o lembrete com endereço e horário de check-in.",a:r.tel?'<a class="btn wa sm" target="_blank" rel="noopener" href="'+waLink(r.tel,msg("lembrete",r))+'"><svg><use href="#wa"/></svg>Lembrete</a>':'<button class="btn soft sm" data-open="'+r.id+'">Ver</button>'})});
+  R.filter(function(r){return r.status==="pre"&&Date.now()-r.criadoEm>2*864e5&&r.entrada>=t}).forEach(function(r){al.push({c:"warn",i:"⏳",t:"Pré-reserva parada: "+r.nome,s:"Criada há "+ago(r.criadoEm)+" e ainda não confirmada. "+room(r.quarto).nome+", "+br(r.entrada)+" a "+br(r.saida)+".",a:(r.tel?'<a class="btn wa sm" target="_blank" rel="noopener" href="'+waLink(r.tel,msg("sinal",r))+'"><svg><use href="#wa"/></svg>Cobrar sinal</a>':"")+'<button class="btn soft sm" data-st="confirmada" data-id="'+r.id+'">Confirmar</button>'})});
+  R.filter(function(r){return r.status==="saiu"&&diff(r.saida,t)>=0&&diff(r.saida,t)<=2&&r.tel}).forEach(function(r){al.push({c:"leaf",i:"⭐",t:r.nome+" saiu "+(r.saida===t?"hoje":"há "+plural(diff(r.saida,t),"dia","dias")),s:"Bom momento para agradecer e pedir uma avaliação.",a:'<a class="btn wa sm" target="_blank" rel="noopener" href="'+waLink(r.tel,msg("avaliacao",r))+'"><svg><use href="#wa"/></svg>Agradecer</a>'})});
+  if(S.pedidos.length)al.push({c:"rose",i:"📥",t:plural(S.pedidos.length,"pedido do site","pedidos do site")+" esperando",s:"Pessoas que começaram uma reserva no site. Transforme em reserva com um toque.",a:'<button class="btn rose sm" data-go="pedidos">Ver pedidos</button>'});
+  var nome=first(S.me.nome);
+  var h='<div class="sec"><div class="ph"><div><h1>'+hello()+(nome?", "+esc(nome):"")+'.</h1><p>'+dlong(t).replace(/^./,function(c){return c.toUpperCase()})+' · '+plural(ocup,"quarto ocupado","quartos ocupados")+' de '+nq+'</p></div></div>';
+  h+='<div class="kpis"><div class="kpi dark"><small>Ocupação hoje</small><b>'+ocup+'<span style="font-size:20px;color:rgba(238,241,236,.6)"> / '+nq+'</span></b><div class="occ"><i style="width:'+Math.round(ocup/nq*100)+'%"></i></div></div>'+
+     '<div class="kpi"><small>Chegam hoje</small><b>'+chegam.length+'</b><span>'+(chegam.length?esc(chegam.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
+     '<div class="kpi"><small>Saem hoje</small><b>'+saem.length+'</b><span>'+(saem.length?esc(saem.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
+     '<div class="kpi"><small>A receber</small><b style="font-size:28px">'+money(aReceber)+'</b><span>de hóspedes atuais e futuros</span></div></div>';
+  h+='<div class="card"><h3>O que precisa de atenção</h3>'+(al.length?'<div class="alerts">'+al.map(function(a){return'<div class="al '+a.c+'"><span class="ic">'+a.i+'</span><div><b>'+esc(a.t)+'</b><span>'+esc(a.s)+'</span></div><div class="acts">'+a.a+'</div></div>'}).join("")+'</div>':'<div class="calm">🌿 Tudo em dia por aqui. Nenhuma pendência agora.</div>')+'</div>';
+  function lst(arr,lab){return arr.length?'<div class="dl">'+arr.map(function(r){return'<button class="ri" data-open="'+r.id+'"><span class="rm">'+esc(room(r.quarto).nome)+'</span><span><b>'+esc(r.nome)+'</b><span>'+lab(r)+'</span></span><span class="pill st-'+r.status+'">'+ST[r.status]+'</span></button>'}).join("")+'</div>':'<p class="empty">Ninguém.</p>'}
+  var prox=R.filter(function(r){return r.entrada>t&&r.entrada<=add(t,7)&&r.status!=="saiu"}).sort(function(a,b){return a.entrada<b.entrada?-1:1});
+  h+='<div class="cols3"><div class="card"><h3>Hospedados agora</h3>'+lst(dentro,function(r){return"até "+dlong(r.saida)})+'</div><div class="card"><h3>Chegam nos próximos 7 dias</h3>'+lst(prox,function(r){return dlong(r.entrada)+" · "+plural(nights(r),"noite","noites")})+'</div><div class="card"><h3>Quartos livres hoje</h3>'+freeToday(t)+'</div></div></div>';
+  return h}
+function freeToday(t){var f=freeRooms(t,add(t,1));if(!f.length)return'<p class="empty">Pousada lotada hoje 🎉</p>';
+  return'<div class="dl">'+f.map(function(q){var nx=S.reservas.filter(function(r){return act(r)&&r.quarto===q.id&&r.entrada>t}).sort(function(a,b){return a.entrada<b.entrada?-1:1})[0];
+    return'<button class="ri" data-new="'+q.id+'" data-d="'+t+'"><span class="rm">'+esc(q.nome)+'</span><span><b>Livre</b><span>'+(nx?"até "+dlong(nx.entrada):"sem reservas futuras")+' · até '+q.cap+' pessoas</span></span><span class="pill st-confirmada" style="background:var(--paper)">+ reservar</span></button>'}).join("")+'</div>'}
+
+/* ---------- MAPA ---------- */
+function vMapa(){var t=today();if(!MAPSTART)MAPSTART=add(t,-2);var N=window.innerWidth<600?21:35,s=MAPSTART,e=add(s,N);
+  var ms=MO[+s.slice(5,7)-1],me2=MO[+add(e,-1).slice(5,7)-1],tit=ms===me2?ms:ms.slice(0,3)+" – "+me2.slice(0,3);
+  var h='<div class="sec"><div class="ph"><div><h1>Mapa de ocupação</h1><p>Toque num espaço vazio para reservar. Toque numa reserva para ver.</p></div></div>';
+  h+='<div class="mapbar"><button class="btn ghost sm" data-mv="-7">‹</button><button class="btn soft sm" data-mv="0">Hoje</button><button class="btn ghost sm" data-mv="7">›</button><span class="mt">'+tit.replace(/^./,function(c){return c.toUpperCase()})+' '+e.slice(0,4)+'</span><div class="legend" style="margin-left:auto"><span><i style="background:repeating-linear-gradient(135deg,#C98A9C 0 4px,#BC7B8E 4px 8px)"></i>Pré-reserva</span><span><i style="background:var(--leaf)"></i>Confirmada</span><span><i style="background:var(--sea)"></i>Hospedado</span><span><i style="background:#A9B5AD"></i>Saiu</span><span><i style="background:#FFD27A;border-radius:50%"></i>Falta pagar</span></div></div>';
+  h+='<div class="map" id="map"><div class="mgrid" style="--n:'+N+'">';
+  h+='<div class="mr corner">Quarto</div>';
+  for(var i=0;i<N;i++){var d=add(s,i),w=wd(d);h+='<div class="mh'+(w===0||w===6?" we":"")+(d===t?" td":"")+(d.slice(8)==="01"?" mon":"")+'">'+WK[w]+'<b>'+d.slice(8,10)+'</b>'+(d.slice(8)==="01"?MO[+d.slice(5,7)-1].slice(0,3):"")+'</div>'}
+  S.quartos.forEach(function(q){h+='<div class="mr"><b>'+esc(q.nome)+'</b><span>'+q.cap+' pessoas</span></div>';
+    for(var i=0;i<N;i++){var d=add(s,i),w=wd(d);h+='<button class="mc'+(w===0||w===6?" we":"")+(d===t?" td":"")+'" data-new="'+q.id+'" data-d="'+d+'" aria-label="Reservar '+esc(q.nome)+' em '+br(d)+'"></button>'}});
+  h+='<div class="mr ft">Livres</div>';
+  for(var i=0;i<N;i++){var d=add(s,i),f=freeRooms(d,add(d,1)).length;h+='<div class="mfree'+(f?"":" zero")+'">'+f+'</div>'}
+  h+='</div></div><p class="maphint">Arraste para o lado para ver mais dias. A barra começa à tarde (check-in) e termina ao meio-dia (check-out).</p></div>';
+  return h}
+function drawBars(){var m=$("map");if(!m)return;var g=m.querySelector(".mgrid"),cs=getComputedStyle(m),DW=parseFloat(cs.getPropertyValue("--dw")),RW=parseFloat(cs.getPropertyValue("--rw")),RH=parseFloat(cs.getPropertyValue("--rh"));
+  var N=+g.style.getPropertyValue("--n"),s=MAPSTART,e=add(s,N);
+  S.reservas.filter(function(r){return act(r)&&r.saida>s&&r.entrada<e}).forEach(function(r){var qi=S.quartos.findIndex(function(q){return q.id===r.quarto});if(qi<0)return;
+    var a=diff(s,r.entrada)+.5,b=diff(s,r.saida)+.5,cl=a<0,cr=b>N;a=Math.max(0,a);b=Math.min(N,b);
+    var el=document.createElement("button");el.className="bar "+r.status+(cl?" cl":"")+(cr?" cr":"");el.dataset.open=r.id;
+    el.style.left=(RW+a*DW+2)+"px";el.style.width=Math.max(18,(b-a)*DW-4)+"px";el.style.top=(56+qi*RH+8)+"px";
+    el.innerHTML=(saldo(r)>0&&r.status!=="saiu"?'<i class="due"></i>':"")+'<span>'+esc(first(r.nome))+'</span><small>'+nights(r)+'n</small>';
+    el.title=r.nome+" · "+br(r.entrada)+" a "+br(r.saida)+" · "+ST[r.status];g.appendChild(el)})}
+
+/* ---------- RESERVAS ---------- */
+function vReservas(){var t=today();var F={proximas:"Próximas",hospedados:"Hospedados",pre:"Pré-reservas",pendente:"Falta pagar",passadas:"Passadas",canceladas:"Canceladas",todas:"Todas"};
+  var h='<div class="sec"><div class="ph"><div><h1>Reservas</h1><p>'+plural(S.reservas.filter(act).length,"reserva ativa","reservas ativas")+' no total.</p></div></div>';
+  h+='<div class="tools"><label class="search"><svg><use href="#i-search"/></svg><input id="q" type="search" placeholder="Buscar por nome, telefone ou cidade" value="'+esc(QUERY)+'"></label></div>';
+  h+='<div class="chips">'+Object.keys(F).map(function(k){return'<button class="chip" data-f="'+k+'" aria-pressed="'+(FILTER===k)+'">'+F[k]+'</button>'}).join("")+'</div>';
+  h+='<div class="rlist" id="rlist">'+rlist()+'</div></div>';return h}
+function rlist(){var t=today(),q=QUERY.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim(),qd=q.replace(/\D/g,"");
+  var L=S.reservas.filter(function(r){
+    if(q){var hay=(r.nome+" "+(r.cidade||"")+" "+room(r.quarto).nome).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");if(hay.indexOf(q)<0&&!(qd.length>=3&&String(r.tel||"").indexOf(qd)>=0))return false}
+    switch(FILTER){case"proximas":return act(r)&&r.status!=="saiu"&&r.saida>=t;case"hospedados":return r.status==="hospedado";case"pre":return r.status==="pre";case"pendente":return act(r)&&saldo(r)>0;case"passadas":return act(r)&&(r.status==="saiu"||r.saida<t);case"canceladas":return r.status==="cancelada";default:return true}});
+  var asc=FILTER==="proximas"||FILTER==="pre"||FILTER==="hospedados";L.sort(function(a,b){return(a.entrada<b.entrada?-1:a.entrada>b.entrada?1:0)*(asc?1:-1)});
+  if(!L.length)return'<p class="empty">Nenhuma reserva aqui.</p>';
+  return L.slice(0,200).map(function(r){var v=visits(r),sd=saldo(r);
+    return'<button class="rc" data-open="'+r.id+'"><span class="dt"><span>'+WK[wd(r.entrada)]+'</span><b>'+r.entrada.slice(8)+'</b><span>'+MO[+r.entrada.slice(5,7)-1].slice(0,3)+'</span></span><span><span class="nm">'+esc(r.nome)+(v?'<span class="tag">↺ '+(v+1)+'ª vez</span>':"")+'</span><span class="inf">'+esc(room(r.quarto).nome)+' · '+br(r.entrada)+' a '+br(r.saida)+' · '+plural(nights(r),"noite","noites")+' · '+people(r)+'</span></span><span class="rt"><span class="pill st-'+r.status+'">'+ST[r.status]+'</span>'+(act(r)&&r.valor?'<span class="sd'+(sd?"":" ok")+'">'+(sd?"Falta "+money(sd):"Pago ✓")+'</span>':"")+'</span></button>'}).join("")}
+
+/* ---------- PEDIDOS ---------- */
+function vPedidos(){var P=S.pedidos.slice().sort(function(a,b){return(+b.atualizado||0)-(+a.atualizado||0)});
+  var h='<div class="sec"><div class="ph"><div><h1>Pedidos do site</h1><p>Quem começou uma reserva no site. Responda rápido e transforme em reserva com um toque.</p></div></div>';
+  if(!P.length)return h+'<div class="calm">📭 Nenhum pedido novo do site agora.</div></div>';
+  h+='<div class="rlist">'+P.map(function(p){var a=p.start,b=p.end,pax=(+p.ad||2)+(+p.ch||0),sug=a&&b&&b>a?bestRoom(a,b,pax):null,env=p.enviado==="sim";
+    return'<div class="pd"><div class="hd"><div><b>'+esc(p.name||"Sem nome")+'</b><div class="muted" style="font-size:13px">'+(p.phone?phoneFmt(p.phone)+" · ":"")+(p.cidadeInformada||p.cidadeAprox||"")+' · há '+ago(+p.atualizado||+p.criado||Date.now())+'</div></div><span class="pill '+(env?"st-confirmada":"st-pre")+'">'+(env?"Enviou no WhatsApp":"Não enviou")+'</span></div>'+
+      '<div class="meta">'+(a?'<span>📅 '+br(a)+(b?" a "+br(b)+" · "+plural(diff(a,b),"noite","noites"):"")+'</span>':"")+'<span>👥 '+plural(+p.ad||0,"adulto","adultos")+(+p.ch?" + "+plural(+p.ch,"criança","crianças"):"")+'</span>'+(p.pet==="sim"?'<span>🐾 pet</span>':"")+(p.room?'<span>🛏️ '+esc(p.room)+'</span>':"")+'</div>'+
+      (p.obs?'<div class="muted" style="font-size:13.5px">“'+esc(p.obs)+'”</div>':"")+
+      (a&&b?'<div class="sug'+(sug?"":" no")+'">'+(sug?"✓ "+esc(sug.nome)+" está livre nessas datas":"✕ Nenhum quarto livre para "+pax+" pessoas nessas datas")+'</div>':"")+
+      '<div class="acts"><button class="btn sm" data-conv="'+esc(p.id)+'">Criar reserva</button>'+(p.phone?'<a class="btn wa sm" target="_blank" rel="noopener" href="'+waLink(p.phone,"Olá, "+first(p.name)+"! Aqui é da Pousada Ingá 🌿 Vi que você começou uma reserva pelo site"+(a?" para "+br(a)+(b?" a "+br(b):""):"")+". Posso te ajudar a finalizar?")+'"><svg><use href="#wa"/></svg>Chamar</a>':"")+'<button class="btn danger sm" data-disc="'+esc(p.id)+'">Descartar</button></div></div>'}).join("")+'</div></div>';
+  return h}
+
+/* ---------- CAIXA ---------- */
+function vCaixa(){var t=today();if(!FINM)FINM=t.slice(0,7);var y=+FINM.slice(0,4),m=+FINM.slice(5,7),dim=new Date(Date.UTC(y,m,0)).getUTCDate(),ms=FINM+"-01",me2=add(ms,dim);
+  var R=S.reservas.filter(act),doMes=R.filter(function(r){return r.entrada.slice(0,7)===FINM});
+  var fat=doMes.reduce(function(s,r){return s+(+r.valor||0)},0),rec=doMes.reduce(function(s,r){return s+Math.min(+r.pago||0,+r.valor||0)},0),pend=fat-rec;
+  var nts=0;R.forEach(function(r){var a=r.entrada>ms?r.entrada:ms,b=r.saida<me2?r.saida:me2;if(b>a)nts+=diff(a,b)});
+  var occ=Math.round(nts/(S.quartos.length*dim)*100),nm=doMes.reduce(function(s,r){return s+nights(r)},0),dm=nm?fat/nm:0;
+  var byO={};doMes.forEach(function(r){var k=r.origem||"outro";byO[k]=byO[k]||{n:0,v:0};byO[k].n++;byO[k].v+=+r.valor||0});var mx=Math.max(1,...Object.values(byO).map(function(o){return o.v}));
+  var pends=R.filter(function(r){return saldo(r)>0&&r.status!=="cancelada"}).sort(function(a,b){return a.entrada<b.entrada?-1:1});
+  var h='<div class="sec"><div class="ph"><div><h1>Caixa</h1><p>Reservas com entrada em '+MO[m-1]+' de '+y+'.</p></div><div class="mapbar"><button class="btn ghost sm" data-fm="-1">‹</button><span class="mt" style="min-width:0;text-align:center">'+MO[m-1].replace(/^./,function(c){return c.toUpperCase()})+'</span><button class="btn ghost sm" data-fm="1">›</button></div></div>';
+  h+='<div class="kpis"><div class="kpi dark"><small>Faturamento</small><b style="font-size:30px">'+money(fat)+'</b><span>'+plural(doMes.length,"reserva","reservas")+'</span></div><div class="kpi"><small>Recebido</small><b style="font-size:30px;color:var(--leaf)">'+money(rec)+'</b><span>'+(fat?Math.round(rec/fat*100):0)+'% do total</span></div><div class="kpi"><small>A receber</small><b style="font-size:30px;color:'+(pend?"var(--warn)":"var(--ink)")+'">'+money(pend)+'</b><span>destas reservas</span></div><div class="kpi"><small>Ocupação do mês</small><b>'+occ+'%</b><span>'+nts+' de '+(S.quartos.length*dim)+' noites · diária média '+money(dm)+'</span></div></div>';
+  h+='<div class="cols2"><div class="card"><h3>De onde vieram</h3>'+(Object.keys(byO).length?'<div class="fin-bars">'+Object.keys(byO).sort(function(a,b){return byO[b].v-byO[a].v}).map(function(k){return'<div class="fb"><span>'+OR[k]+' <span class="muted">('+byO[k].n+')</span></span><span class="tr"><i style="width:'+Math.max(3,byO[k].v/mx*100)+'%"></i></span><b>'+money(byO[k].v)+'</b></div>'}).join("")+'</div>':'<p class="empty">Sem reservas neste mês.</p>')+'</div>';
+  h+='<div class="card"><h3>Falta receber (todas as datas)</h3>'+(pends.length?'<div class="dl">'+pends.slice(0,12).map(function(r){return'<button class="ri" data-open="'+r.id+'"><span class="rm">'+br(r.entrada)+'</span><span><b>'+esc(r.nome)+'</b><span>'+esc(room(r.quarto).nome)+' · '+ST[r.status]+'</span></span><b style="color:var(--warn)">'+money(saldo(r))+'</b></button>'}).join("")+'</div>':'<p class="empty">Nada pendente. 👏</p>')+'</div></div></div>';
+  return h}
+
+/* ---------- AJUSTES ---------- */
+function vAjustes(){var h='<div class="sec"><div class="ph"><div><h1>Ajustes</h1><p>Equipe, quartos e histórico do que foi feito.</p></div></div><div class="cols2">';
+  h+='<div class="card"><h3>Equipe</h3><div class="mem"><span class="av">'+esc((S.me.nome||"D").charAt(0))+'</span><div><b>'+esc(S.me.login==="dona"?S.me.nome:"Dona")+'</b><span>Administradora · login da Vercel</span></div><span></span></div>'+
+     S.equipe.map(function(u){return'<div class="mem"><span class="av" style="background:'+(u.ativo?"var(--sea)":"#A9B5AD")+'">'+esc((u.nome||u.login).charAt(0).toUpperCase())+'</span><div><b>'+esc(u.nome)+(u.ativo?"":' <span class="muted">(bloqueado)</span>')+'</b><span>login: '+esc(u.login)+' · '+(u.papel==="admin"?"Administradora":"Equipe")+'</span></div><button class="btn soft sm" data-mem="'+esc(u.login)+'">Editar</button></div>'}).join("")+
+     '<div style="margin-top:14px"><button class="btn sm" data-mem="">+ Adicionar pessoa</button></div></div>';
+  h+='<div class="card"><h3>Quartos</h3><div id="qedit">'+S.quartos.map(function(q,i){return'<div class="qrow" data-qid="'+esc(q.id)+'"><label class="fld"><span>'+(i?"":"Nome")+'</span><input value="'+esc(q.nome)+'" data-qn></label><label class="fld"><span>'+(i?"":"Pessoas")+'</span><input type="number" min="1" max="12" value="'+q.cap+'" data-qc inputmode="numeric"></label><button class="btn danger sm" data-qdel title="Remover quarto">✕</button></div>'}).join("")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn soft sm" id="qadd">+ Quarto</button><button class="btn sm" id="qsave">Salvar quartos</button></div></div></div>';
+  h+='<div class="card"><h3>Histórico recente</h3>'+(S.log.length?'<div class="log">'+S.log.map(function(l){return'<div>'+esc(logTxt(l))+'<span>há '+ago(l.em)+'</span></div>'}).join("")+'</div>':'<p class="empty">Nada ainda.</p>')+'</div></div>';
+  return h}
+function logTxt(l){var n=l.nome||"",p=l.por||"";switch(l.tipo){case"criou":return p+" criou a reserva de "+n+(l.entrada?" ("+br(l.entrada)+" a "+br(l.saida)+")":"");case"editou":return p+" editou a reserva de "+n;case"hospedado":return p+" fez o check-in de "+n;case"saiu":return p+" fez o check-out de "+n;case"cancelada":return p+" cancelou a reserva de "+n;case"confirmada":return p+" confirmou a reserva de "+n;case"pre":return p+" voltou "+n+" para pré-reserva";case"pagamento":return p+" registrou "+money(l.valor)+" de "+n;case"apagou":return p+" apagou a reserva de "+n;case"quartos":return p+" alterou os quartos";case"membro-novo":return p+" adicionou "+n+" à equipe";case"membro-editado":return p+" editou o acesso de "+n;case"membro-removido":return p+" removeu "+n+" da equipe";default:return p+" "+l.tipo}}
+
+/* ---------- mensagens WhatsApp ---------- */
+function msg(k,r){var q=room(r.quarto).nome,n=first(r.nome),sd=saldo(r);
+  switch(k){
+  case"confirmacao":return"Olá, "+n+"! 🌿 Sua reserva na Pousada Ingá está confirmada.\n\n🛏️ "+q+"\n📅 Entrada: "+dlong(r.entrada)+" (check-in das 14h às 20h)\n📅 Saída: "+dlong(r.saida)+" (check-out até 12h)\n👥 "+people(r)+(r.valor?"\n💰 Total: "+money(r.valor)+(r.pago?" · Pago: "+money(r.pago):"")+(sd?" · Saldo: "+money(sd):""):"")+"\n\nQualquer dúvida é só chamar. Até breve!";
+  case"lembrete":return"Oi, "+n+"! 🌴 Falta pouco para sua chegada na Pousada Ingá ("+dlong(r.entrada)+").\n\n⏰ Check-in das 14h às 20h\n📍 "+ADDR+"\n🗺️ Rota: "+MAPS+(sd?"\n💰 Saldo a pagar na chegada: "+money(sd):"")+"\n\nSe precisar de algo antes, é só falar. Boa viagem!";
+  case"chegada":return"Seja bem-vindo(a), "+n+"! 🌿 Que bom ter você na Ingá.\n\nO café da manhã é servido pela manhã no restaurante. Qualquer coisa que precisar durante a estadia, fale com a gente por aqui.\n\nAproveite Cumuruxatiba! 🌊";
+  case"saldo":return"Olá, "+n+"! Tudo bem? Passando para lembrar do saldo da sua reserva na Pousada Ingá: "+money(sd)+". Pode ser pago por Pix ou na chegada. Obrigada! 🌿";
+  case"sinal":return"Olá, "+n+"! 🌿 Sua pré-reserva na Pousada Ingá está separada: "+q+", de "+br(r.entrada)+" a "+br(r.saida)+".\n\nPara confirmar, precisamos do sinal combinado. Posso te passar os dados do Pix?";
+  case"avaliacao":return"Oi, "+n+"! Foi um prazer receber você na Pousada Ingá 💚 Esperamos que tenha aproveitado.\n\nSe puder, deixe uma avaliação contando como foi, isso ajuda muito a gente:\n"+TRIP+"\n\nVolte sempre!";}}
+
+/* ---------- folhas (sheets) ---------- */
+function openSheet(title,body,cls){$("ovl").innerHTML='<div class="ov" id="ov"><div class="sheet '+(cls||"")+'" role="dialog" aria-modal="true"><div class="grab"></div><div class="sh-h"><h2>'+title+'</h2><button class="x" type="button" data-close aria-label="Fechar">✕</button></div>'+body+'</div></div>';
+  document.body.style.overflow="hidden";$("ov").addEventListener("click",function(e){if(e.target.id==="ov"||e.target.closest("[data-close]"))closeSheet()});bind($("ovl"))}
+function closeSheet(){$("ovl").innerHTML="";document.body.style.overflow=""}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeSheet()});
+
+function detail(id){var r=S.reservas.find(function(x){return x.id===id});if(!r)return;var t=today(),sd=saldo(r),v=visits(r),pct=r.valor?Math.min(100,Math.round((+r.pago||0)/r.valor*100)):0;
+  var nx={pre:[["confirmada","Confirmar reserva","leaf"]],confirmada:r.entrada<=t?[["hospedado","Fazer check-in","sea"]]:[],hospedado:[["out","Fazer check-out",""]],saiu:[],cancelada:[["confirmada","Reativar reserva",""]]}[r.status]||[];
+  var b='<div class="dv"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="pill st-'+r.status+'">'+ST[r.status]+'</span>'+(v?'<span class="tag">↺ Hóspede voltando · '+(v+1)+'ª vez</span>':"")+'<span class="muted" style="font-size:13px">via '+OR[r.origem||"outro"]+'</span></div>';
+  b+='<div class="row"><div class="it"><small>Quarto</small><b>'+esc(room(r.quarto).nome)+'</b></div><div class="it"><small>Pessoas</small><b>'+people(r)+'</b></div><div class="it"><small>Entrada</small><b>'+dlong(r.entrada)+'</b></div><div class="it"><small>Saída</small><b>'+dlong(r.saida)+' · '+plural(nights(r),"noite","noites")+'</b></div>'+(r.tel?'<div class="it"><small>WhatsApp</small><b>'+phoneFmt(r.tel)+'</b></div>':"")+(r.cidade?'<div class="it"><small>Cidade</small><b>'+esc(r.cidade)+'</b></div>':"")+'</div>';
+  if(r.obs)b+='<div class="it" style="background:#F5ECD6;border-radius:16px;padding:10px 14px"><small style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7B5A16">Observações</small><div>'+esc(r.obs).replace(/\n/g,"<br>")+'</div></div>';
+  b+='<div class="money"><div class="l"><span>Total</span><b>'+money(r.valor)+'</b></div><div class="l"><span>Pago</span><b style="color:var(--leaf)">'+money(r.pago)+'</b></div><div class="prog"><i style="width:'+pct+'%"></i></div><div class="l"><span>'+(sd?"Falta receber":"Situação")+'</span><b style="color:'+(sd?"var(--warn)":"var(--leaf)")+'">'+(sd?money(sd):(r.valor?"Tudo pago ✓":"Sem valor lançado"))+'</b></div>'+(sd&&act(r)?'<div style="display:flex;gap:8px;flex-wrap:wrap"><input id="pv" inputmode="decimal" placeholder="Valor recebido" style="flex:1 1 140px;min-width:0;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);font-weight:700;font-size:16px;background:var(--paper)"><button class="btn sm" data-pay="'+r.id+'">Registrar</button><button class="btn soft sm" data-payall="'+r.id+'">Recebi tudo</button></div>':"")+'</div>';
+  if(nx.length)b+='<div class="acts-grid">'+nx.map(function(a){return a[0]==="out"?'<button class="btn" data-out="'+r.id+'">🧳 '+a[1]+'</button>':'<button class="btn '+(a[2]||"")+'" data-st="'+a[0]+'" data-id="'+r.id+'">'+a[1]+'</button>'}).join("")+'</div>';
+  if(r.tel)b+='<div><h3 style="font-family:var(--body);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin:4px 0 8px">Mensagens prontas no WhatsApp</h3><div class="msgs">'+
+    [["confirmacao","✅","Confirmação"],["lembrete","📍","Lembrete + rota"],["chegada","🌿","Boas-vindas"],sd?["saldo","💰","Cobrar saldo"]:null,r.status==="pre"?["sinal","⏳","Pedir sinal"]:null,["avaliacao","⭐","Agradecer + avaliação"]].filter(Boolean).map(function(m){return'<a class="btn ghost" style="justify-content:flex-start" target="_blank" rel="noopener" href="'+waLink(r.tel,msg(m[0],r))+'"><i style="font-style:normal">'+m[1]+'</i>'+m[2]+'</a>'}).join("")+'</div></div>';
+  b+='<div class="sheet-foot"><button class="btn ghost" data-edit="'+r.id+'">✏️ Editar</button>'+(r.status!=="cancelada"&&r.status!=="saiu"?'<button class="btn danger" data-cancel="'+r.id+'">Cancelar reserva</button>':"")+(S.me.papel==="admin"?'<button class="btn danger" data-del="'+r.id+'">Apagar</button>':"")+'</div>';
+  b+='<p class="hist">Criada por '+esc(r.criadoPor||"?")+' em '+new Date(r.criadoEm).toLocaleDateString("pt-BR")+(r.alteradoEm&&r.alteradoEm!==r.criadoEm?' · última alteração por '+esc(r.alteradoPor)+' há '+ago(r.alteradoEm):"")+'</p></div>';
+  openSheet(esc(r.nome),b)}
+
+function formSheet(id,pre){var r=id?S.reservas.find(function(x){return x.id===id}):null,t=today();
+  var x=Object.assign({quarto:"",nome:"",tel:"",cidade:"",entrada:t,saida:add(t,2),adultos:2,criancas:0,pet:false,origem:"whatsapp",status:"confirmada",valor:"",pago:"",obs:"",lead:""},r||{},pre||{});
+  if(!x.quarto){var br0=bestRoom(x.entrada,x.saida,(+x.adultos||2)+(+x.criancas||0),id);x.quarto=br0?br0.id:S.quartos[0].id}
+  function opt(o,v){return Object.keys(o).map(function(k){return'<option value="'+k+'"'+(k===v?" selected":"")+'>'+o[k]+'</option>'}).join("")}
+  var b='<form class="form" id="rf" novalidate>'+
+    '<label class="fld"><span>Nome do hóspede</span><input name="nome" value="'+esc(x.nome)+'" required autocomplete="off"></label>'+
+    '<div class="grid2"><label class="fld"><span>WhatsApp</span><input name="tel" value="'+esc(phoneFmt(x.tel))+'" inputmode="tel" placeholder="(31) 99999-9999"></label><label class="fld"><span>Cidade</span><input name="cidade" value="'+esc(x.cidade)+'"></label></div>'+
+    '<div id="known"></div>'+
+    '<div class="grid2"><label class="fld"><span>Entrada</span><input type="date" name="entrada" value="'+x.entrada+'" required></label><label class="fld"><span>Saída</span><input type="date" name="saida" value="'+x.saida+'" required></label></div>'+
+    '<div class="nights" id="nn"></div>'+
+    '<div class="grid3"><label class="fld"><span>Adultos</span><input type="number" name="adultos" min="1" max="9" value="'+x.adultos+'" inputmode="numeric"></label><label class="fld"><span>Crianças</span><input type="number" name="criancas" min="0" max="9" value="'+x.criancas+'" inputmode="numeric"></label><label class="chk" style="align-self:end"><input type="checkbox" name="pet"'+(x.pet?" checked":"")+'> Pet 🐾</label></div>'+
+    '<div><label class="fld"><span>Quarto</span><select name="quarto" id="fq"></select></label><div class="free" id="free"></div></div>'+
+    '<div id="cf"></div>'+
+    '<div class="grid2"><label class="fld"><span>Veio por</span><select name="origem">'+opt(OR,x.origem)+'</select></label><label class="fld"><span>Situação</span><select name="status">'+opt(ST,x.status)+'</select></label></div>'+
+    '<div class="grid2"><label class="fld"><span>Valor total (R$)</span><input name="valor" value="'+(x.valor||"")+'" inputmode="decimal" placeholder="0"></label><label class="fld"><span>Já pago (R$)</span><input name="pago" value="'+(x.pago||"")+'" inputmode="decimal" placeholder="0"></label></div>'+
+    '<div class="calc">Calcular: diária de R$ <input id="dia" inputmode="decimal" placeholder="350"> × <b id="cn">0</b> noites <button type="button" id="calc">= usar no total</button></div>'+
+    '<label class="fld"><span>Observações</span><textarea name="obs" placeholder="Ex.: aniversário de casamento, chega tarde, alergia a camarão…">'+esc(x.obs)+'</textarea></label>'+
+    '<p class="err" id="ferr" style="text-align:left"></p>'+
+    '<div class="sheet-foot"><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn" id="fsave" type="submit">'+(r?"Salvar alterações":"Criar reserva")+'</button></div></form>';
+  openSheet(r?"Editar reserva":"Nova reserva",b);
+  var f=$("rf");
+  function val(n){return f.elements[n].value}
+  function upd(){var a=val("entrada"),b2=val("saida"),q=val("quarto"),pax=(+val("adultos")||1)+(+val("criancas")||0),n=a&&b2?diff(a,b2):0;
+    $("nn").textContent=n>0?"🌙 "+plural(n,"noite","noites")+" · "+dlong(a)+" → "+dlong(b2):"";$("cn").textContent=Math.max(0,n);
+    var sel=$("fq"),cur=q||x.quarto;sel.innerHTML=S.quartos.map(function(qq){var busy=n>0&&conflicts({quarto:qq.id,entrada:a,saida:b2},id).length;return'<option value="'+qq.id+'"'+(qq.id===cur?" selected":"")+'>'+esc(qq.nome)+' · '+qq.cap+' pessoas'+(busy?" — ocupado":"")+'</option>'}).join("");
+    var fr=n>0?freeRooms(a,b2,id):[];$("free").innerHTML=n>0?(fr.length?'<span class="muted" style="font-size:12.5px;font-weight:700;align-self:center">Livres:</span>'+fr.map(function(qq){return'<button type="button" class="'+(qq.id===sel.value?"on":"")+'" data-pick="'+qq.id+'">'+esc(qq.nome)+(qq.cap<pax?" ⚠︎":"")+'</button>'}).join(""):'<span class="warnbox" style="padding:6px 12px">Nenhum quarto livre nessas datas</span>'):"";
+    var st=val("status"),msgs="",block=false;
+    if(n<=0){msgs='<div class="warnbox">A saída precisa ser depois da entrada.</div>';block=true}
+    else if(st!=="cancelada"){var c=conflicts({quarto:sel.value,entrada:a,saida:b2},id);if(c.length){block=true;msgs='<div class="warnbox">⚠︎ '+esc(room(sel.value).nome)+' já está com '+esc(c[0].nome)+' de '+br(c[0].entrada)+' a '+br(c[0].saida)+'. Escolha um quarto livre acima.</div>'}else if(room(sel.value).cap<pax)msgs='<div class="warnbox" style="background:var(--warn-soft);color:var(--warn)">Esse quarto é para até '+room(sel.value).cap+' pessoas e a reserva tem '+pax+'.</div>'}
+    $("cf").innerHTML=msgs;$("fsave").disabled=block;
+    var tel=val("tel").replace(/\D/g,"");var prev=tel.length>=10?S.reservas.filter(function(z){return z.id!==id&&z.tel===tel&&act(z)}):[];
+    $("known").innerHTML=prev.length&&!r?'<div class="okbox">↺ Já se hospedou aqui '+plural(prev.length,"vez","vezes")+' (última: '+brY(prev.sort(function(p1,p2){return p1.entrada<p2.entrada?1:-1})[0].entrada)+'). Que tal um mimo de boas-vindas?</div>':""}
+  f.addEventListener("input",function(e){if(e.target.name==="tel"&&!f.elements.cidade.value){var tel=val("tel").replace(/\D/g,""),p=S.reservas.find(function(z){return z.tel===tel&&z.cidade});if(p&&!r){f.elements.cidade.value=p.cidade;if(!f.elements.nome.value)f.elements.nome.value=p.nome}}upd()});
+  f.addEventListener("change",upd);
+  $("free").addEventListener("click",function(e){var p=e.target.closest("[data-pick]");if(p){$("fq").value=p.dataset.pick;upd()}});
+  $("calc").addEventListener("click",function(){var d=parseFloat(String($("dia").value).replace(",","."))||0,n=+$("cn").textContent||0;if(d&&n){f.elements.valor.value=(d*n).toFixed(0)}});
+  upd();
+  f.addEventListener("submit",function(e){e.preventDefault();$("ferr").textContent="";var o={id:id||"",lead:x.lead||""};["nome","tel","cidade","entrada","saida","adultos","criancas","quarto","origem","status","valor","pago","obs"].forEach(function(k){o[k]=val(k)});o.pet=f.elements.pet.checked;
+    if(!o.nome.trim()){$("ferr").textContent="Escreva o nome do hóspede.";return}
+    $("fsave").disabled=true;$("fsave").textContent="Salvando…";
+    api("salvar",{reserva:o}).then(function(j){var i=S.reservas.findIndex(function(z){return z.id===j.reserva.id});if(i>=0)S.reservas[i]=j.reserva;else S.reservas.push(j.reserva);if(o.lead)S.pedidos=S.pedidos.filter(function(p){return p.id!==o.lead});me();render();detail(j.reserva.id);toast(id?"Reserva atualizada":"Reserva criada ✨");load(true)})
+    .catch(function(err){$("ferr").textContent=err.message;$("fsave").disabled=false;$("fsave").textContent=id?"Salvar alterações":"Criar reserva"})})}
+
+function setStatus(id,st,quitar){return api("status",{id:id,status:st,quitar:!!quitar}).then(function(j){var i=S.reservas.findIndex(function(z){return z.id===id});S.reservas[i]=j.reserva;render();var lab={hospedado:"Check-in feito 🛎️",saiu:"Check-out feito 🧳",confirmada:"Reserva confirmada ✅",cancelada:"Reserva cancelada",pre:"Voltou para pré-reserva"}[st];toast(lab);return j.reserva}).catch(function(e){toast(e.message,true)})}
+function checkout(id){var r=S.reservas.find(function(x){return x.id===id}),sd=saldo(r);
+  if(!sd){setStatus(id,"saiu").then(function(){closeSheet()});return}
+  openSheet("Check-out de "+esc(first(r.nome)),'<div class="dv"><div class="money"><div class="l"><span>Falta receber</span><b style="color:var(--warn)">'+money(sd)+'</b></div></div><p style="margin:0">O hóspede pagou o saldo agora?</p><div class="acts-grid"><button class="btn" data-co="'+id+'" data-q="1">Sim, recebi '+money(sd)+'</button><button class="btn ghost" data-co="'+id+'" data-q="0">Ainda não, fica pendente</button></div></div>')}
+
+function memSheet(login){var u=login?S.equipe.find(function(x){return x.login===login}):null;
+  var b='<form class="form" id="mf"><label class="fld"><span>Nome</span><input name="nome" value="'+esc(u?u.nome:"")+'" required></label><label class="fld"><span>Login (sem espaço)</span><input name="login" value="'+esc(u?u.login:"")+'" '+(u?"readonly":"")+' autocapitalize="none" required></label><label class="fld"><span>'+(u?"Nova senha (deixe vazio para manter)":"Senha (mínimo 6)")+'</span><input name="senha" type="text" autocomplete="new-password" '+(u?"":"required")+'></label><div class="grid2"><label class="fld"><span>Acesso</span><select name="papel"><option value="equipe"'+(u&&u.papel==="admin"?"":" selected")+'>Equipe</option><option value="admin"'+(u&&u.papel==="admin"?" selected":"")+'>Administradora</option></select></label>'+(u?'<label class="chk" style="align-self:end"><input type="checkbox" name="ativo"'+(u.ativo?" checked":"")+'> Acesso liberado</label>':"")+'</div><p class="muted" style="font-size:13px;margin:0">Equipe vê e lança reservas e pagamentos. Administradora também apaga reservas, mexe nos quartos e na equipe.</p><p class="err" id="merr" style="text-align:left"></p><div class="sheet-foot">'+(u?'<button type="button" class="btn danger" id="mdel">Remover</button>':"")+'<button class="btn" type="submit">Salvar</button></div></form>';
+  openSheet(u?"Editar acesso":"Adicionar pessoa",b);var f=$("mf");
+  f.addEventListener("submit",function(e){e.preventDefault();api("membro",{login:f.elements.login.value,nome:f.elements.nome.value,senha:f.elements.senha.value,papel:f.elements.papel.value,ativo:f.elements.ativo?f.elements.ativo.checked:true}).then(function(){closeSheet();toast("Acesso salvo. Mande o login e a senha para a pessoa.");load(true)}).catch(function(err){$("merr").textContent=err.message})});
+  if(u)$("mdel").addEventListener("click",function(){if(!confirm("Remover o acesso de "+u.nome+"?"))return;api("removerMembro",{login:u.login}).then(function(){closeSheet();toast("Acesso removido");load(true)})})}
+function pwSheet(){if(S.me.login==="dona"){openSheet("Trocar senha",'<p style="margin:0">A senha da administradora principal é a mesma do painel e fica nas configurações da Vercel (variável <b>ADMIN_PASS</b>). Peça para quem cuida do site trocar.</p>');return}
+  openSheet("Trocar minha senha",'<form class="form" id="pf"><label class="fld"><span>Senha atual</span><input name="a" type="password" autocomplete="current-password" required></label><label class="fld"><span>Nova senha (mínimo 6)</span><input name="n" type="password" autocomplete="new-password" required></label><p class="err" id="perr" style="text-align:left"></p><div class="sheet-foot"><button class="btn" type="submit">Trocar senha</button></div></form>');
+  $("pf").addEventListener("submit",function(e){e.preventDefault();api("senha",{atual:this.elements.a.value,nova:this.elements.n.value}).then(function(){closeSheet();toast("Senha trocada ✓")}).catch(function(err){$("perr").textContent=err.message})})}
+
+/* ---------- eventos ---------- */
+function bind(root){root=root||$("main");
+  if(VIEW==="mapa"&&root===$("main")){drawBars();var m=$("map");if(m){var t=today(),off=diff(MAPSTART,t);if(off>0)m.scrollLeft=Math.max(0,(off-1)*parseFloat(getComputedStyle(m).getPropertyValue("--dw")))}}
+  var q=$("q");if(q&&root===$("main"))q.addEventListener("input",function(){QUERY=q.value;$("rlist").innerHTML=rlist()});
+  var qa=$("qadd");if(qa&&root===$("main")){qa.addEventListener("click",function(){var d=document.createElement("div");d.className="qrow";d.dataset.qid="";d.innerHTML='<label class="fld"><input placeholder="Nome do quarto" data-qn></label><label class="fld"><input type="number" min="1" max="12" value="2" data-qc></label><button class="btn danger sm" data-qdel>✕</button>';$("qedit").appendChild(d)});
+    $("qsave").addEventListener("click",function(){var L=[].map.call(document.querySelectorAll("#qedit .qrow"),function(r){return{id:r.dataset.qid,nome:r.querySelector("[data-qn]").value,cap:r.querySelector("[data-qc]").value}});
+      api("quartos",{quartos:L}).then(function(j){S.quartos=j.quartos;toast("Quartos salvos ✓");render()}).catch(function(e){toast(e.message,true)})})}}
+document.addEventListener("click",function(e){var el=e.target.closest("[data-open],[data-new],[data-st],[data-out],[data-co],[data-edit],[data-cancel],[data-del],[data-pay],[data-payall],[data-conv],[data-disc],[data-mv],[data-f],[data-fm],[data-mem],[data-qdel]");if(!el)return;var d=el.dataset;
+  if(d.open!==undefined){detail(d.open);return}
+  if(d.new!==undefined){formSheet(null,{quarto:d.new,entrada:d.d,saida:add(d.d,1)});return}
+  if(d.st!==undefined){setStatus(d.id,d.st).then(function(r){if(r&&$("ov"))detail(r.id)});return}
+  if(d.out!==undefined){checkout(d.out);return}
+  if(d.co!==undefined){setStatus(d.co,"saiu",d.q==="1").then(function(){closeSheet()});return}
+  if(d.edit!==undefined){formSheet(d.edit);return}
+  if(d.cancel!==undefined){if(confirm("Cancelar esta reserva? O quarto fica livre de novo."))setStatus(d.cancel,"cancelada").then(function(r){if(r)detail(r.id)});return}
+  if(d.del!==undefined){if(confirm("Apagar de vez esta reserva? Isso não pode ser desfeito."))api("apagar",{id:d.del}).then(function(){S.reservas=S.reservas.filter(function(z){return z.id!==d.del});closeSheet();render();toast("Reserva apagada")}).catch(function(err){toast(err.message,true)});return}
+  if(d.pay!==undefined||d.payall!==undefined){var id=d.pay||d.payall,r=S.reservas.find(function(z){return z.id===id}),v=d.payall!==undefined?saldo(r):parseFloat(String(($("pv")||{}).value||"").replace(/\./g,"").replace(",","."))||0;if(!v){toast("Escreva o valor recebido",true);return}
+    api("pagamento",{id:id,valor:v}).then(function(j){var i=S.reservas.findIndex(function(z){return z.id===id});S.reservas[i]=j.reserva;render();detail(id);toast("Pagamento de "+money(v)+" registrado 💰")}).catch(function(err){toast(err.message,true)});return}
+  if(d.conv!==undefined){var p=S.pedidos.find(function(z){return z.id===d.conv});if(!p)return;var a=p.start&&/^\d{4}-\d{2}-\d{2}$/.test(p.start)?p.start:today(),b=p.end&&p.end>a?p.end:add(a,2);
+    formSheet(null,{nome:p.name||"",tel:p.phone||"",cidade:p.cidadeInformada||p.cidadeAprox||"",entrada:a,saida:b,adultos:+p.ad||2,criancas:+p.ch||0,pet:p.pet==="sim",origem:"site",status:"pre",obs:[p.room?"Quarto pedido no site: "+p.room:"",p.obs||""].filter(Boolean).join("\n"),lead:p.id});return}
+  if(d.disc!==undefined){if(!confirm("Descartar este pedido? Ele some da lista."))return;api("descartarPedido",{id:d.disc}).then(function(){S.pedidos=S.pedidos.filter(function(z){return z.id!==d.disc});me();render();toast("Pedido descartado")});return}
+  if(d.mv!==undefined){MAPSTART=+d.mv?add(MAPSTART,+d.mv):add(today(),-2);render();return}
+  if(d.f!==undefined){FILTER=d.f;render();return}
+  if(d.fm!==undefined){var y=+FINM.slice(0,4),m=+FINM.slice(5,7)-1+(+d.fm);y+=Math.floor(m/12);m=((m%12)+12)%12;FINM=y+"-"+String(m+1).padStart(2,"0");render();return}
+  if(d.mem!==undefined){memSheet(d.mem);return}
+  if(d.qdel!==undefined){var row=el.closest(".qrow"),qid=row.dataset.qid;if(qid&&S.reservas.some(function(z){return z.quarto===qid&&act(z)&&z.saida>=today()})){toast("Esse quarto tem reservas futuras. Mude-as de quarto antes.",true);return}row.remove();return}
+});
+addEventListener("resize",function(){if(VIEW==="mapa"&&S){clearTimeout(window.__rz);window.__rz=setTimeout(render,250)}});
+
+/* atualiza sozinho quando volta para a aba (equipe trabalhando junto) */
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&S&&!$("ov"))load(true)});
+setInterval(function(){if(S&&document.visibilityState==="visible"&&!$("ov"))load(true)},120000);
+
+/* início */
+var h0=(location.hash||"").slice(1);if(["hoje","mapa","reservas","pedidos","caixa","ajustes"].indexOf(h0)>=0)VIEW=h0;
+if(TK){load(true).then(function(){if(!S){$("login").hidden=false}})}else{$("login").hidden=false}
+if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("/admin-sw.js").catch(function(){});
+})();
+</script>
+</body>
+</html>

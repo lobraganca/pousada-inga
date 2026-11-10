@@ -71,6 +71,21 @@
       "source": "/Gestao",
       "destination": "/gestao",
       "permanent": false
+    },
+    {
+      "source": "/site",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/site/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index.php",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "crons": [

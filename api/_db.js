@@ -53,7 +53,7 @@ export function dayKey(d = new Date()) {
 
 // Prefixo das chaves da contagem de visitas. Trocar o número zera a contagem
 // (os pedidos de reserva usam "inga:lead" e não são afetados). Zerada em 10/11/2026.
-export const V = "inga:c3:";
+export const V = "inga:c4:";
 
 // Limite de tentativas de login guardado no banco (vale para todos os servidores da Vercel ao mesmo tempo).
 // Retorna quantas falhas recentes esse IP teve; registrar=true soma mais uma.

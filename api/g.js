@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { dbReady, dbMissing, pipeline } from "./_db.js";
+import { vapid, salvarInscricao, lerInscricao, removerInscricao, avisar } from "./_push.js";
 
 // Sistema de gestão de reservas (/gestao).
 // A dona entra com ADMIN_USER/ADMIN_PASS (variáveis da Vercel) e cadastra a equipe.
@@ -149,6 +150,11 @@ async function acao(me, b) {
       if (r.lead && !old) cmds.push(["HSET", `inga:lead:${r.lead}`, "reserva", r.id, "contatado", String(Date.now())]);
       await pipeline(cmds);
       await logar(me, { tipo: old ? "editou" : "criou", res: r.id, nome: r.nome, quarto: r.quarto, entrada: r.entrada, saida: r.saida, status: r.status });
+      if (!old) {
+        const qn = (quartos.find((q) => q.id === r.quarto) || {}).nome || "";
+        const volta = r.tel && reservas.some((x) => x.tel === r.tel && x.status !== "cancelada") ? " · ↺ hóspede voltando" : "";
+        await avisar("reservas", { title: `Nova reserva: ${r.nome}`, body: `${qn} · ${br(r.entrada)} a ${br(r.saida)} · lançada por ${me.nome}${volta}`, url: "/gestao#reservas", tag: "res-" + r.id }, { exceto: me.login });
+      }
       return { ok: true, reserva: r };
     }
     case "status": {
@@ -161,6 +167,7 @@ async function acao(me, b) {
       validar(n, reservas);
       await pipeline([["HSET", K.res, r.id, JSON.stringify(n)]]);
       await logar(me, { tipo: b.status, res: r.id, nome: r.nome, quarto: r.quarto });
+      if (b.status === "cancelada") await avisar("reservas", { title: `Reserva cancelada: ${r.nome}`, body: `${br(r.entrada)} a ${br(r.saida)} · o quarto ficou livre · por ${me.nome}`, url: "/gestao#mapa", tag: "res-" + r.id }, { exceto: me.login });
       return { ok: true, reserva: n };
     }
     case "pagamento": {
@@ -222,6 +229,27 @@ async function acao(me, b) {
       if (String(b.nova || "").length < 6) throw new Err(400, "A nova senha precisa ter pelo menos 6 caracteres.");
       u.salt = crypto.randomBytes(12).toString("hex"); u.hash = hashPw(b.nova, u.salt);
       await pipeline([["HSET", K.users, me.login, JSON.stringify(u)]]);
+      return { ok: true };
+    }
+    case "pushChave": {
+      const k = await vapid();
+      const atual = b.endpoint ? await lerInscricao(b.endpoint) : null;
+      return { publicKey: k.publicKey, ativo: !!atual, prefs: atual?.prefs || null };
+    }
+    case "pushAtivar": {
+      const r = await salvarInscricao(me, b.sub, b.prefs);
+      return { ok: true, prefs: r.prefs };
+    }
+    case "pushDesativar": {
+      if (b.endpoint) await removerInscricao(b.endpoint);
+      return { ok: true };
+    }
+    case "pushTeste": {
+      const atual = b.endpoint ? await lerInscricao(b.endpoint) : null;
+      if (!atual) throw new Err(400, "Ative as notificações neste aparelho primeiro.");
+      const { subId } = await import("./_push.js");
+      const r = await avisar(null, { title: "Tudo certo! 🌿", body: `As notificações da Pousada Ingá estão funcionando neste aparelho, ${String(me.nome).split(" ")[0]}.`, tag: "teste" }, { so: subId(b.endpoint) });
+      if (!r.enviados) throw new Err(502, "Não consegui enviar. Tente desativar e ativar de novo.");
       return { ok: true };
     }
     default:

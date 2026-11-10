@@ -1,4 +1,5 @@
 import { dbReady, pipeline } from "./_db.js";
+import { avisar } from "./_push.js";
 
 // Guarda pedidos de reserva começados no site (nome/WhatsApp), para a pousada poder retornar.
 const TTL = 60 * 60 * 24 * 120; // 120 dias
@@ -24,7 +25,16 @@ export default async function handler(req, res) {
     };
     const cmds = [["HSET", key, ...Object.entries(fields).flat()], ["HSETNX", key, "criado", String(now)], ["EXPIRE", key, TTL], ["ZADD", "inga:leads", now, id]];
     if (b.sent) cmds.push(["HSET", key, "enviado", "sim"]);
-    await pipeline(cmds);
+    // avisa a equipe uma única vez, quando já dá para entrar em contato (tem WhatsApp) ou a pessoa enviou
+    const pronto = name.length >= 2 && (phone.length >= 10 || b.sent);
+    if (pronto) cmds.push(["HSETNX", key, "avisado", String(now)]);
+    const r = await pipeline(cmds);
+    if (pronto && r[r.length - 1] === 1) {
+      const br = (d) => (/^\d{4}-\d{2}-\d{2}$/.test(d) ? d.slice(8, 10) + "/" + d.slice(5, 7) : "");
+      const quando = fields.start ? ` · ${br(fields.start)}${fields.end ? " a " + br(fields.end) : ""}` : "";
+      const pessoas = fields.ad ? ` · ${fields.ad} adulto${fields.ad === "1" ? "" : "s"}${+fields.ch ? " + " + fields.ch + " criança" + (fields.ch === "1" ? "" : "s") : ""}` : "";
+      await avisar("pedidos", { title: `📥 Pedido no site: ${name}`, body: `${b.sent ? "Enviou no WhatsApp" : "Ainda não enviou — chame!"}${quando}${pessoas}`, url: "/gestao#pedidos", tag: "lead-" + id });
+    }
     return res.status(204).end();
   } catch {
     return res.status(204).end();

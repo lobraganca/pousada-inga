@@ -285,6 +285,24 @@ main{padding-top:22px;padding-bottom:110px}
 .msgs button i{font-style:normal;font-size:18px}
 .hist{font-size:12.5px;color:var(--ink-soft)}
 
+
+/* notificações */
+.nb{display:flex;align-items:center;gap:14px;background:linear-gradient(120deg,#F6E3E8,#F1DDE3 55%,#EAD2DA);border:1px solid #E6C7D0;border-radius:22px;padding:14px 16px;position:relative}
+.nb .bell{font-size:26px;flex:none;animation:ring2 2.8s ease-in-out infinite;transform-origin:50% 10%}
+@keyframes ring2{0%,70%,100%{transform:rotate(0)}75%{transform:rotate(14deg)}80%{transform:rotate(-12deg)}85%{transform:rotate(8deg)}90%{transform:rotate(-4deg)}}
+.nb .tx{flex:1;min-width:0}.nb b{display:block}.nb span{font-size:13px;color:var(--ink-soft)}
+.nb .x{border:0;background:none;font-size:20px;cursor:pointer;color:var(--ink-soft);padding:4px}
+@media (max-width:600px){.nb{flex-wrap:wrap}.nb .tx{flex:1 1 calc(100% - 80px)}.nb .btn{flex:1 1 100%;order:5}.nb .x{position:absolute;top:6px;right:8px}}
+.tg{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.tg:last-child{border-bottom:0}
+.tg .tx{flex:1}.tg b{display:block;font-size:14.5px}.tg span{font-size:12.5px;color:var(--ink-soft)}
+.sw{position:relative;width:48px;height:28px;flex:none}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.sw i{position:absolute;inset:0;border-radius:99px;background:var(--line);transition:background .2s}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.sw input:checked+i{background:var(--leaf)}
+.sw input:checked+i::after{transform:translateX(20px)}
+.steps{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14.5px}
 /* fab + toast */
 .fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
 @media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 18px + env(safe-area-inset-bottom,0px));padding:14px 18px}}
@@ -340,6 +358,7 @@ main{padding-top:22px;padding-bottom:110px}
         <div class="menu" id="menu" hidden>
           <div class="who"><b id="mewho"></b><span id="merole" class="muted"></span></div>
           <button type="button" id="m-ref">↻ Atualizar dados</button>
+          <button type="button" id="m-not">🔔 Notificações no celular</button>
           <button type="button" id="m-pw">🔑 Trocar minha senha</button>
           <button type="button" id="m-out">↩ Sair</button>
         </div>
@@ -395,7 +414,7 @@ function bestRoom(a,b,pax,ignoreId){var f=freeRooms(a,b,ignoreId).filter(functio
 /* ---------- API ---------- */
 function api(acao,extra){var b=Object.assign({acao:acao,token:TK},extra||{});
   return fetch("/api/g",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}).then(function(r){return r.json().catch(function(){return{erro:"Resposta inesperada do servidor."}}).then(function(j){if(r.status===401&&acao!=="entrar"){logout(true);throw new Error(j.erro||"Entre de novo.")}if(!r.ok)throw new Error(j.erro||"Erro "+r.status);return j})})}
-function load(silent){return api("dados").then(function(d){S=d;$("app").hidden=false;$("login").hidden=true;me();render()}).catch(function(e){if(!silent)toast(e.message,true)})}
+function load(silent){return api("dados").then(function(d){var firstLoad=!S;S=d;$("app").hidden=false;$("login").hidden=true;me();render();if(firstLoad)pushCheck().then(function(){if(VIEW==="hoje"&&!$("ov"))render()})}).catch(function(e){if(!silent)toast(e.message,true)})}
 function logout(expired){try{localStorage.removeItem("ingaG")}catch(e){}if(!expired&&TK)api("sair").catch(function(){});TK=null;S=null;$("app").hidden=true;$("login").hidden=false;closeSheet();if(expired)$("lerr").textContent="Sua sessão terminou. Entre de novo."}
 
 /* ---------- login ---------- */
@@ -437,6 +456,7 @@ function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
   if(S.pedidos.length)al.push({c:"rose",i:"📥",t:plural(S.pedidos.length,"pedido do site","pedidos do site")+" esperando",s:"Pessoas que começaram uma reserva no site. Transforme em reserva com um toque.",a:'<button class="btn rose sm" data-go="pedidos">Ver pedidos</button>'});
   var nome=first(S.me.nome);
   var h='<div class="sec"><div class="ph"><div><h1>'+hello()+(nome?", "+esc(nome):"")+'.</h1><p>'+dlong(t).replace(/^./,function(c){return c.toUpperCase()})+' · '+plural(ocup,"quarto ocupado","quartos ocupados")+' de '+nq+'</p></div></div>';
+  if(PUSH.ok&&!PUSH.on&&!PUSH.x)h+='<div class="nb"><span class="bell">🔔</span><div class="tx"><b>Receba avisos neste celular</b><span>Pedido novo no site, reserva lançada por outra pessoa e o resumo do dia às 7h.</span></div><button class="btn rose sm" data-notif>Ativar avisos</button><button class="x" data-notifx aria-label="Fechar">×</button></div>';
   h+='<div class="kpis"><div class="kpi dark"><small>Ocupação hoje</small><b>'+ocup+'<span style="font-size:20px;color:rgba(238,241,236,.6)"> / '+nq+'</span></b><div class="occ"><i style="width:'+Math.round(ocup/nq*100)+'%"></i></div></div>'+
      '<div class="kpi"><small>Chegam hoje</small><b>'+chegam.length+'</b><span>'+(chegam.length?esc(chegam.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
      '<div class="kpi"><small>Saem hoje</small><b>'+saem.length+'</b><span>'+(saem.length?esc(saem.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
@@ -639,6 +659,40 @@ document.addEventListener("click",function(e){var el=e.target.closest("[data-ope
 });
 addEventListener("resize",function(){if(VIEW==="mapa"&&S){clearTimeout(window.__rz);window.__rz=setTimeout(render,250)}});
 
+
+/* ---------- notificações no celular ---------- */
+var PUSH={ok:("serviceWorker" in navigator)&&("PushManager" in window)&&("Notification" in window)&&location.protocol==="https:",on:false,x:false,prefs:null,sub:null};
+try{PUSH.x=localStorage.getItem("ingaPushX")==="1"}catch(e){}
+var IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+var STANDALONE=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+if(IOS&&!STANDALONE&&!("PushManager" in window))PUSH.ok=true; /* mostra o passo a passo de instalar */
+function b64(s){var p="=".repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,"+").replace(/_/g,"/")),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
+function swReg(){return navigator.serviceWorker.register("/admin-sw.js").then(function(){return navigator.serviceWorker.ready})}
+function pushCheck(){if(!("serviceWorker" in navigator)||!("PushManager" in window))return Promise.resolve();
+  return swReg().then(function(r){return r.pushManager.getSubscription()}).then(function(sub){PUSH.sub=sub;if(!sub){PUSH.on=false;return}
+    return api("pushChave",{endpoint:sub.endpoint}).then(function(j){PUSH.on=j.ativo;PUSH.prefs=j.prefs;if(!j.ativo){/* inscrição antiga: reativa no servidor */return api("pushAtivar",{sub:sub.toJSON()}).then(function(k){PUSH.on=true;PUSH.prefs=k.prefs})}})}).catch(function(){})}
+function pushOn(prefs){if(!("PushManager" in window))return Promise.reject(new Error("Este navegador não recebe notificações."));
+  return Notification.requestPermission().then(function(p){if(p!=="granted")throw new Error(p==="denied"?"As notificações estão bloqueadas para este site. Libere nos ajustes do celular/navegador.":"Permissão não concedida.");
+    return Promise.all([swReg(),api("pushChave")])}).then(function(x){var reg=x[0],key=x[1].publicKey;return reg.pushManager.getSubscription().then(function(old){return old||reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64(key)})})})
+  .then(function(sub){PUSH.sub=sub;return api("pushAtivar",{sub:sub.toJSON(),prefs:prefs})}).then(function(j){PUSH.on=true;PUSH.prefs=j.prefs})}
+function pushOff(){var sub=PUSH.sub;PUSH.on=false;if(!sub)return Promise.resolve();return api("pushDesativar",{endpoint:sub.endpoint}).then(function(){return sub.unsubscribe()}).catch(function(){})}
+function notifSheet(){var P=PUSH.prefs||{pedidos:true,reservas:true,resumo:true};
+  if(IOS&&!STANDALONE){openSheet("Avisos no iPhone",'<div class="dv"><p style="margin:0">No iPhone, os avisos só funcionam com a Gestão <b>instalada como app</b>. Leva 30 segundos:</p><ol class="steps"><li>Abra esta página no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> (o quadrado com a seta para cima).</li><li>Toque em <b>Adicionar à Tela de Início</b> e depois em <b>Adicionar</b>.</li><li>Abra a <b>Gestão Ingá</b> pelo ícone novo, entre e volte aqui em 🔔 Notificações.</li></ol><p class="muted" style="margin:0;font-size:13px">Precisa do iOS 16.4 ou mais novo.</p></div>');return}
+  if(!PUSH.ok){openSheet("Notificações",'<p style="margin:0">Este navegador não recebe notificações. No Android, use o <b>Chrome</b>. No computador, Chrome, Edge ou Firefox.</p>');return}
+  function tg(k,t,d){return'<label class="tg"><span class="tx"><b>'+t+'</b><span>'+d+'</span></span><span class="sw"><input type="checkbox" data-pref="'+k+'"'+(P[k]!==false?" checked":"")+'><i></i></span></label>'}
+  var b='<div class="dv"><div class="'+(PUSH.on?"okbox":"warnbox")+'" style="'+(PUSH.on?"":"background:var(--sand-2);color:var(--ink)")+'">'+(PUSH.on?"🔔 Avisos ligados neste aparelho.":"🔕 Avisos desligados neste aparelho.")+'</div>'+
+    '<div>'+tg("pedidos","📥 Pedido novo no site","Quando alguém deixa nome e WhatsApp na reserva do site.")+tg("reservas","🛏️ Reservas da equipe","Quando outra pessoa lança ou cancela uma reserva.")+tg("resumo","☀️ Resumo do dia às 7h","Quem chega, quem sai, o que cobrar e dicas do dia.")+'</div>'+
+    '<p class="err" id="nerr" style="text-align:left"></p><div class="sheet-foot">'+(PUSH.on?'<button class="btn danger" id="noff">Desligar</button><button class="btn ghost" id="ntest">Enviar teste</button><button class="btn" id="nsave">Salvar</button>':'<button class="btn rose" id="non">🔔 Ligar avisos neste aparelho</button>')+'</div>'+
+    '<p class="muted" style="font-size:12.5px;margin:0">Cada pessoa liga no próprio celular. Os avisos chegam mesmo com o app fechado.</p></div>';
+  openSheet("Notificações",b);
+  function prefs(){var o={};document.querySelectorAll("[data-pref]").forEach(function(c){o[c.dataset.pref]=c.checked});return o}
+  function err(e){$("nerr").textContent=e.message||String(e)}
+  if($("non"))$("non").addEventListener("click",function(){this.disabled=true;this.textContent="Ligando…";pushOn(prefs()).then(function(){toast("Avisos ligados 🔔");notifSheet();render()}).catch(function(e){err(e);$("non").disabled=false;$("non").textContent="🔔 Ligar avisos neste aparelho"})});
+  if($("nsave"))$("nsave").addEventListener("click",function(){api("pushAtivar",{sub:PUSH.sub.toJSON(),prefs:prefs()}).then(function(j){PUSH.prefs=j.prefs;closeSheet();toast("Preferências salvas")}).catch(err)});
+  if($("ntest"))$("ntest").addEventListener("click",function(){api("pushTeste",{endpoint:PUSH.sub.endpoint}).then(function(){toast("Teste enviado. Deve chegar em segundos.")}).catch(err)});
+  if($("noff"))$("noff").addEventListener("click",function(){pushOff().then(function(){toast("Avisos desligados");closeSheet();render()})})}
+$("m-not").addEventListener("click",function(){$("menu").hidden=true;notifSheet()});
+document.addEventListener("click",function(e){if(e.target.closest("[data-notif]"))notifSheet();if(e.target.closest("[data-notifx]")){PUSH.x=true;try{localStorage.setItem("ingaPushX","1")}catch(_){}render()}});
 /* atualiza sozinho quando volta para a aba (equipe trabalhando junto) */
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&S&&!$("ov"))load(true)});
 setInterval(function(){if(S&&document.visibilityState==="visible"&&!$("ov"))load(true)},120000);
@@ -646,7 +700,7 @@ setInterval(function(){if(S&&document.visibilityState==="visible"&&!$("ov"))load
 /* início */
 var h0=(location.hash||"").slice(1);if(["hoje","mapa","reservas","pedidos","caixa","ajustes"].indexOf(h0)>=0)VIEW=h0;
 if(TK){load(true).then(function(){if(!S){$("login").hidden=false}})}else{$("login").hidden=false}
-if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("/admin-sw.js").catch(function(){});
+
 })();
 </script>
 </body>

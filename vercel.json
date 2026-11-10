@@ -72,5 +72,11 @@
       "destination": "/gestao",
       "permanent": false
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 10 * * *"
+    }
   ]
 }

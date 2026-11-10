@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { dbReady, dbMissing, pipeline } from "./_db.js";
+import { dbReady, dbMissing, pipeline, falhasLogin, limparFalhas } from "./_db.js";
 import { vapid, salvarInscricao, lerInscricao, removerInscricao, avisar } from "./_push.js";
 
 // Sistema de gestão de reservas (/gestao).
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
 async function entrar(req, b) {
   const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0] || "?";
   const t = tries.get(ip) || { n: 0, at: 0 };
-  if (t.n >= 8 && Date.now() - t.at < 10 * 60e3) throw new Err(429, "Muitas tentativas. Espere 10 minutos.");
+  if ((t.n >= 8 && Date.now() - t.at < 10 * 60e3) || (await falhasLogin(ip)) >= 8) throw new Err(429, "Muitas tentativas. Espere 15 minutos.");
   const login = slug(b.login), pass = String(b.senha || "");
   let user = null;
   const U = process.env.ADMIN_USER, P = process.env.ADMIN_PASS;
@@ -70,8 +70,8 @@ async function entrar(req, b) {
     const u = J(raw, null);
     if (u && u.ativo !== false && same(hashPw(pass, u.salt), u.hash)) user = { login, nome: u.nome, papel: u.papel || "equipe" };
   }
-  if (!user) { tries.set(ip, { n: t.n + 1, at: Date.now() }); throw new Err(401, "Login ou senha incorretos."); }
-  tries.delete(ip);
+  if (!user) { tries.set(ip, { n: t.n + 1, at: Date.now() }); await falhasLogin(ip, true); throw new Err(401, "Login ou senha incorretos."); }
+  tries.delete(ip); await limparFalhas(ip);
   const token = crypto.randomBytes(24).toString("hex");
   await pipeline([["SET", K.sess(token), JSON.stringify(user), "EX", SESS_TTL]]);
   return { token, user };

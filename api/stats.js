@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { dbReady, dbMissing, pipeline, dayKey, V } from "./_db.js";
+import { dbReady, dbMissing, pipeline, dayKey, V, falhasLogin } from "./_db.js";
 
 // Login e senha ficam nas variáveis ADMIN_USER e ADMIN_PASS da Vercel (nunca no código).
 function same(a, b) {
@@ -22,7 +22,7 @@ async function main(req, res) {
   if (req.method !== "POST") return res.status(405).json({ erro: "Use POST" });
   const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0] || "?";
   const t = tries.get(ip) || { n: 0, at: 0 };
-  if (t.n >= 8 && Date.now() - t.at < 10 * 60e3) return res.status(429).json({ erro: "Muitas tentativas. Espere 10 minutos." });
+  if ((t.n >= 8 && Date.now() - t.at < 10 * 60e3) || (await falhasLogin(ip)) >= 8) return res.status(429).json({ erro: "Muitas tentativas. Espere 15 minutos." });
 
   let body = req.body;
   if (typeof body === "string") { try { body = JSON.parse(body); } catch { body = {}; } }
@@ -30,6 +30,7 @@ async function main(req, res) {
   if (!U || !P) return res.status(503).json({ erro: "Login ainda não configurado na Vercel (ADMIN_USER e ADMIN_PASS)." });
   if (!same(body?.user || "", U) || !same(body?.pass || "", P)) {
     tries.set(ip, { n: t.n + 1, at: Date.now() });
+    await falhasLogin(ip, true);
     return res.status(401).json({ erro: "Login ou senha incorretos." });
   }
   tries.delete(ip);

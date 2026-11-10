@@ -54,3 +54,19 @@ export function dayKey(d = new Date()) {
 // Prefixo das chaves da contagem de visitas. Trocar o número zera a contagem
 // (os pedidos de reserva usam "inga:lead" e não são afetados). Zerada em 10/11/2026.
 export const V = "inga:c3:";
+
+// Limite de tentativas de login guardado no banco (vale para todos os servidores da Vercel ao mesmo tempo).
+// Retorna quantas falhas recentes esse IP teve; registrar=true soma mais uma.
+export async function falhasLogin(ip, registrar = false) {
+  if (!dbReady()) return 0;
+  const k = `inga:login:${String(ip || "?").replace(/[^\w.:-]/g, "").slice(0, 60)}`;
+  try {
+    if (registrar) { const [n] = await pipeline([["INCR", k], ["EXPIRE", k, 900]]); return +n || 0; }
+    const [n] = await pipeline([["GET", k]]);
+    return +n || 0;
+  } catch { return 0; }
+}
+export async function limparFalhas(ip) {
+  if (!dbReady()) return;
+  try { await pipeline([["DEL", `inga:login:${String(ip || "?").replace(/[^\w.:-]/g, "").slice(0, 60)}`]]); } catch {}
+}

@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     const fields = {
       id, name, phone, cidadeInformada: clean(b.city, 60), cidadeAprox: clean(city, 60), estadoAprox: clean(req.headers["x-vercel-ip-country-region"], 10),
       start: clean(b.start, 10), end: clean(b.end, 10), ad: clean(b.ad, 2), ch: clean(b.ch, 2), pet: b.pet ? "sim" : "não",
-      room: clean(b.room, 40), rooms: clean(b.rooms, 2), occ: clean(b.occ, 120), obs: clean(b.obs, 300), step: clean(b.step, 1), lang: clean(b.lang, 2), atualizado: String(now),
+      room: clean(b.room, 120), rooms: clean(b.rooms, 2), occ: clean(b.occ, 120), obs: clean(b.obs, 300), step: clean(b.step, 1), lang: clean(b.lang, 2), atualizado: String(now),
     };
     const cmds = [["HSET", key, ...Object.entries(fields).flat()], ["HSETNX", key, "criado", String(now)], ["EXPIRE", key, TTL], ["ZADD", "inga:leads", now, id]];
     if (b.sent) cmds.push(["HSET", key, "enviado", "sim"]);

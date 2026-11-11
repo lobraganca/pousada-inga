@@ -345,6 +345,34 @@ main{padding-top:22px;padding-bottom:110px}
 .sw input:checked+i{background:var(--leaf)}
 .sw input:checked+i::after{transform:translateX(20px)}
 .steps{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14.5px}
+
+/* mapa: visual mais limpo */
+.mapsec{gap:12px}
+.mtop{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mtop h1{margin:0}
+.mtop .mt{display:block;font-family:var(--body);font-size:14px;font-weight:700;color:var(--ink-soft);margin-top:2px;min-width:0}
+.mnav{display:flex;gap:6px}
+.mnav .btn{min-width:42px;justify-content:center}
+.msum{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.msum::-webkit-scrollbar{display:none}
+.msum span{flex:none;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;color:var(--ink-soft)}
+.msum b{color:var(--ink);font-weight:800;font-size:14px}
+.mapbar .legend{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:14px;padding-bottom:2px}
+.mapbar .legend::-webkit-scrollbar{display:none}
+.mapbar .legend span{flex:none}
+.maphint{margin:-4px 0 0;font-size:12.5px;color:var(--ink-soft)}
+.maphint.sm{margin:6px 0 0;font-size:12px}
+.mr b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.mc.td{background:rgba(74,122,39,.08);box-shadow:inset 1px 0 0 rgba(43,49,34,.25),inset -1px 0 0 rgba(43,49,34,.25)}
+.mh.td{border-radius:12px 12px 0 0}
+.mfree{height:44px}
+.mfree span{min-width:26px;height:24px;padding:0 6px;border-radius:999px;display:grid;place-items:center;background:var(--leaf-soft);color:var(--leaf);font-size:12px}
+.mfree.zero span{background:#FBE3E0;color:var(--err);font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+.mfree.we{background:#F8F9F6}
+.mfree.td{background:rgba(74,122,39,.08)}
+.mr.ft{height:44px}
+.bar{box-shadow:0 6px 14px -8px rgba(20,40,30,.55)}
+@media (max-width:600px){.map{--dw:44px;--rw:92px;--rh:58px}.mr{padding:0 8px}.mr b{font-size:12.5px}.mtop h1{font-size:30px}.bar{padding:0 8px;font-size:12px}}
 /* fab + toast */
 .fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
 @media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;padding:0;border-radius:50%;font-size:0;gap:0;justify-content:center}.fab svg{width:26px;height:26px}}
@@ -553,16 +581,18 @@ function freeToday(t){var f=freeRooms(t,add(t,1));if(!f.length)return'<p class="
 /* ---------- MAPA ---------- */
 function vMapa(){var t=today();if(!MAPSTART)MAPSTART=add(t,-2);var N=window.innerWidth<600?21:35,s=MAPSTART,e=add(s,N);
   var ms=MO[+s.slice(5,7)-1],me2=MO[+add(e,-1).slice(5,7)-1],tit=ms===me2?ms:ms.slice(0,3)+" – "+me2.slice(0,3);
-  var h='<div class="sec"><div class="ph"><div><h1>Mapa de ocupação</h1><p>Toque num espaço vazio para reservar. Toque numa reserva para ver.</p></div></div>';
-  h+='<div class="mapbar"><button class="btn ghost sm" data-mv="-7">‹</button><button class="btn soft sm" data-mv="0">Hoje</button><button class="btn ghost sm" data-mv="7">›</button><span class="mt">'+tit.replace(/^./,function(c){return c.toUpperCase()})+' '+e.slice(0,4)+'</span><div class="legend" style="margin-left:auto"><span><i style="background:repeating-linear-gradient(135deg,#C98A9C 0 4px,#BC7B8E 4px 8px)"></i>Pré-reserva</span><span><i style="background:var(--leaf)"></i>Confirmada</span><span><i style="background:var(--sea)"></i>Hospedado</span><span><i style="background:#A9B5AD"></i>Saiu</span><span><i style="background:#FFD27A;border-radius:50%"></i>Falta pagar</span></div></div>';
+  var R=S.reservas.filter(act),ocH=R.filter(function(r){return r.entrada<=t&&r.saida>t&&r.status!=="saiu"}).length,chH=R.filter(function(r){return r.entrada===t&&r.status!=="saiu"}).length,saH=R.filter(function(r){return r.saida===t&&(r.status==="hospedado"||r.status==="confirmada")}).length,nq=S.quartos.length;
+  var h='<div class="sec mapsec"><div class="mtop"><div><h1>Mapa</h1><span class="mt">'+tit.replace(/^./,function(c){return c.toUpperCase()})+' '+add(e,-1).slice(0,4)+'</span></div><div class="mnav"><button class="btn ghost sm" data-mv="-7" aria-label="Semana anterior">‹</button><button class="btn soft sm" data-mv="0">Hoje</button><button class="btn ghost sm" data-mv="7" aria-label="Próxima semana">›</button></div></div>';
+  h+='<div class="msum"><span><b>'+ocH+'</b> ocupados</span><span><b>'+(nq-ocH)+'</b> livres</span><span><b>'+chH+'</b> '+(chH===1?"chega":"chegam")+' hoje</span><span><b>'+saH+'</b> '+(saH===1?"sai":"saem")+' hoje</span></div>';
+  h+='<div class="mapbar"><div class="legend"><span><i style="background:repeating-linear-gradient(135deg,#C98A9C 0 4px,#BC7B8E 4px 8px)"></i>Pré-reserva</span><span><i style="background:var(--leaf)"></i>Confirmada</span><span><i style="background:var(--sea)"></i>Hospedado</span><span><i style="background:#A9B5AD"></i>Saiu</span><span><i style="background:#FFD27A;border-radius:50%"></i>Falta pagar</span></div></div><p class="maphint">Toque num espaço vazio para reservar. Arraste para o lado para ver mais dias.</p>';
   h+='<div class="map" id="map"><div class="mgrid" style="--n:'+N+'">';
-  h+='<div class="mr corner">Quarto</div>';
+  h+='<div class="mr corner">Quartos</div>';
   for(var i=0;i<N;i++){var d=add(s,i),w=wd(d);h+='<div class="mh'+(w===0||w===6?" we":"")+(d===t?" td":"")+(d.slice(8)==="01"?" mon":"")+'">'+WK[w]+'<b>'+d.slice(8,10)+'</b>'+(d.slice(8)==="01"?MO[+d.slice(5,7)-1].slice(0,3):"")+'</div>'}
   S.quartos.forEach(function(q){h+='<div class="mr"><b>'+esc(q.nome)+'</b><span>'+(dirty(q.id)?'<span class="dirty">🧹 arrumar</span>':q.cap+' pessoas')+'</span></div>';
     for(var i=0;i<N;i++){var d=add(s,i),w=wd(d);h+='<button class="mc'+(w===0||w===6?" we":"")+(d===t?" td":"")+'" data-new="'+q.id+'" data-d="'+d+'" aria-label="Reservar '+esc(q.nome)+' em '+br(d)+'"></button>'}});
   h+='<div class="mr ft">Livres</div>';
-  for(var i=0;i<N;i++){var d=add(s,i),f=freeRooms(d,add(d,1)).length;h+='<div class="mfree'+(f?"":" zero")+'">'+f+'</div>'}
-  h+='</div></div><p class="maphint">Arraste para o lado para ver mais dias. A barra começa à tarde (check-in) e termina ao meio-dia (check-out).</p></div>';
+  for(var i=0;i<N;i++){var d=add(s,i),f=freeRooms(d,add(d,1)).length,w=wd(d);h+='<div class="mfree'+(f?"":" zero")+(w===0||w===6?" we":"")+(d===t?" td":"")+'"><span>'+(f?f:"cheio")+'</span></div>'}
+  h+='</div></div><p class="maphint sm">A barra começa à tarde (check-in) e termina ao meio-dia (check-out).</p></div>';
   return h}
 function drawBars(){var m=$("map");if(!m)return;var g=m.querySelector(".mgrid"),cs=getComputedStyle(m),DW=parseFloat(cs.getPropertyValue("--dw")),RW=parseFloat(cs.getPropertyValue("--rw")),RH=parseFloat(cs.getPropertyValue("--rh"));
   var N=+g.style.getPropertyValue("--n"),s=MAPSTART,e=add(s,N);
@@ -570,7 +600,7 @@ function drawBars(){var m=$("map");if(!m)return;var g=m.querySelector(".mgrid"),
     var a=diff(s,r.entrada)+.5,b=diff(s,r.saida)+.5,cl=a<0,cr=b>N;a=Math.max(0,a);b=Math.min(N,b);
     var el=document.createElement("button");el.className="bar "+r.status+(cl?" cl":"")+(cr?" cr":"");el.dataset.open=r.id;
     el.style.left=(RW+a*DW+2)+"px";el.style.width=Math.max(18,(b-a)*DW-4)+"px";el.style.top=(56+qi*RH+8)+"px";
-    el.innerHTML=(saldo(r)>0&&r.status!=="saiu"?'<i class="due"></i>':"")+'<span>'+esc(first(r.nome))+'</span><small>'+nights(r)+'n</small>';
+    el.innerHTML=(saldo(r)>0&&r.status!=="saiu"?'<i class="due"></i>':"")+'<span>'+esc(first(r.nome))+'</span>'+((b-a)*DW>90?'<small>'+nights(r)+'n</small>':"");
     el.title=r.nome+" · "+br(r.entrada)+" a "+br(r.saida)+" · "+ST[r.status];g.appendChild(el)})}
 
 /* ---------- RESERVAS ---------- */

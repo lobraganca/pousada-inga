@@ -2264,7 +2264,8 @@ function renderPanel(){
   if(s===4){
     var occs=["Lua de mel","Aniversário","Férias em família","Descanso","Trabalho remoto","Ver as baleias"];
     h='<div><h3>Quase lá. Quem é você?</h3><p class="hint">Só o necessário para a pousada te responder.</p></div><div class="grid2"><div class="fld"><label for="nm">Seu nome</label><input type="text" id="nm" autocomplete="name" placeholder="Ex.: Mariana Souza" value="'+esc(state.name)+'"></div><div class="fld"><label for="ct">Vem de onde?</label><input type="text" id="ct" placeholder="Ex.: Belo Horizonte" value="'+esc(state.city)+'"></div></div>'+
-        '<div class="fld"><span class="lbl">Qual o motivo da viagem?</span><div class="tags">'+occs.map(function(o){return '<button type="button" class="tag" data-occ="'+o+'" aria-pressed="'+(state.occ.indexOf(o)>-1)+'">'+o+'</button>'}).join("")+'</div></div>'+
+    '<div class="fld"><label for="ph">Seu WhatsApp <span class="opt">(opcional)</span></label><input type="tel" id="ph" autocomplete="tel" inputmode="tel" placeholder="(31) 99999-9999" value="'+esc(state.phone)+'"><small class="fhelp">Se algo der errado no envio, a pousada pode te chamar por aqui. Usamos só para responder sua reserva.</small></div>'+
+    '<div class="fld"><span class="lbl">Qual o motivo da viagem?</span><div class="tags">'+occs.map(function(o){return '<button type="button" class="tag" data-occ="'+o+'" aria-pressed="'+(state.occ.indexOf(o)>-1)+'">'+o+'</button>'}).join("")+'</div></div>'+
     '<div class="fld"><label for="ob">Algo mais?</label><textarea id="ob" placeholder="Escreva aqui, se quiser.">'+esc(state.obs)+'</textarea></div>';}
   if(s===5){
     var n=nights();

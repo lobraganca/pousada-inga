@@ -36,7 +36,7 @@ export default async function handler(req, res) {
       const br = (d) => (/^\d{4}-\d{2}-\d{2}$/.test(d) ? d.slice(8, 10) + "/" + d.slice(5, 7) : "");
       const quando = fields.start ? ` · ${br(fields.start)}${fields.end ? " a " + br(fields.end) : ""}` : "";
       const pessoas = fields.ad ? ` · ${fields.ad} adulto${fields.ad === "1" ? "" : "s"}${+fields.ch ? " + " + fields.ch + " criança" + (fields.ch === "1" ? "" : "s") : ""}` : "";
-      await avisar("pedidos", { title: `📥 Pedido no site: ${name}`, body: `${b.sent ? "Enviou no WhatsApp" : "Ainda não enviou — chame!"}${quando}${pessoas}`, url: "/gestao#pedidos", tag: "lead-" + id });
+      await avisar("pedidos", { title: `📥 Pedido no site: ${name}`, body: `${b.sent ? "Enviou no WhatsApp" : "Ainda não enviou — chame!"}${quando}${pessoas}`, url: "/admin", tag: "lead-" + id });
     }
     return res.status(204).end();
   } catch {

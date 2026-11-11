@@ -134,7 +134,16 @@ main{padding-top:22px;padding-bottom:110px}
 .al b{display:block;font-size:14.5px;line-height:1.3}
 .al span{display:block;font-size:13px;color:var(--ink-soft);line-height:1.35}
 .al .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-@media (max-width:600px){.al{grid-template-columns:36px minmax(0,1fr)}.al .ic{width:36px;height:36px}.al .acts{grid-column:1/-1;justify-content:stretch}.al .acts .btn{flex:1}}
+@media (max-width:600px){.al{grid-template-columns:34px minmax(0,1fr);gap:10px;padding:12px}.al .ic{width:34px;height:34px;font-size:17px}.al .acts{grid-column:2;justify-content:flex-start}.al .acts .btn{flex:0 0 auto;padding:8px 14px;font-size:13px}}
+.alerts:not(.all) .al:nth-child(n+4){display:none}
+.more{display:block;width:100%;margin-top:8px;border:0;background:transparent;color:var(--olive);font-weight:800;font-size:14px;padding:10px;border-radius:12px;cursor:pointer}
+.more:hover{background:var(--sand)}
+.ftiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.ft{display:grid;gap:2px;text-align:left;border:0;border-radius:14px;padding:12px;background:var(--sand);cursor:pointer;font:inherit;color:inherit}
+.ft b{font-size:14px}.ft span{font-size:12px;color:var(--ink-soft)}
+.ft i{font-style:normal;font-size:12px;font-weight:800;color:var(--leaf);margin-top:4px}
+.ft em{font-style:normal;font-size:12px;font-weight:800;color:var(--warn);margin-top:4px}
+.ft:hover{background:var(--sand-2)}
 .calm{display:flex;gap:12px;align-items:center;background:var(--leaf-soft);border-radius:18px;padding:14px 16px;font-weight:700;color:var(--olive)}
 
 /* day lists */
@@ -143,6 +152,7 @@ main{padding-top:22px;padding-bottom:110px}
 .dl{display:grid;gap:8px}
 .ri{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--sand);cursor:pointer;border:0;text-align:left;width:100%}
 .ri:hover{background:var(--sand-2)}
+.ri .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff;background:var(--rose)}
 .ri .rm{font-size:11px;font-weight:800;background:var(--paper);border-radius:8px;padding:4px 8px;white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis}
 .ri b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ri span{font-size:12px;color:var(--ink-soft)}
@@ -244,7 +254,7 @@ main{padding-top:22px;padding-bottom:110px}
 .mem b{display:block}
 .mem span{font-size:13px;color:var(--ink-soft)}
 .qrow{display:grid;grid-template-columns:minmax(0,1fr) 72px 104px auto;gap:8px;align-items:end;margin-bottom:8px}
-@media (max-width:420px){.qrow{grid-template-columns:minmax(0,1fr) 58px 86px auto}}
+@media (max-width:600px){.qrow{grid-template-columns:minmax(0,1fr) 50px 76px 34px;gap:6px}.qrow input{padding-left:10px;padding-right:8px}}
 /* tarefas */
 .tasks{display:grid;gap:6px}
 .tk{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--sand)}
@@ -337,7 +347,7 @@ main{padding-top:22px;padding-bottom:110px}
 .steps{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14.5px}
 /* fab + toast */
 .fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
-@media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 18px + env(safe-area-inset-bottom,0px));padding:14px 18px}}
+@media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;padding:0;border-radius:50%;font-size:0;gap:0;justify-content:center}.fab svg{width:26px;height:26px}}
 .toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--olive);color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:80;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);max-width:calc(100% - 32px);text-align:center;animation:up .25s}
 .toast.bad{background:var(--err)}
 .loading{display:grid;place-items:center;min-height:50vh;color:var(--ink-soft);font-weight:700}
@@ -381,7 +391,6 @@ main{padding-top:22px;padding-bottom:110px}
         <button role="tab" data-v="hoje"><svg><use href="#i-sun"/></svg>Hoje</button>
         <button role="tab" data-v="mapa"><svg><use href="#i-cal"/></svg>Mapa</button>
         <button role="tab" data-v="reservas"><svg><use href="#i-list"/></svg>Reservas</button>
-        <button role="tab" data-v="pedidos"><svg><use href="#i-inbox"/></svg>Pedidos<span class="badge" id="pbadge" hidden></span></button>
         <button role="tab" data-v="caixa"><svg><use href="#i-cash"/></svg>Caixa</button>
         <button role="tab" data-v="ajustes" id="tab-aj"><svg><use href="#i-gear"/></svg>Ajustes</button>
       </nav>
@@ -408,7 +417,7 @@ main{padding-top:22px;padding-bottom:110px}
 "use strict";
 var $=function(id){return document.getElementById(id)};
 var TK=null;try{TK=localStorage.getItem("ingaG")}catch(e){}
-var S=null,VIEW="hoje",MAPSTART=null,FILTER="proximas",QUERY="",FINM=null;
+var ALMORE=false,S=null,VIEW="hoje",MAPSTART=null,FILTER="proximas",QUERY="",FINM=null;
 var ST={pre:"Pré-reserva",confirmada:"Confirmada",hospedado:"Hospedado",saiu:"Saiu",cancelada:"Cancelada"};
 var OR={site:"Site",whatsapp:"WhatsApp",telefone:"Telefone",booking:"Booking",airbnb:"Airbnb",balcao:"Direto",outro:"Outro"};
 var WK=["dom","seg","ter","qua","qui","sex","sáb"],MO=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -485,7 +494,7 @@ $("lform").addEventListener("submit",function(e){e.preventDefault();$("lerr").te
   api("entrar",{login:$("lu").value,senha:$("lp").value}).then(function(j){TK=j.token;try{localStorage.setItem("ingaG",TK)}catch(e){}$("lp").value="";return load()}).catch(function(e){$("lerr").textContent=e.message}).then(function(){$("lgo").disabled=false;$("lgo").textContent="Entrar"})});
 
 function me(){var n=S.me.nome||"";$("meav").textContent=n.charAt(0).toUpperCase()||"?";$("menm").textContent=first(n);$("mewho").textContent=n;$("merole").textContent=S.me.papel==="admin"?"Administradora":"Equipe";$("tab-aj").hidden=S.me.papel!=="admin";
-  var np=S.pedidos.length;$("pbadge").hidden=!np;$("pbadge").textContent=np}
+  }
 $("mebtn").addEventListener("click",function(e){e.stopPropagation();var m=$("menu");m.hidden=!m.hidden;$("mebtn").setAttribute("aria-expanded",!m.hidden)});
 document.addEventListener("click",function(e){if(!e.target.closest(".me"))$("menu").hidden=true});
 $("m-ref").addEventListener("click",function(){$("menu").hidden=true;load().then(function(){toast("Dados atualizados")})});
@@ -499,7 +508,7 @@ function go(v){VIEW=v;try{history.replaceState(null,"","#"+v)}catch(e){}render()
 $("fab").addEventListener("click",function(){formSheet(null,{})});
 function render(){if(!S)return;
   document.querySelectorAll(".tabs [data-v]").forEach(function(b){b.setAttribute("aria-selected",b.dataset.v===VIEW)});
-  var f={hoje:vHoje,mapa:vMapa,reservas:vReservas,pedidos:vPedidos,caixa:vCaixa,ajustes:vAjustes}[VIEW]||vHoje;
+  var f={hoje:vHoje,mapa:vMapa,reservas:vReservas,caixa:vCaixa,ajustes:vAjustes}[VIEW]||vHoje;
   if(VIEW==="ajustes"&&S.me.papel!=="admin"){VIEW="hoje";f=vHoje}
   $("main").innerHTML=f();bind()}
 
@@ -519,7 +528,6 @@ function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
   chegam.filter(function(r){return r.status!=="hospedado"&&dirty(r.quarto)}).forEach(function(r){al.unshift({c:"warn",i:"🧹",t:room(r.quarto).nome+" ainda não foi arrumado",s:r.nome+" chega hoje nesse quarto.",a:'<button class="btn sm" data-go="hoje" data-scroll="tarefas">Ver tarefas</button>'})});
   (S.espera||[]).forEach(function(e){var q=esperaMatch(e);if(q)al.push({c:"leaf",i:"✨",t:"Vagou para "+e.nome+"!",s:"Está na lista de espera para "+br(e.entrada)+" a "+br(e.saida)+". "+q.nome+" está livre.",a:(e.tel?'<a class="btn wa sm" target="_blank" rel="noopener" data-espav="'+e.id+'" href="'+waLink(e.tel,msgEspera(e,q))+'"><svg><use href="#wa"/></svg>Avisar</a>':"")+'<button class="btn sm" data-esprv="'+e.id+'">Criar reserva</button>'})});
   if(S.reservas.length>=15)periods(t,75).filter(function(p){return p.pico&&p.a>t}).forEach(function(p){var tot=diff(p.a,p.b)*S.quartos.length,o=bookedNights(p.a,p.b)/tot,dd=diff(t,p.a);if(o<=.3&&dd<=45)al.push({c:"warn",i:"📉",t:p.nome+" com só "+Math.round(o*100)+"% ocupado",s:"Faltam "+dd+" dias. Bom momento para divulgar ou fazer uma oferta.",a:'<button class="btn soft sm" data-go="caixa">Ver previsão</button>'})});
-  if(S.pedidos.length)al.push({c:"rose",i:"📥",t:plural(S.pedidos.length,"pedido do site","pedidos do site")+" esperando",s:"Pessoas que começaram uma reserva no site. Transforme em reserva com um toque.",a:'<button class="btn rose sm" data-go="pedidos">Ver pedidos</button>'});
   var nome=first(S.me.nome);
   var h='<div class="sec"><div class="ph"><div><h1>'+hello()+(nome?", "+esc(nome):"")+'.</h1><p>'+dlong(t).replace(/^./,function(c){return c.toUpperCase()})+' · '+plural(ocup,"quarto ocupado","quartos ocupados")+' de '+nq+'</p></div></div>';
   if(PUSH.ok&&!PUSH.on&&!PUSH.x)h+='<div class="nb"><span class="bell">🔔</span><div class="tx"><b>Receba avisos neste celular</b><span>Pedido novo no site, reserva lançada por outra pessoa e o resumo do dia às 7h.</span></div><button class="btn rose sm" data-notif>Ativar avisos</button><button class="x" data-notifx aria-label="Fechar">×</button></div>';
@@ -527,8 +535,8 @@ function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
      '<div class="kpi"><small>Chegam hoje</small><b>'+chegam.length+'</b><span>'+(chegam.length?esc(chegam.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
      '<div class="kpi"><small>Saem hoje</small><b>'+saem.length+'</b><span>'+(saem.length?esc(saem.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
      '<div class="kpi"><small>A receber</small><b style="font-size:28px">'+money(aReceber)+'</b><span>de hóspedes atuais e futuros</span></div></div>';
-  h+='<div class="card"><h3>O que precisa de atenção</h3>'+(al.length?'<div class="alerts">'+al.map(function(a){return'<div class="al '+a.c+'"><span class="ic">'+a.i+'</span><div><b>'+esc(a.t)+'</b><span>'+esc(a.s)+'</span></div><div class="acts">'+a.a+'</div></div>'}).join("")+'</div>':'<div class="calm">🌿 Tudo em dia por aqui. Nenhuma pendência agora.</div>')+'</div>';
-  function lst(arr,lab){return arr.length?'<div class="dl">'+arr.map(function(r){return'<button class="ri" data-open="'+r.id+'"><span class="rm">'+esc(room(r.quarto).nome)+'</span><span><b>'+esc(r.nome)+'</b><span>'+lab(r)+'</span></span><span class="pill st-'+r.status+'">'+ST[r.status]+'</span></button>'}).join("")+'</div>':'<p class="empty">Ninguém.</p>'}
+  h+='<div class="card"><h3>O que precisa de atenção</h3>'+(al.length?'<div class="alerts'+(ALMORE?" all":"")+'">'+al.map(function(a){return'<div class="al '+a.c+'"><span class="ic">'+a.i+'</span><div><b>'+esc(a.t)+'</b><span>'+esc(a.s)+'</span></div><div class="acts">'+a.a+'</div></div>'}).join("")+'</div>'+(al.length>3?'<button class="more" data-almore>'+(ALMORE?"Mostrar menos":"Ver mais "+(al.length-3)+" "+(al.length-3===1?"aviso":"avisos"))+'</button>':""):'<div class="calm">🌿 Tudo em dia por aqui. Nenhuma pendência agora.</div>')+'</div>';
+  function lst(arr,lab){return arr.length?'<div class="dl">'+arr.map(function(r){return'<button class="ri" data-open="'+r.id+'"><span class="av">'+esc((r.nome||"?").charAt(0).toUpperCase())+'</span><span><b>'+esc(r.nome)+'</b><span>'+esc(room(r.quarto).nome)+' · '+lab(r)+'</span></span><span class="pill st-'+r.status+'">'+ST[r.status]+'</span></button>'}).join("")+'</div>':'<p class="empty">Ninguém.</p>'}
   var prox=R.filter(function(r){return r.entrada>t&&r.entrada<=add(t,7)&&r.status!=="saiu"}).sort(function(a,b){return a.entrada<b.entrada?-1:1});
   h+=tasksCard();
   h+='<div class="cols3"><div class="card"><h3>Hospedados agora</h3>'+lst(dentro,function(r){return"até "+dlong(r.saida)})+'</div><div class="card"><h3>Chegam nos próximos 7 dias</h3>'+lst(prox,function(r){return dlong(r.entrada)+" · "+plural(nights(r),"noite","noites")})+'</div><div class="card"><h3>Quartos livres hoje</h3>'+freeToday(t)+'</div></div></div>';
@@ -539,8 +547,8 @@ function tasksCard(){var L=(S.tarefas||[]).slice().sort(function(a,b){return(a.f
   return'<div class="card" id="tarefas"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px"><h3 style="margin:0">Tarefas da equipe'+(open.length?' · '+open.length:"")+'</h3><button class="btn soft sm" data-tknew>+ Tarefa</button></div>'+
     (open.length||done.length?'<div class="tasks">'+open.map(it).join("")+done.map(it).join("")+'</div>':'<p class="empty">Nenhuma tarefa. Quando alguém fizer check-out, a tarefa de arrumar o quarto aparece aqui sozinha.</p>')+'</div>'}
 function freeToday(t){var f=freeRooms(t,add(t,1));if(!f.length)return'<p class="empty">Pousada lotada hoje 🎉</p>';
-  return'<div class="dl">'+f.map(function(q){var nx=S.reservas.filter(function(r){return act(r)&&r.quarto===q.id&&r.entrada>t}).sort(function(a,b){return a.entrada<b.entrada?-1:1})[0];
-    return'<button class="ri" data-new="'+q.id+'" data-d="'+t+'"><span class="rm">'+esc(q.nome)+'</span><span><b>Livre'+(dirty(q.id)?' <span style="color:var(--warn);font-size:12px">· 🧹 arrumar</span>':"")+'</b><span>'+(nx?"até "+dlong(nx.entrada):"sem reservas futuras")+' · até '+q.cap+' pessoas</span></span><span class="pill st-confirmada" style="background:var(--paper)">+ reservar</span></button>'}).join("")+'</div>'}
+  return'<div class="ftiles">'+f.map(function(q){var nx=S.reservas.filter(function(r){return act(r)&&r.quarto===q.id&&r.entrada>t}).sort(function(a,b){return a.entrada<b.entrada?-1:1})[0];
+    return'<button class="ft" data-new="'+q.id+'" data-d="'+t+'"><b>'+esc(q.nome)+'</b><span>'+(nx?"livre até "+br(nx.entrada):"livre")+'</span>'+(dirty(q.id)?'<em>🧹 arrumar</em>':'<i>+ reservar</i>')+'</button>'}).join("")+'</div>'}
 
 /* ---------- MAPA ---------- */
 function vMapa(){var t=today();if(!MAPSTART)MAPSTART=add(t,-2);var N=window.innerWidth<600?21:35,s=MAPSTART,e=add(s,N);
@@ -570,7 +578,7 @@ function vReservas(){var t=today();var F={proximas:"Próximas",hospedados:"Hospe
   var h='<div class="sec"><div class="ph"><div><h1>Reservas</h1><p>'+plural(S.reservas.filter(act).length,"reserva ativa","reservas ativas")+' no total.</p></div></div>';
   h+='<div class="tools"><label class="search"><svg><use href="#i-search"/></svg><input id="q" type="search" placeholder="Buscar por nome, telefone ou cidade" value="'+esc(QUERY)+'"></label></div>';
   h+='<div class="chips">'+Object.keys(F).map(function(k){return'<button class="chip" data-f="'+k+'" aria-pressed="'+(FILTER===k)+'">'+F[k]+'</button>'}).join("")+'</div>';
-  h+='<div class="rlist" id="rlist">'+rlist()+'</div></div>';return h}
+  h+='<div class="rlist" id="rlist">'+rlist()+'</div>'+waitCard()+'</div>';return h}
 function rlist(){var t=today(),q=QUERY.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim(),qd=q.replace(/\D/g,"");
   var L=S.reservas.filter(function(r){
     if(q){var hay=(r.nome+" "+(r.cidade||"")+" "+room(r.quarto).nome).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");if(hay.indexOf(q)<0&&!(qd.length>=3&&String(r.tel||"").indexOf(qd)>=0))return false}
@@ -581,11 +589,13 @@ function rlist(){var t=today(),q=QUERY.toLowerCase().normalize("NFD").replace(/[
     return'<button class="rc" data-open="'+r.id+'"><span class="dt"><span>'+WK[wd(r.entrada)]+'</span><b>'+r.entrada.slice(8)+'</b><span>'+MO[+r.entrada.slice(5,7)-1].slice(0,3)+'</span></span><span><span class="nm">'+esc(r.nome)+(v?'<span class="tag">↺ '+(v+1)+'ª vez</span>':"")+'</span><span class="inf">'+esc(room(r.quarto).nome)+' · '+br(r.entrada)+' a '+br(r.saida)+' · '+plural(nights(r),"noite","noites")+' · '+people(r)+'</span></span><span class="rt"><span class="pill st-'+r.status+'">'+ST[r.status]+'</span>'+(act(r)&&r.valor?'<span class="sd'+(sd?"":" ok")+'">'+(sd?"Falta "+money(sd):"Pago ✓")+'</span>':"")+'</span></button>'}).join("")}
 
 /* ---------- PEDIDOS ---------- */
-function vPedidos(){var P=S.pedidos.slice().sort(function(a,b){return(+b.atualizado||0)-(+a.atualizado||0)});
-  var h='<div class="sec"><div class="ph"><div><h1>Pedidos do site</h1><p>Quem começou uma reserva no site. Responda rápido e transforme em reserva com um toque.</p></div></div>';
+function waitCard(){
   var W=(S.espera||[]).slice().sort(function(a,b){return a.entrada<b.entrada?-1:1});
   var wl='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px"><h3 style="margin:0">Lista de espera'+(W.length?" · "+W.length:"")+'</h3><button class="btn soft sm" data-espnew>+ Adicionar</button></div>'+
     (W.length?'<div class="wl">'+W.map(function(e){var q=esperaMatch(e),past=e.saida<=today();return'<div class="wi'+(q?" match":"")+'"><div class="hd"><b>'+esc(e.nome)+'</b><span class="pill '+(q?"st-confirmada":e.status==="avisado"?"st-hospedado":past?"st-saiu":"st-pre")+'">'+(q?"Vagou quarto!":e.status==="avisado"?"Já avisado":past?"Data passou":"Esperando")+'</span></div><div class="muted" style="font-size:13px">📅 '+br(e.entrada)+' a '+br(e.saida)+' · 👥 '+e.pessoas+(e.flex?" · aceita outras datas":"")+(e.tel?" · "+phoneFmt(e.tel):"")+'</div>'+(e.obs?'<div class="muted" style="font-size:13px">“'+esc(e.obs)+'”</div>':"")+(q?'<div class="sug">✓ '+esc(q.nome)+' está livre nessas datas</div>':"")+'<div class="acts">'+(q&&e.tel?'<a class="btn wa sm" target="_blank" rel="noopener" data-espav="'+e.id+'" href="'+waLink(e.tel,msgEspera(e,q))+'"><svg><use href="#wa"/></svg>Avisar que vagou</a>':"")+(q?'<button class="btn sm" data-esprv="'+e.id+'">Criar reserva</button>':"")+'<button class="btn danger sm" data-esprm="'+e.id+'">Remover</button></div></div>'}).join("")+'</div>':'<p class="empty">Ninguém esperando. Quando não houver quarto para alguém, coloque a pessoa aqui. O sistema avisa quando vagar.</p>')+'</div>';
+  return wl}
+function vPedidos(){var wl=waitCard();var P=S.pedidos.slice().sort(function(a,b){return(+b.atualizado||0)-(+a.atualizado||0)});
+  var h='<div class="sec"><div class="ph"><div><h1>Pedidos do site</h1><p>Quem começou uma reserva no site. Responda rápido e transforme em reserva com um toque.</p></div></div>';
   if(!P.length)return h+'<div class="calm">📭 Nenhum pedido novo do site agora.</div>'+wl+'</div>';
   h+='<div class="rlist">'+P.map(function(p){var a=p.start,b=p.end,pax=(+p.ad||2)+(+p.ch||0),sug=a&&b&&b>a?bestRoom(a,b,pax):null,env=p.enviado==="sim";
     return'<div class="pd"><div class="hd"><div><b>'+esc(p.name||"Sem nome")+'</b><div class="muted" style="font-size:13px">'+(p.phone?phoneFmt(p.phone)+" · ":"")+esc(p.cidadeInformada||p.cidadeAprox||"")+' · há '+ago(+p.atualizado||+p.criado||Date.now())+'</div></div><span class="pill '+(env?"st-confirmada":"st-pre")+'">'+(env?"Enviou no WhatsApp":"Não enviou")+'</span></div>'+
@@ -605,7 +615,6 @@ function vCaixa(){var t=today();if(!FINM)FINM=t.slice(0,7);var y=+FINM.slice(0,4
   var pends=R.filter(function(r){return saldo(r)>0&&r.status!=="cancelada"}).sort(function(a,b){return a.entrada<b.entrada?-1:1});
   var h='<div class="sec"><div class="ph"><div><h1>Caixa</h1><p>Reservas com entrada em '+MO[m-1]+' de '+y+'.</p></div><div class="mapbar"><button class="btn ghost sm" data-fm="-1">‹</button><span class="mt" style="min-width:0;text-align:center">'+MO[m-1].replace(/^./,function(c){return c.toUpperCase()})+'</span><button class="btn ghost sm" data-fm="1">›</button></div></div>';
   h+='<div class="kpis"><div class="kpi dark"><small>Faturamento</small><b style="font-size:30px">'+money(fat)+'</b><span>'+plural(doMes.length,"reserva","reservas")+'</span></div><div class="kpi"><small>Recebido</small><b style="font-size:30px;color:var(--leaf)">'+money(rec)+'</b><span>'+(fat?Math.round(rec/fat*100):0)+'% do total</span></div><div class="kpi"><small>A receber</small><b style="font-size:30px;color:'+(pend?"var(--warn)":"var(--ink)")+'">'+money(pend)+'</b><span>destas reservas</span></div><div class="kpi"><small>Ocupação do mês</small><b>'+occ+'%</b><span>'+nts+' de '+(S.quartos.length*dim)+' noites · diária média '+money(dm)+'</span></div></div>';
-  h+=forecast();
   h+='<div class="cols2"><div class="card"><h3>De onde vieram</h3>'+(Object.keys(byO).length?'<div class="fin-bars">'+Object.keys(byO).sort(function(a,b){return byO[b].v-byO[a].v}).map(function(k){return'<div class="fb"><span>'+OR[k]+' <span class="muted">('+byO[k].n+')</span></span><span class="tr"><i style="width:'+Math.max(3,byO[k].v/mx*100)+'%"></i></span><b>'+money(byO[k].v)+'</b></div>'}).join("")+'</div>':'<p class="empty">Sem reservas neste mês.</p>')+'</div>';
   h+='<div class="card"><h3>Falta receber (todas as datas)</h3>'+(pends.length?'<div class="dl">'+pends.slice(0,12).map(function(r){return'<button class="ri" data-open="'+r.id+'"><span class="rm">'+br(r.entrada)+'</span><span><b>'+esc(r.nome)+'</b><span>'+esc(room(r.quarto).nome)+' · '+ST[r.status]+'</span></span><b style="color:var(--warn)">'+money(saldo(r))+'</b></button>'}).join("")+'</div>':'<p class="empty">Nada pendente. 👏</p>')+'</div></div></div>';
   return h}
@@ -626,7 +635,7 @@ function vAjustes(){var h='<div class="sec"><div class="ph"><div><h1>Ajustes</h1
   h+='<div class="card"><h3>Equipe</h3><div class="mem"><span class="av">'+esc((S.me.nome||"D").charAt(0))+'</span><div><b>'+esc(S.me.login==="dona"?S.me.nome:"Dona")+'</b><span>Administradora · login da Vercel</span></div><span></span></div>'+
      S.equipe.map(function(u){return'<div class="mem"><span class="av" style="background:'+(u.ativo?"var(--sea)":"#A9B5AD")+'">'+esc((u.nome||u.login).charAt(0).toUpperCase())+'</span><div><b>'+esc(u.nome)+(u.ativo?"":' <span class="muted">(bloqueado)</span>')+'</b><span>login: '+esc(u.login)+' · '+(u.papel==="admin"?"Administradora":"Equipe")+'</span></div><button class="btn soft sm" data-mem="'+esc(u.login)+'">Editar</button></div>'}).join("")+
      '<div style="margin-top:14px"><button class="btn sm" data-mem="">+ Adicionar pessoa</button></div></div>';
-  h+='<div class="card"><h3>Quartos</h3><p class="muted" style="font-size:13px;margin:-6px 0 12px">A diária base é usada para sugerir preços conforme a data e a ocupação.</p><div id="qedit">'+S.quartos.map(function(q,i){return'<div class="qrow" data-qid="'+esc(q.id)+'"><label class="fld"><span>'+(i?"":"Nome")+'</span><input value="'+esc(q.nome)+'" data-qn></label><label class="fld"><span>'+(i?"":"Pessoas")+'</span><input type="number" min="1" max="12" value="'+q.cap+'" data-qc inputmode="numeric"></label><label class="fld"><span>'+(i?"":"Diária base")+'</span><input value="'+(q.preco||"")+'" data-qp inputmode="decimal" placeholder="R$"></label><button class="btn danger sm" data-qdel title="Remover quarto">✕</button></div>'}).join("")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn soft sm" id="qadd">+ Quarto</button><button class="btn sm" id="qsave">Salvar quartos</button></div></div></div>';
+  h+='<div class="card"><h3>Quartos</h3><p class="muted" style="font-size:13px;margin:-6px 0 12px">A diária base é usada para sugerir preços conforme a data e a ocupação.</p><div id="qedit">'+S.quartos.map(function(q,i){return'<div class="qrow" data-qid="'+esc(q.id)+'"><label class="fld"><span>'+(i?"":"Nome")+'</span><input value="'+esc(q.nome)+'" data-qn></label><label class="fld"><span>'+(i?"":"Pess.")+'</span><input type="number" min="1" max="12" value="'+q.cap+'" data-qc inputmode="numeric"></label><label class="fld"><span>'+(i?"":"Diária")+'</span><input value="'+(q.preco||"")+'" data-qp inputmode="decimal" placeholder="R$"></label><button class="btn danger sm" data-qdel title="Remover quarto">✕</button></div>'}).join("")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn soft sm" id="qadd">+ Quarto</button><button class="btn sm" id="qsave">Salvar quartos</button></div></div></div>';
   h+='<div class="card"><h3>Histórico recente</h3>'+(S.log.length?'<div class="log">'+S.log.map(function(l){return'<div>'+esc(logTxt(l))+'<span>há '+ago(l.em)+'</span></div>'}).join("")+'</div>':'<p class="empty">Nada ainda.</p>')+'</div></div>';
   return h}
 function logTxt(l){var n=l.nome||"",p=l.por||"";switch(l.tipo){case"criou":return p+" criou a reserva de "+n+(l.entrada?" ("+br(l.entrada)+" a "+br(l.saida)+")":"");case"editou":return p+" editou a reserva de "+n;case"hospedado":return p+" fez o check-in de "+n;case"saiu":return p+" fez o check-out de "+n;case"cancelada":return p+" cancelou a reserva de "+n;case"confirmada":return p+" confirmou a reserva de "+n;case"pre":return p+" voltou "+n+" para pré-reserva";case"pagamento":return p+" registrou "+money(l.valor)+" de "+n;case"apagou":return p+" apagou a reserva de "+n;case"quartos":return p+" alterou os quartos";case"espera":return p+" colocou "+n+" na lista de espera";case"tarefa":return p+" concluiu: "+n;case"membro-novo":return p+" adicionou "+n+" à equipe";case"membro-editado":return p+" editou o acesso de "+n;case"membro-removido":return p+" removeu "+n+" da equipe";default:return p+" "+l.tipo}}
@@ -748,6 +757,7 @@ document.addEventListener("click",function(e){var x=e.target.closest("[data-tk],
   if(d0.scroll!==undefined){setTimeout(function(){var el=$(d0.scroll);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})},50);return}}});
 document.addEventListener("click",function(e){var el=e.target.closest("[data-open],[data-new],[data-st],[data-out],[data-co],[data-edit],[data-cancel],[data-del],[data-pay],[data-payall],[data-conv],[data-disc],[data-mv],[data-f],[data-fm],[data-mem],[data-qdel]");if(!el)return;var d=el.dataset;
   if(d.open!==undefined){detail(d.open);return}
+  if(d.almore!==undefined){ALMORE=!ALMORE;render();return}
   if(d.new!==undefined){formSheet(null,{quarto:d.new,entrada:d.d,saida:add(d.d,1)});return}
   if(d.st!==undefined){setStatus(d.id,d.st).then(function(r){if(r&&$("ov"))detail(r.id)});return}
   if(d.out!==undefined){checkout(d.out);return}
@@ -790,7 +800,7 @@ function notifSheet(){var P=PUSH.prefs||{pedidos:true,reservas:true,tarefas:true
   if(!PUSH.ok){openSheet("Notificações",'<p style="margin:0">Este navegador não recebe notificações. No Android, use o <b>Chrome</b>. No computador, Chrome, Edge ou Firefox.</p>');return}
   function tg(k,t,d){return'<label class="tg"><span class="tx"><b>'+t+'</b><span>'+d+'</span></span><span class="sw"><input type="checkbox" data-pref="'+k+'"'+(P[k]!==false?" checked":"")+'><i></i></span></label>'}
   var b='<div class="dv"><div class="'+(PUSH.on?"okbox":"warnbox")+'" style="'+(PUSH.on?"":"background:var(--sand-2);color:var(--ink)")+'">'+(PUSH.on?"🔔 Avisos ligados neste aparelho.":"🔕 Avisos desligados neste aparelho.")+'</div>'+
-    '<div>'+tg("pedidos","📥 Pedido novo no site","Quando alguém deixa nome e WhatsApp na reserva do site.")+tg("reservas","🛏️ Reservas e lista de espera","Quando outra pessoa lança ou cancela uma reserva, ou quando vaga quarto para alguém da lista de espera.")+tg("tarefas","🧹 Tarefas da equipe","Quarto para arrumar depois do check-out e tarefas novas.")+tg("resumo","☀️ Resumo do dia às 7h","Quem chega, quem sai, o que cobrar e dicas do dia.")+'</div>'+
+    '<div>'+tg("pedidos","📥 Pedido novo no site","Quando alguém deixa nome e WhatsApp na reserva do site. Abre no painel Adm.")+tg("reservas","🛏️ Reservas e lista de espera","Quando outra pessoa lança ou cancela uma reserva, ou quando vaga quarto para alguém da lista de espera.")+tg("tarefas","🧹 Tarefas da equipe","Quarto para arrumar depois do check-out e tarefas novas.")+tg("resumo","☀️ Resumo do dia às 7h","Quem chega, quem sai, o que cobrar e dicas do dia.")+'</div>'+
     '<p class="err" id="nerr" style="text-align:left"></p><div class="sheet-foot">'+(PUSH.on?'<button class="btn danger" id="noff">Desligar</button><button class="btn ghost" id="ntest">Enviar teste</button><button class="btn" id="nsave">Salvar</button>':'<button class="btn rose" id="non">🔔 Ligar avisos neste aparelho</button>')+'</div>'+
     '<p class="muted" style="font-size:12.5px;margin:0">Cada pessoa liga no próprio celular. Os avisos chegam mesmo com o app fechado.</p></div>';
   openSheet("Notificações",b);
@@ -807,7 +817,7 @@ document.addEventListener("visibilitychange",function(){if(document.visibilitySt
 setInterval(function(){if(S&&document.visibilityState==="visible"&&!$("ov"))load(true)},120000);
 
 /* início */
-var h0=(location.hash||"").slice(1);if(["hoje","mapa","reservas","pedidos","caixa","ajustes"].indexOf(h0)>=0)VIEW=h0;
+var h0=(location.hash||"").slice(1);if(h0==="pedidos")h0="reservas";if(["hoje","mapa","reservas","caixa","ajustes"].indexOf(h0)>=0)VIEW=h0;
 if(TK){load(true).then(function(){if(!S){$("login").hidden=false}})}else{$("login").hidden=false}
 
 })();

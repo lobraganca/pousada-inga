@@ -192,6 +192,9 @@ main>*,.grid2>*,.grid3>*{min-width:0}
 .steps li{counter-increment:st;display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start;background:var(--sand);border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.45}
 .steps li::before{content:counter(st);width:30px;height:30px;border-radius:50%;background:var(--olive);color:#EEF1EC;display:grid;place-items:center;font-weight:800;font-size:14px}
 .steps b{font-weight:800}
+.steps li.samsung{counter-increment:none;grid-template-columns:1fr;background:#FBE9DC;color:#6B2E12}
+.steps li.samsung::before{display:none}
+.steps li.samsung .btn{margin-top:10px;display:inline-flex}
 .steps .k{display:inline-flex;align-items:center;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:1px 7px;font-weight:800;font-size:13px;white-space:nowrap;vertical-align:middle}
 .steps .k svg{width:15px;height:15px}
 .howto .note{margin:0;font-size:12.5px;color:var(--ink-soft);background:var(--leaf-soft);border-radius:14px;padding:10px 12px}
@@ -308,7 +311,8 @@ main>*,.grid2>*,.grid3>*{min-width:0}
       <li><span>Confira o nome <b>Painel Ingá</b> e toque em <span class="k">Adicionar</span>. Pronto: o ícone aparece na tela do celular.</span></li>
     </ol>
     <ol class="steps" id="st-and" hidden>
-      <li><span>Abra este painel no <b>Chrome</b>.</span></li>
+      <li class="samsung" id="samsung" hidden><span><b>Atenção:</b> você está no navegador da Samsung. O ícone criado por ele é bloqueado pelo Android ("App de risco bloqueado"). Use o Chrome: <a class="btn wa sm" id="open-chrome" href="intent://www.pousadaingacumuru.com.br/admin#Intent;scheme=https;package=com.android.chrome;end">Abrir no Chrome</a></span></li>
+      <li><span>Abra este painel no <b>Chrome</b> (não use o navegador da Samsung).</span></li>
       <li><span>Toque nos três pontinhos <span class="k">⋮</span> no canto de cima.</span></li>
       <li><span>Toque em <span class="k">Instalar app</span> ou <span class="k">Adicionar à tela inicial</span>.</span></li>
       <li><span>Confirme em <span class="k">Instalar</span>. O ícone <b>Painel Ingá</b> aparece junto dos outros apps.</span></li>
@@ -451,7 +455,7 @@ if(CRED)load(false);
 (function(){
   var standalone=(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
   if("serviceWorker" in navigator&&location.protocol==="https:"){navigator.serviceWorker.register("/admin-sw.js").catch(function(){})}
-  var ua=navigator.userAgent||"",isIOS=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),isAnd=/Android/.test(ua);
+  var ua=navigator.userAgent||"",isSam=/SamsungBrowser/.test(ua),isIOS=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),isAnd=/Android/.test(ua);
   var dlg=document.getElementById("howto"),inst=document.getElementById("inst"),now=document.getElementById("install-now"),deferred=null;
   function os(w){document.getElementById("os-ios").setAttribute("aria-selected",w==="ios");document.getElementById("os-and").setAttribute("aria-selected",w==="and");document.getElementById("st-ios").hidden=w!=="ios";document.getElementById("st-and").hidden=w!=="and"}
   os(isAnd?"and":"ios");
@@ -466,7 +470,8 @@ if(CRED)load(false);
   if(standalone){document.querySelectorAll("[data-howto]").forEach(function(b){b.hidden=true})}
   else if(!hid){inst.hidden=false}
   document.getElementById("inst-x").addEventListener("click",function(){inst.hidden=true;try{localStorage.setItem("ingaInstX","1")}catch(e){}});
-  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferred=e;now.hidden=false});
+  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();if(isSam)return;deferred=e;now.hidden=false});
+if(isSam){var sm=document.getElementById("samsung");if(sm)sm.hidden=false}
   now.addEventListener("click",function(){if(!deferred)return;deferred.prompt();deferred.userChoice.then(function(c){if(c.outcome==="accepted"){close();inst.hidden=true}deferred=null;now.hidden=true})});
   window.addEventListener("appinstalled",function(){inst.hidden=true;now.hidden=true});
 })();

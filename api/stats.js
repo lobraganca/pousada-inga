@@ -28,7 +28,19 @@ async function main(req, res) {
   if (typeof body === "string") { try { body = JSON.parse(body); } catch { body = {}; } }
   const U = process.env.ADMIN_USER, P = process.env.ADMIN_PASS;
   if (!U || !P) return res.status(503).json({ erro: "Login ainda não configurado na Vercel (ADMIN_USER e ADMIN_PASS)." });
-  if (!same(body?.user || "", U) || !same(body?.pass || "", P)) {
+  // "manter conectado": um código guardado no aparelho no lugar da senha (vale 90 dias, renova a cada uso)
+  const tok = String(body?.tok || "").replace(/[^a-f0-9]/g, "").slice(0, 64);
+  let porTok = false;
+  if (tok.length === 64 && dbReady()) {
+    const [ok] = await pipeline([["GET", `inga:adm:sess:${tok}`]]);
+    if (ok) { porTok = true; await pipeline([["EXPIRE", `inga:adm:sess:${tok}`, 60 * 60 * 24 * 90]]); }
+    else return res.status(401).json({ erro: "Sua sessão expirou. Entre de novo.", sair: true });
+  }
+  if (body.acao === "sair") {
+    if (porTok) await pipeline([["DEL", `inga:adm:sess:${tok}`]]);
+    return res.status(200).json({ ok: true });
+  }
+  if (!porTok && (!same(body?.user || "", U) || !same(body?.pass || "", P))) {
     tries.set(ip, { n: t.n + 1, at: Date.now() });
     await falhasLogin(ip, true);
     return res.status(401).json({ erro: "Login ou senha incorretos." });
@@ -78,5 +90,6 @@ async function main(req, res) {
   }
   out.pedidos = leads;
   out.agora = new Date().toISOString();
+  if (!porTok && body.lembrar) { out.tok = crypto.randomBytes(32).toString("hex"); await pipeline([["SET", `inga:adm:sess:${out.tok}`, "1", "EX", 60 * 60 * 24 * 90]]); }
   return res.status(200).json(out);
 }

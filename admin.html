@@ -192,6 +192,8 @@ main>*,.grid2>*,.grid3>*{min-width:0}
 .steps li{counter-increment:st;display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start;background:var(--sand);border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.45}
 .steps li::before{content:counter(st);width:30px;height:30px;border-radius:50%;background:var(--olive);color:#EEF1EC;display:grid;place-items:center;font-weight:800;font-size:14px}
 .steps b{font-weight:800}
+.keep{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;margin:4px 0 2px;cursor:pointer}
+.keep input{width:20px;height:20px;accent-color:var(--olive)}
 .steps li.samsung{counter-increment:none;grid-template-columns:1fr;background:#FBE9DC;color:#6B2E12}
 .steps li.samsung::before{display:none}
 .steps li.samsung .btn{margin-top:10px;display:inline-flex}
@@ -214,6 +216,7 @@ main>*,.grid2>*,.grid3>*{min-width:0}
     <p class="sub">Entre para ver as visitas do site e os pedidos de reserva.</p>
     <div class="fld"><label for="u">Login</label><input id="u" name="username" autocomplete="username" required></div>
     <div class="fld"><label for="p">Senha</label><div class="pw"><input id="p" name="password" type="password" autocomplete="current-password" required><button type="button" id="show">Mostrar</button></div></div>
+    <label class="keep"><input type="checkbox" id="keep" checked> Manter conectado neste aparelho</label>
     <p class="err" id="err" hidden></p>
     <button class="btn" id="go" type="submit">Entrar</button>
     <button class="linkbtn" type="button" data-howto>📲 Como instalar o painel no celular</button>
@@ -332,12 +335,12 @@ function sum(a,k){return a.reduce(function(s,d){return s+(+d[k]||0)},0)}
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function day(d){var z=new Date(d.getTime()-3*3600e3);return z.toISOString().slice(0,10)}
 function br(s){return s?s.slice(8,10)+"/"+s.slice(5,7)+"/"+s.slice(0,4):""}
-try{var c=sessionStorage.getItem("ingaAdm");if(c)CRED=JSON.parse(c)}catch(e){}
+try{var tk=localStorage.getItem("ingaAdmTok");if(tk)CRED={tok:tk};else{var c=sessionStorage.getItem("ingaAdm");if(c)CRED=JSON.parse(c)}}catch(e){}
 
 $("show").addEventListener("click",function(){var p=$("p");p.type=p.type==="password"?"text":"password";this.textContent=p.type==="password"?"Mostrar":"Esconder"});
-$("form").addEventListener("submit",function(e){e.preventDefault();CRED={user:$("u").value.trim(),pass:$("p").value};load(true)});
+$("form").addEventListener("submit",function(e){e.preventDefault();CRED={user:$("u").value.trim(),pass:$("p").value,lembrar:$("keep").checked};load(true)});
 $("refresh").addEventListener("click",function(){load(false)});
-$("out").addEventListener("click",function(){CRED=null;try{sessionStorage.removeItem("ingaAdm")}catch(e){}$("dash").hidden=true;$("login").hidden=false;$("p").value=""});
+$("out").addEventListener("click",function(){if(CRED&&CRED.tok)call({acao:"sair"});CRED=null;try{sessionStorage.removeItem("ingaAdm");localStorage.removeItem("ingaAdmTok")}catch(e){}$("dash").hidden=true;$("login").hidden=false;$("p").value=""});
 function tab(w){$("t-vis").setAttribute("aria-selected",w==="vis");$("t-ped").setAttribute("aria-selected",w==="ped");$("p-vis").hidden=w!=="vis";$("p-ped").hidden=w!=="ped";if(w==="vis"&&DATA)chart(DATA.dias)}
 $("t-vis").addEventListener("click",function(){tab("vis")});$("t-ped").addEventListener("click",function(){tab("ped")});
 document.querySelector(".filter").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;RANGE=+b.dataset.r;CUSTOM=null;this.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});load(false)});
@@ -350,8 +353,9 @@ function load(fromForm){
   if(!CRED)return;var go=$("go");go.disabled=true;go.textContent="Entrando…";$("err").hidden=true;
   var pr=period();
   call(pr).then(function(x){go.disabled=false;go.textContent="Entrar";
-    if(!x.ok){$("dash").hidden=true;$("login").hidden=false;$("err").textContent=x.j.erro||"Não foi possível entrar.";$("err").hidden=false;return}
-    try{sessionStorage.setItem("ingaAdm",JSON.stringify(CRED))}catch(e){}
+    if(!x.ok){if(CRED&&CRED.tok){CRED=null;try{localStorage.removeItem("ingaAdmTok")}catch(e){}}$("dash").hidden=true;$("login").hidden=false;$("err").textContent=x.j.erro||"Não foi possível entrar.";$("err").hidden=false;return}
+    if(x.j.tok){CRED={tok:x.j.tok};try{localStorage.setItem("ingaAdmTok",x.j.tok);sessionStorage.removeItem("ingaAdm")}catch(e){}}
+    else if(!CRED.tok){var c2={user:CRED.user,pass:CRED.pass};CRED=c2;try{sessionStorage.setItem("ingaAdm",JSON.stringify(c2))}catch(e){}}
     DATA=x.j;$("login").hidden=true;$("dash").hidden=false;$("de").value=DATA.de;$("ate").value=DATA.ate;render();peds();
   }).catch(function(){go.disabled=false;go.textContent="Entrar";$("err").textContent="Sem conexão com o servidor. Tente de novo.";$("err").hidden=false})}
 

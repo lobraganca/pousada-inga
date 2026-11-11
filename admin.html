@@ -146,6 +146,8 @@ main>*,.grid2>*,.grid3>*{min-width:0}
 .pill.gray{background:var(--sand-2);color:var(--ink-soft)}
 .ped .meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:var(--ink-soft);margin-top:6px}
 .ped .meta b{color:var(--ink);font-weight:700}
+.ped .quando{flex-basis:100%;order:-1;font-size:13px}
+.btn.sure{background:#B3261E;color:#fff;box-shadow:none}
 .ped .obs{font-size:13px;color:var(--ink-soft);margin-top:6px;font-style:italic}
 .ped .pa{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .nophone{font-size:12.5px;color:var(--ink-soft);max-width:180px;text-align:right}
@@ -420,7 +422,8 @@ function peds(){
   if(!list.length){$("peds").innerHTML='<div class="card"><p class="empty" style="margin:0">'+(PF==="pend"?"Nenhum pedido sem envio. Ótimo sinal!":"Nada por aqui ainda.")+'</p></div>';return}
   $("peds").innerHTML=list.map(function(p){var st=status(p),n=(+p.ad||0),c=(+p.ch||0);
     var who=n+" adulto"+(n===1?"":"s")+(c?" + "+c+" criança"+(c===1?"":"s"):"");
-    var when=new Date(+p.atualizado||+p.criado||Date.now()).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+    var fmt=function(ms){var d=new Date(+ms);return d.toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit",year:"numeric",timeZone:"America/Bahia"}).replace(".","")+" às "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",timeZone:"America/Bahia"})};
+    var sentAt=p.enviadoEm||(p.enviado==="sim"?p.atualizado:""),when=sentAt?'<span class="quando">📩 Enviou em <b>'+fmt(sentAt)+'</b></span>':'<span class="quando">🕓 Preencheu em <b>'+fmt(p.atualizado||p.criado||Date.now())+'</b></span>';
     var ph=p.phone||"",waN=ph.length>=10?(ph.length<=11?"55"+ph:ph):"";
     var msg="Olá, "+(p.name||"")+"! Aqui é da Pousada Ingá. Vimos que você começou uma reserva no nosso site"+(p.start?" para "+br(p.start)+" a "+br(p.end):"")+". Podemos te ajudar a finalizar?";
     var pill=st==="pend"?'<span class="pill">Não enviou</span>':st==="sent"?'<span class="pill ok">Enviou no WhatsApp</span>':'<span class="pill gray">Contatado</span>';
@@ -429,15 +432,18 @@ function peds(){
       (p.pet==="sim"?'<span><b>Com pet</b></span>':'')+(ph?'<span>WhatsApp: <b>'+esc(ph)+'</b></span>':'')+
       ((p.cidadeInformada||p.cidadeAprox)?'<span>De: <b>'+esc(p.cidadeInformada||p.cidadeAprox)+(p.estadoAprox&&!p.cidadeInformada?" – "+esc(p.estadoAprox):"")+'</b></span>':'')+
       (p.occ?'<span>Motivo: <b>'+esc(p.occ)+'</b></span>':'')+(p.lang&&p.lang!=="pt"?'<span>Idioma: <b>'+(p.lang==="en"?"inglês":"espanhol")+'</b></span>':'')+
-      '<span>Em '+when+'</span></div>'+(p.obs?'<p class="obs">“'+esc(p.obs)+'”</p>':'')+'</div>'+
-      '<div class="pa">'+(waN?'<a class="btn wa sm" target="_blank" rel="noopener" href="https://wa.me/'+waN+'?text='+encodeURIComponent(msg)+'"><svg width="16" height="16"><use href="#wa"/></svg>Chamar no WhatsApp</a>':'<span class="nophone">Não deixou WhatsApp. Ela pode ter mandado mensagem direto para a pousada.</span>')+
+      when+'</div>'+(p.obs?'<p class="obs">“'+esc(p.obs)+'”</p>':'')+'</div>'+
+      '<div class="pa">'+(waN?'<a class="btn wa sm" target="_blank" rel="noopener" href="https://wa.me/'+waN+'?text='+encodeURIComponent(msg)+'"><svg width="16" height="16"><use href="#wa"/></svg>Chamar no WhatsApp</a>':'<span class="nophone">'+(st==="pend"?"Ainda não enviou a mensagem, então o contato não chegou.":"O contato está na conversa do WhatsApp da pousada.")+'</span>')+
       '<button type="button" class="btn ghost sm" data-mark="'+esc(p.id)+'" data-v="'+(st==="done"?0:1)+'">'+(st==="done"?"Desmarcar":"Marcar como contatado")+'</button>'+
       '<button type="button" class="btn ghost sm" data-del="'+esc(p.id)+'">Apagar</button></div></article>'}).join("");
 }
 $("peds").addEventListener("click",function(e){var m=e.target.closest("[data-mark]"),d=e.target.closest("[data-del]");
   if(m){m.disabled=true;call({acao:"contatado",id:m.dataset.mark,valor:m.dataset.v==="1"}).then(function(){var p=DATA.pedidos.find(function(x){return x.id===m.dataset.mark});if(p)p.contatado=m.dataset.v==="1"?String(Date.now()):"";peds()})}
-  if(d){if(d.dataset.sure!=="1"){d.dataset.sure="1";d.textContent="Confirmar apagar";setTimeout(function(){d.dataset.sure="";d.textContent="Apagar"},3000);return}
-    d.disabled=true;call({acao:"apagar",id:d.dataset.del}).then(function(){DATA.pedidos=DATA.pedidos.filter(function(x){return x.id!==d.dataset.del});peds()})}});
+  if(d){if(d.dataset.sure!=="1"){d.dataset.sure="1";d.classList.add("sure");d.textContent="Toque de novo para apagar";clearTimeout(d._t);d._t=setTimeout(function(){d.dataset.sure="";d.classList.remove("sure");d.textContent="Apagar"},6000);return}
+    clearTimeout(d._t);d.disabled=true;d.textContent="Apagando…";
+    call({acao:"apagar",id:d.dataset.del}).then(function(x){
+      if(!x||!x.ok){d.disabled=false;d.dataset.sure="";d.classList.remove("sure");d.textContent="Não apagou. Tentar de novo";return}
+      DATA.pedidos=DATA.pedidos.filter(function(y){return y.id!==d.dataset.del});peds()}).catch(function(){d.disabled=false;d.dataset.sure="";d.classList.remove("sure");d.textContent="Sem internet. Tentar de novo"})}});
 if(CRED)load(false);
 })();
 

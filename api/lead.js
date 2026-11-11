@@ -16,6 +16,9 @@ export default async function handler(req, res) {
     const name = clean(b.name, 80), phone = clean(b.phone, 20).replace(/\D/g, "");
     if (!id || (!name && !phone)) return res.status(204).end();
     const key = `inga:lead:${id}`;
+    // pedido apagado no Adm não volta, mesmo que a pessoa continue mexendo no formulário
+    const [apagado] = await pipeline([["EXISTS", `inga:leadx:${id}`]]);
+    if (apagado) return res.status(204).end();
     const now = Date.now();
     const city = (() => { try { return decodeURIComponent(String(req.headers["x-vercel-ip-city"] || "")); } catch { return ""; } })();
     const fields = {
@@ -24,7 +27,7 @@ export default async function handler(req, res) {
       room: clean(b.room, 120), rooms: clean(b.rooms, 2), occ: clean(b.occ, 120), obs: clean(b.obs, 300), step: clean(b.step, 1), lang: clean(b.lang, 2), atualizado: String(now),
     };
     const cmds = [["HSET", key, ...Object.entries(fields).flat()], ["HSETNX", key, "criado", String(now)], ["EXPIRE", key, TTL], ["ZADD", "inga:leads", now, id]];
-    if (b.sent) cmds.push(["HSET", key, "enviado", "sim"]);
+    if (b.sent) cmds.push(["HSET", key, "enviado", "sim"], ["HSETNX", key, "enviadoEm", String(now)]);
     // avisa a equipe uma única vez, quando já dá para entrar em contato (tem WhatsApp) ou a pessoa enviou
     const pronto = name.length >= 2 && (phone.length >= 10 || b.sent);
     if (pronto) cmds.push(["HSETNX", key, "avisado", String(now)]);

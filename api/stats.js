@@ -44,7 +44,7 @@ async function main(req, res) {
   }
   if (body.acao === "apagar" && body.id) {
     const id = String(body.id).replace(/[^\w-]/g, "").slice(0, 40);
-    await pipeline([["DEL", `inga:lead:${id}`], ["ZREM", "inga:leads", id]]);
+    await pipeline([["DEL", `inga:lead:${id}`], ["ZREM", "inga:leads", id], ["SET", `inga:leadx:${id}`, "1", "EX", 60 * 60 * 24 * 120]]);
     return res.status(200).json({ ok: true });
   }
 

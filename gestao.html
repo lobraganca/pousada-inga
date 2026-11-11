@@ -253,8 +253,9 @@ main{padding-top:22px;padding-bottom:110px}
 .mem:last-child{border-bottom:0}
 .mem b{display:block}
 .mem span{font-size:13px;color:var(--ink-soft)}
+@media (min-width:601px){.qrow+.qrow .fld>span{display:none}}
 .qrow{display:grid;grid-template-columns:minmax(0,1fr) 72px 104px auto;gap:8px;align-items:end;margin-bottom:8px}
-@media (max-width:600px){.qrow{grid-template-columns:minmax(0,1fr) 50px 76px 34px;gap:6px}.qrow input{padding-left:10px;padding-right:8px}}
+@media (max-width:600px){.qrow{grid-template-columns:76px minmax(0,1fr) 44px;gap:6px;padding-bottom:10px;border-bottom:1px solid var(--line)}.qrow>label:first-child{grid-column:1/-1}.qrow input{padding-left:10px;padding-right:8px}.qrow .btn{align-self:end;height:44px;padding:0}}
 /* tarefas */
 .tasks{display:grid;gap:6px}
 .tk{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--sand)}
@@ -538,7 +539,7 @@ function render(){if(!S)return;
   document.querySelectorAll(".tabs [data-v]").forEach(function(b){b.setAttribute("aria-selected",b.dataset.v===VIEW)});
   var f={hoje:vHoje,mapa:vMapa,reservas:vReservas,caixa:vCaixa,ajustes:vAjustes}[VIEW]||vHoje;
   if(VIEW==="ajustes"&&S.me.papel!=="admin"){VIEW="hoje";f=vHoje}
-  $("main").innerHTML=f();bind()}
+  $("fab").hidden=VIEW==="caixa"||VIEW==="ajustes";$("main").innerHTML=f();bind()}
 
 /* ---------- HOJE ---------- */
 function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
@@ -601,12 +602,15 @@ function drawBars(){var m=$("map");if(!m)return;var g=m.querySelector(".mgrid"),
     var el=document.createElement("button");el.className="bar "+r.status+(cl?" cl":"")+(cr?" cr":"");el.dataset.open=r.id;
     el.style.left=(RW+a*DW+2)+"px";el.style.width=Math.max(18,(b-a)*DW-4)+"px";el.style.top=(56+qi*RH+8)+"px";
     el.innerHTML=(saldo(r)>0&&r.status!=="saiu"?'<i class="due"></i>':"")+'<span>'+esc(first(r.nome))+'</span>'+((b-a)*DW>90?'<small>'+nights(r)+'n</small>':"");
-    el.title=r.nome+" · "+br(r.entrada)+" a "+br(r.saida)+" · "+ST[r.status];g.appendChild(el)})}
+    el.title=r.nome+" · "+br(r.entrada)+" a "+br(r.saida)+" · "+ST[r.status];el.dataset.l=RW+a*DW+2;g.appendChild(el)});
+  // nome sempre visível: quando a barra passa por baixo da coluna dos quartos, o texto acompanha
+  function fit(){var sl=m.scrollLeft;m.querySelectorAll(".bar").forEach(function(b){var hid=Math.max(0,sl+RW-(+b.dataset.l));b.style.paddingLeft=hid?Math.min(hid+8,parseFloat(b.style.width)-30)+"px":""})}
+  fit();if(!m._fit){m._fit=1;m.addEventListener("scroll",function(){requestAnimationFrame(fit)},{passive:true})}}
 
 /* ---------- RESERVAS ---------- */
 function vReservas(){var t=today();var F={proximas:"Próximas",hospedados:"Hospedados",pre:"Pré-reservas",pendente:"Falta pagar",passadas:"Passadas",canceladas:"Canceladas",todas:"Todas"};
   var h='<div class="sec"><div class="ph"><div><h1>Reservas</h1><p>'+plural(S.reservas.filter(act).length,"reserva ativa","reservas ativas")+' no total.</p></div></div>';
-  h+='<div class="tools"><label class="search"><svg><use href="#i-search"/></svg><input id="q" type="search" placeholder="Buscar por nome, telefone ou cidade" value="'+esc(QUERY)+'"></label></div>';
+  h+='<div class="tools"><label class="search"><svg><use href="#i-search"/></svg><input id="q" type="search" placeholder="Buscar hóspede, telefone…" value="'+esc(QUERY)+'"></label></div>';
   h+='<div class="chips">'+Object.keys(F).map(function(k){return'<button class="chip" data-f="'+k+'" aria-pressed="'+(FILTER===k)+'">'+F[k]+'</button>'}).join("")+'</div>';
   h+='<div class="rlist" id="rlist">'+rlist()+'</div>'+waitCard()+'</div>';return h}
 function rlist(){var t=today(),q=QUERY.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim(),qd=q.replace(/\D/g,"");
@@ -665,7 +669,7 @@ function vAjustes(){var h='<div class="sec"><div class="ph"><div><h1>Ajustes</h1
   h+='<div class="card"><h3>Equipe</h3><div class="mem"><span class="av">'+esc((S.me.nome||"D").charAt(0))+'</span><div><b>'+esc(S.me.login==="dona"?S.me.nome:"Dona")+'</b><span>Administradora · login da Vercel</span></div><span></span></div>'+
      S.equipe.map(function(u){return'<div class="mem"><span class="av" style="background:'+(u.ativo?"var(--sea)":"#A9B5AD")+'">'+esc((u.nome||u.login).charAt(0).toUpperCase())+'</span><div><b>'+esc(u.nome)+(u.ativo?"":' <span class="muted">(bloqueado)</span>')+'</b><span>login: '+esc(u.login)+' · '+(u.papel==="admin"?"Administradora":"Equipe")+'</span></div><button class="btn soft sm" data-mem="'+esc(u.login)+'">Editar</button></div>'}).join("")+
      '<div style="margin-top:14px"><button class="btn sm" data-mem="">+ Adicionar pessoa</button></div></div>';
-  h+='<div class="card"><h3>Quartos</h3><p class="muted" style="font-size:13px;margin:-6px 0 12px">A diária base é usada para sugerir preços conforme a data e a ocupação.</p><div id="qedit">'+S.quartos.map(function(q,i){return'<div class="qrow" data-qid="'+esc(q.id)+'"><label class="fld"><span>'+(i?"":"Nome")+'</span><input value="'+esc(q.nome)+'" data-qn></label><label class="fld"><span>'+(i?"":"Pess.")+'</span><input type="number" min="1" max="12" value="'+q.cap+'" data-qc inputmode="numeric"></label><label class="fld"><span>'+(i?"":"Diária")+'</span><input value="'+(q.preco||"")+'" data-qp inputmode="decimal" placeholder="R$"></label><button class="btn danger sm" data-qdel title="Remover quarto">✕</button></div>'}).join("")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn soft sm" id="qadd">+ Quarto</button><button class="btn sm" id="qsave">Salvar quartos</button></div></div></div>';
+  h+='<div class="card"><h3>Quartos</h3><p class="muted" style="font-size:13px;margin:-6px 0 12px">A diária base é usada para sugerir preços conforme a data e a ocupação.</p><div id="qedit">'+S.quartos.map(function(q,i){return'<div class="qrow" data-qid="'+esc(q.id)+'"><label class="fld"><span>'+"Nome"+'</span><input value="'+esc(q.nome)+'" data-qn></label><label class="fld"><span>'+"Pessoas"+'</span><input type="number" min="1" max="12" value="'+q.cap+'" data-qc inputmode="numeric"></label><label class="fld"><span>'+"Diária (R$)"+'</span><input value="'+(q.preco||"")+'" data-qp inputmode="decimal" placeholder="R$"></label><button class="btn danger sm" data-qdel title="Remover quarto">✕</button></div>'}).join("")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn soft sm" id="qadd">+ Quarto</button><button class="btn sm" id="qsave">Salvar quartos</button></div></div></div>';
   h+='<div class="card"><h3>Histórico recente</h3>'+(S.log.length?'<div class="log">'+S.log.map(function(l){return'<div>'+esc(logTxt(l))+'<span>há '+ago(l.em)+'</span></div>'}).join("")+'</div>':'<p class="empty">Nada ainda.</p>')+'</div></div>';
   return h}
 function logTxt(l){var n=l.nome||"",p=l.por||"";switch(l.tipo){case"criou":return p+" criou a reserva de "+n+(l.entrada?" ("+br(l.entrada)+" a "+br(l.saida)+")":"");case"editou":return p+" editou a reserva de "+n;case"hospedado":return p+" fez o check-in de "+n;case"saiu":return p+" fez o check-out de "+n;case"cancelada":return p+" cancelou a reserva de "+n;case"confirmada":return p+" confirmou a reserva de "+n;case"pre":return p+" voltou "+n+" para pré-reserva";case"pagamento":return p+" registrou "+money(l.valor)+" de "+n;case"apagou":return p+" apagou a reserva de "+n;case"quartos":return p+" alterou os quartos";case"espera":return p+" colocou "+n+" na lista de espera";case"tarefa":return p+" concluiu: "+n;case"membro-novo":return p+" adicionou "+n+" à equipe";case"membro-editado":return p+" editou o acesso de "+n;case"membro-removido":return p+" removeu "+n+" da equipe";default:return p+" "+l.tipo}}

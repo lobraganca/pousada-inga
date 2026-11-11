@@ -2137,7 +2137,7 @@ function draw(t){
   hero.dataset.mode=p.l>.55?"day":"night";
 }
 
-var MOM=[[0,"Madrugada","Céu estrelado e só o barulho do mar."],[5,"Amanhecer","O sol nasce sobre o mar, bem em frente à pousada."],[8,"Café da manhã","Buffet servido das 8h às 10h."],[10,"Praia","Pé na areia: a Praia do Rio do Peixe Grande fica a poucos passos."],[11,"Almoço, drinks e petiscos","Servidos das 11h às 15h30, com vista para o mar."],[15.5,"Piscina","Sombra no jardim e mergulho na piscina."],[17,"Chá da tarde","Servido das 17h às 18h, com o céu dourado sobre as falésias."],[18,"Pôr do sol","Hora de descansar e se arrumar para a noite."],[19,"Noite na vila","Passeio pela vila: restaurantes, lojinhas e o charme do centrinho."],[22,"Noite","Céu estrelado e silêncio de vila pequena."]];
+var MOM=[[0,"Madrugada","Céu estrelado e só o barulho do mar."],[5,"Amanhecer","O sol nasce sobre o mar, bem em frente à pousada."],[8,"Café da manhã","Buffet servido das 8h às 10h."],[10,"Praia","Pé na areia: a Praia do Rio do Peixe Grande fica a poucos passos."],[11,"Almoço, drinks e petiscos","Servidos das 11h às 15h30, com vista para o mar."],[15.5,"Piscina","Sombra no jardim e mergulho na piscina."],[17,"Chá da tarde","Servido das 17h às 18h, com o céu dourado sobre as falésias."],[18,"Pôr do sol","Hora de descansar e se arrumar para a noite."],[19,"Noite na vila","Passeio pela vila: restaurantes, lojinhas e o charme do centrinho."],[23,"Noite","Céu estrelado e silêncio de vila pequena."]];
 function setClock(){
   var tot=Math.round(hour*60)%1440,hh=Math.floor(tot/60),mm=tot%60;
   $("clk").textContent=(hh<10?"0":"")+hh+":"+(mm<10?"0":"")+mm;

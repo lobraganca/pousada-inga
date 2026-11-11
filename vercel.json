@@ -133,6 +133,21 @@
       "source": "/index.php",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/adm",
+      "destination": "/admin",
+      "permanent": false
+    },
+    {
+      "source": "/adm/",
+      "destination": "/admin",
+      "permanent": false
+    },
+    {
+      "source": "/administrador",
+      "destination": "/admin",
+      "permanent": false
     }
   ],
   "crons": [

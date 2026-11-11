@@ -229,7 +229,7 @@ main>*,.grid2>*,.grid3>*{min-width:0}
     <div class="inst" id="inst" hidden>
       <i class="ic" aria-hidden="true"></i>
       <div class="tx"><b>Tenha o painel como app</b><span>Um ícone na tela do celular, sem precisar procurar o link.</span></div>
-      <button class="btn" type="button" data-howto>Ver como instalar</button>
+      <button class="btn" type="button" data-howto>Instalar o app</button>
       <button class="x" type="button" id="inst-x" aria-label="Fechar aviso">×</button>
     </div>
     <div class="tabs" role="tablist" aria-label="Seções do painel">
@@ -311,7 +311,7 @@ main>*,.grid2>*,.grid3>*{min-width:0}
       <li><span>Confira o nome <b>Painel Ingá</b> e toque em <span class="k">Adicionar</span>. Pronto: o ícone aparece na tela do celular.</span></li>
     </ol>
     <ol class="steps" id="st-and" hidden>
-      <li class="samsung" id="samsung" hidden><span><b>Atenção:</b> você está no navegador da Samsung. O ícone criado por ele é bloqueado pelo Android ("App de risco bloqueado"). Use o Chrome: <a class="btn wa sm" id="open-chrome" href="intent://www.pousadaingacumuru.com.br/admin#Intent;scheme=https;package=com.android.chrome;end">Abrir no Chrome</a></span></li>
+      <li class="samsung" id="samsung" hidden><span><b>Atenção:</b> você está no navegador da Samsung. O ícone criado por ele é bloqueado pelo Android ("App de risco bloqueado"). Use o Chrome: <a class="btn wa sm" id="open-chrome" href="intent://www.pousadaingacumuru.com.br/admin?instalar=1#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.android.chrome;end">Abrir no Chrome</a></span></li>
       <li><span>Abra este painel no <b>Chrome</b> (não use o navegador da Samsung).</span></li>
       <li><span>Toque nos três pontinhos <span class="k">⋮</span> no canto de cima.</span></li>
       <li><span>Toque em <span class="k">Instalar app</span> ou <span class="k">Adicionar à tela inicial</span>.</span></li>
@@ -463,7 +463,13 @@ if(CRED)load(false);
   document.getElementById("os-and").addEventListener("click",function(){os("and")});
   function open(){if(dlg.showModal){dlg.showModal()}else{dlg.setAttribute("open","")}}
   function close(){if(dlg.close){dlg.close()}else{dlg.removeAttribute("open")}}
-  document.querySelectorAll("[data-howto]").forEach(function(b){b.addEventListener("click",open)});
+  var CHROME="intent://www.pousadaingacumuru.com.br/admin?instalar=1#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.android.chrome;end";
+  // um toque: no Chrome já abre a janela de instalação; no navegador da Samsung, abre o painel no Chrome
+  function quick(){if(isSam&&isAnd){location.href=CHROME;return}
+    if(deferred){deferred.prompt();deferred.userChoice.then(function(c){if(c.outcome==="accepted"){inst.hidden=true}deferred=null;now.hidden=true});return}
+    open()}
+  document.querySelectorAll("[data-howto]").forEach(function(b){b.addEventListener("click",quick)});
+  if(/[?&]instalar=1/.test(location.search)){try{history.replaceState(null,"",location.pathname)}catch(e){}if(!standalone)setTimeout(open,400)}
   document.getElementById("howto-x").addEventListener("click",close);
   dlg.addEventListener("click",function(e){if(e.target===dlg)close()});
   var hid=false;try{hid=localStorage.getItem("ingaInstX")==="1"}catch(e){}

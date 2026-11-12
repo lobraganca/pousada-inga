@@ -2249,7 +2249,7 @@ function renderPanel(){
   if(s===1){h='<div><h3>Quando você vem?</h3><p class="hint">Check-in a partir das 14h, check-out até 12h.</p></div>'+datePills()+renderCal();}
   if(s===2){
     h='<div><h3>Quem vem junto?</h3><p class="hint">Crianças de todas as idades são bem-vindas.</p></div><div class="counters">'+
-    counter("ad","Adultos","13 anos ou mais",state.ad)+counter("ch","Crianças","",state.ch)+
+    counter("ad","Adultos","",state.ad)+counter("ch","Crianças","",state.ch)+
     (state.ch?'<div class="ages">'+state.ages.map(function(a,i){var o='<option value="">idade</option>';for(var k=0;k<=12;k++)o+='<option value="'+k+'"'+(String(a)===String(k)?" selected":"")+'>'+(k===0?"menos de 1":k+(k===1?" ano":" anos"))+'</option>';return '<label>Criança '+(i+1)+'<select data-age="'+i+'">'+o+'</select></label>'}).join("")+'</div>':"")+
     '<div class="counter"><div><b>Vai levar pet?</b><small>Pequeno e médio porte, sob responsabilidade do tutor. Pode haver taxa.</small></div><label class="switch"><input type="checkbox" id="pet"'+(state.pet?" checked":"")+' aria-label="Vou levar pet"><i></i></label></div></div>';}
   if(s===3){

@@ -177,6 +177,7 @@ main>*,.grid2>*,.grid3>*{min-width:0}
 .inst .x{flex:none;border:0;background:none;color:var(--ink-soft);font-size:22px;line-height:1;cursor:pointer;padding:6px}
 @media (max-width:520px){.inst{flex-wrap:wrap;position:relative}.inst .tx{flex:1 1 calc(100% - 100px);padding-right:26px}.inst .btn{flex:1 1 100%;order:5}.inst .x{position:absolute;top:8px;right:8px}}
 .linkbtn{border:0;background:none;color:var(--ink-soft);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:6px;justify-self:center}
+.linkbtn.more{display:block;margin:6px auto 0;color:var(--olive);font-weight:800;min-height:38px;padding:8px 14px}
 .howto{border:0;padding:0;border-radius:26px;width:min(440px,calc(100% - 24px));max-height:calc(100% - 24px);background:var(--paper);color:var(--ink);box-shadow:0 40px 80px -30px rgba(10,30,20,.6)}
 .howto::backdrop{background:rgba(16,30,22,.55);backdrop-filter:blur(3px)}
 .howto .in{padding:24px 22px 22px;display:grid;gap:16px}
@@ -375,9 +376,11 @@ function render(){
   bars("src",d.origem,function(k){return {direto:"Link direto",instagram:"Instagram",google:"Google",facebook:"Facebook",whatsapp:"WhatsApp",booking:"Booking",tripadvisor:"Tripadvisor"}[k]||k},6);
   bars("dev",d.dispositivo,function(k){return {celular:"Celular",computador:"Computador"}[k]||k},3);
 }
-function bars(id,obj,name,lim){var e=Object.entries(obj||{}).sort(function(a,b){return b[1]-a[1]}),tot=e.reduce(function(a,x){return a+x[1]},0);
+var BALL={};
+function bars(id,obj,name,lim){var e=Object.entries(obj||{}).sort(function(a,b){return b[1]-a[1]}),tot=e.reduce(function(a,x){return a+x[1]},0),full=BALL[id];
   if(!tot){$(id).innerHTML='<p class="empty">Ainda sem dados no período.</p>';return}
-  $(id).innerHTML=e.slice(0,lim).map(function(x){var p=Math.round(x[1]/tot*100);return '<div class="srow"><span title="'+esc(name(x[0]))+'">'+esc(name(x[0]))+'</span><span class="tr"><i style="width:'+Math.max(2,p)+'%"></i></span><b>'+fmt(x[1])+'</b></div>'}).join("")+(e.length>lim?'<p class="empty">e mais '+(e.length-lim)+'</p>':'')}
+  $(id).innerHTML=e.slice(0,full?e.length:lim).map(function(x){var p=Math.round(x[1]/tot*100);return '<div class="srow"><span title="'+esc(name(x[0]))+'">'+esc(name(x[0]))+'</span><span class="tr"><i style="width:'+Math.max(2,p)+'%"></i></span><b>'+fmt(x[1])+'</b></div>'}).join("")+(e.length>lim?'<button type="button" class="linkbtn more" data-bmore="'+id+'">'+(full?"Mostrar menos":"Ver mais "+(e.length-lim))+'</button>':'');
+  var mb=$(id).querySelector("[data-bmore]");if(mb)mb.addEventListener("click",function(){BALL[id]=!BALL[id];bars(id,obj,name,lim)})}
 function icon(k){var p={reserva:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',whatsapp:'<path d="M5 19l1.3-3.6A7.5 7.5 0 1 1 9 18.4Z"/>',voos:'<path d="M2 16l20-8-4 10-6-3-3 4v-5"/>',rota:'<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/>',tour360:'<ellipse cx="12" cy="12" rx="9" ry="4"/><path d="M12 3a4 9 0 0 1 0 18M12 3a4 9 0 0 0 0 18"/>'}[k];
   return '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'}
 var WK=["dom","seg","ter","qua","qui","sex","sáb"],DDALL=false;

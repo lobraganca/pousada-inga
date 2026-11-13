@@ -8,7 +8,20 @@
 <meta name="theme-color" content="#2B3122">
 <link rel="manifest" href="/admin.webmanifest">
 <script>try{if(localStorage.getItem("ingaAdmTok")||localStorage.getItem("ingaG"))document.documentElement.className+=" boot"}catch(e){}</script>
-<style>html.boot #login{display:none!important}</style>
+<style>html.boot #login{display:none!important}
+/* abas Visitas / Pedidos em rosa + filtro mais limpo */
+.tabs{display:grid!important;grid-template-columns:1fr 1fr;width:100%!important;max-width:520px;background:#F3E3EA!important;border-radius:18px!important;padding:5px!important;gap:4px}
+.tabs button{justify-content:center;white-space:nowrap;border-radius:14px!important;min-height:46px;color:#8E5468!important;font-size:14.5px!important}
+.tabs button[aria-selected="true"]{background:linear-gradient(135deg,#B06C80,#9A5B6F)!important;color:#fff!important;box-shadow:0 10px 20px -12px rgba(142,84,104,.9)!important}
+.tabs button[aria-selected="true"] .count{background:#fff;color:#9A5B6F}
+.filter{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px!important;padding:8px!important}
+.filter .chip{padding:9px 4px!important;font-size:13px;text-align:center;white-space:nowrap}
+.filter .moredates{grid-column:1/-1;border:0;background:none;color:var(--ink-soft);font:700 13px var(--body);padding:8px;cursor:pointer;border-radius:12px}
+.filter .moredates:hover{background:var(--sand)}
+.filter .custom{grid-column:1/-1}
+.filter .custom[hidden]{display:none!important}
+@media (max-width:380px){.filter .chip{font-size:12px}}
+</style>
 
 <link rel="apple-touch-icon" href="/admin-apple-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -255,7 +268,7 @@ main>*,.grid2>*,.grid3>*{min-width:0}
     </div>
     <div class="tabs" role="tablist" aria-label="Seções do painel">
       <button type="button" role="tab" id="t-vis" aria-selected="true">Visitas</button>
-      <button type="button" role="tab" id="t-ped" aria-selected="false">Pedidos de reserva <span class="count" id="ped-count" hidden>0</span></button>
+      <button type="button" role="tab" id="t-ped" aria-selected="false">Pedidos <span class="count" id="ped-count" hidden>0</span></button>
     </div>
 
     <section id="p-vis" style="display:grid;gap:18px">
@@ -267,8 +280,9 @@ main>*,.grid2>*,.grid3>*{min-width:0}
         <button type="button" class="chip" data-r="7" aria-pressed="false">7 dias</button>
         <button type="button" class="chip" data-r="30" aria-pressed="true">30 dias</button>
         <button type="button" class="chip" data-r="90" aria-pressed="false">90 dias</button>
-        <button type="button" class="chip" data-r="365" aria-pressed="false">12 meses</button>
-        <div class="custom"><label class="df" for="de"><span>De</span><input type="date" id="de"></label><label class="df" for="ate"><span>Até</span><input type="date" id="ate"></label><button type="button" class="btn sm" id="apply">Ver período</button></div>
+        <button type="button" class="chip" data-r="365" aria-pressed="false">1 ano</button>
+        <button type="button" class="moredates" id="moredates" aria-expanded="false">📅 Escolher outras datas</button>
+        <div class="custom" id="custom" hidden><label class="df" for="de"><span>De</span><input type="date" id="de"></label><label class="df" for="ate"><span>Até</span><input type="date" id="ate"></label><button type="button" class="btn sm" id="apply">Ver período</button></div>
       </div>
       <div class="kpis">
         <div class="kpi main"><span>Pessoas no período</span><b id="k-per">0</b><small id="k-per-s">pessoas diferentes</small></div>
@@ -362,6 +376,7 @@ $("out").addEventListener("click",function(){if(CRED&&CRED.tok)call({acao:"sair"
 function tab(w){$("t-vis").setAttribute("aria-selected",w==="vis");$("t-ped").setAttribute("aria-selected",w==="ped");$("p-vis").hidden=w!=="vis";$("p-ped").hidden=w!=="ped";if(w==="vis"&&DATA)chart(DATA.dias)}
 $("t-vis").addEventListener("click",function(){tab("vis")});$("t-ped").addEventListener("click",function(){tab("ped")});
 document.querySelector(".filter").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;RANGE=+b.dataset.r;CUSTOM=null;this.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});load(false)});
+$("moredates").addEventListener("click",function(){var c=$("custom"),op=c.hidden;c.hidden=!op;this.setAttribute("aria-expanded",op);this.textContent=op?"Fechar datas":"📅 Escolher outras datas"});
 $("apply").addEventListener("click",function(){if(!$("de").value||!$("ate").value)return;CUSTOM={de:$("de").value,ate:$("ate").value};document.querySelectorAll(".filter .chip").forEach(function(x){x.setAttribute("aria-pressed","false")});load(false)});
 document.querySelector(".ped-filter").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;PF=b.dataset.f;this.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed",x===b)});peds()});
 

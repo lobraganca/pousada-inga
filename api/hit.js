@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       cmds.push(["PFADD", `${V}uniq:${day}`, vid], ["EXPIRE", `${V}uniq:${day}`, TTL], ["PFADD", `${V}uniq:all`, vid]);
       const device = /Mobi|Android|iPhone/i.test(ua) ? "celular" : "computador";
       const ref = String(body?.r || "").replace(/^www\./, "").slice(0, 60);
-      const src = !ref ? "direto" : /instagram/.test(ref) ? "instagram" : /facebook|fb\./.test(ref) ? "facebook" : /google/.test(ref) ? "google" : /whatsapp|wa\.me/.test(ref) ? "whatsapp" : /booking/.test(ref) ? "booking" : /tripadvisor/.test(ref) ? "tripadvisor" : ref.includes("vercel.app") || ref.includes("pousada") ? null : ref;
+      const src = !ref ? "direto" : /instagram|linktr/.test(ref) ? "instagram" : /facebook|fb\./.test(ref) ? "facebook" : /google/.test(ref) ? "google" : /whatsapp|wa\.me/.test(ref) ? "whatsapp" : /booking/.test(ref) ? "booking" : /tripadvisor/.test(ref) ? "tripadvisor" : ref.includes("vercel.app") || ref.includes("pousada") ? null : ref;
       // localização aproximada que a Vercel informa (cidade, estado, país) — sem guardar IP
       const city = dec(req.headers["x-vercel-ip-city"]);
       const region = dec(req.headers["x-vercel-ip-country-region"]);

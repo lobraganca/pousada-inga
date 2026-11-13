@@ -402,6 +402,7 @@ main{padding-top:22px;padding-bottom:110px}
 .logbox summary::after{content:"▾";color:var(--ink-soft);transition:transform .2s}
 .logbox[open] summary::after{transform:rotate(180deg)}
 .logbox[open] summary{margin-bottom:12px}
+@media (max-width:600px){.logbox summary small{display:none}}
 /* fab + toast */
 .fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
 @media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;padding:0;border-radius:50%;font-size:0;gap:0;justify-content:center}.fab svg{width:26px;height:26px}}

@@ -6,8 +6,8 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#2B3122">
-<link rel="manifest" href="/gestao.webmanifest">
-<link rel="apple-touch-icon" href="/gestao-apple-icon.png">
+<link rel="manifest" href="/admin.webmanifest">
+<link rel="apple-touch-icon" href="/admin-apple-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Gestão Ingá">
@@ -421,6 +421,11 @@ main{padding-top:22px;padding-bottom:110px}
 .mtpl .btn{margin-bottom:14px}
 body.kb .tabs,body.kb .fab{display:none!important}
 body.kb main{padding-bottom:40px!important}
+.appsw{display:flex;gap:4px;margin:0 auto 8px;padding:4px;background:var(--paper);border:1px solid var(--line);border-radius:999px;width:max-content;max-width:calc(100% - 24px)}
+.appsw[hidden]{display:none}
+.appsw a{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink-soft);font:700 13px/1 var(--body);padding:9px 16px;border-radius:999px;white-space:nowrap}
+.appsw a.on{background:var(--olive);color:#EEF1EC}
+.appsw a:not(.on):hover{background:var(--sand)}
 /* fab + toast */
 .fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
 @media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;padding:0;border-radius:50%;font-size:0;gap:0;justify-content:center}.fab svg{width:26px;height:26px}}
@@ -483,6 +488,7 @@ body.kb main{padding-bottom:40px!important}
         </div>
       </div>
     </div>
+  <nav class="appsw" id="appsw" hidden aria-label="Trocar de área"><a href="/admin">📊 Site e pedidos</a><a class="on" aria-current="page">🛎️ Gestão de reservas</a></nav>
   </header>
   <main class="wrap" id="main"><div class="loading"><div><div class="spin"></div>Carregando…</div></div></main>
   <button class="btn fab" id="fab" type="button"><svg><use href="#i-plus"/></svg>Nova reserva</button>
@@ -574,7 +580,7 @@ function logout(expired){try{localStorage.removeItem("ingaG")}catch(e){}if(!expi
 $("lform").addEventListener("submit",function(e){e.preventDefault();$("lerr").textContent="";$("lgo").disabled=true;$("lgo").textContent="Entrando…";
   api("entrar",{login:$("lu").value,senha:$("lp").value}).then(function(j){TK=j.token;try{localStorage.setItem("ingaG",TK)}catch(e){}$("lp").value="";return load()}).catch(function(e){$("lerr").textContent=e.message}).then(function(){$("lgo").disabled=false;$("lgo").textContent="Entrar"})});
 
-function me(){var n=S.me.nome||"";$("meav").textContent=n.charAt(0).toUpperCase()||"?";$("menm").textContent=first(n);$("mewho").textContent=n;$("merole").textContent=S.me.papel==="admin"?"Administradora":"Equipe";$("tab-aj").hidden=S.me.papel!=="admin";
+function me(){var n=S.me.nome||"";$("meav").textContent=n.charAt(0).toUpperCase()||"?";$("menm").textContent=first(n);$("mewho").textContent=n;$("merole").textContent=S.me.papel==="admin"?"Administradora":"Equipe";$("appsw").hidden=S.me.papel!=="admin";$("tab-aj").hidden=S.me.papel!=="admin";
   }
 $("mebtn").addEventListener("click",function(e){e.stopPropagation();var m=$("menu");m.hidden=!m.hidden;$("mebtn").setAttribute("aria-expanded",!m.hidden)});
 document.addEventListener("click",function(e){if(!e.target.closest(".me"))$("menu").hidden=true});
@@ -614,7 +620,7 @@ function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
   var nome=first(S.me.nome);
   var h='<div class="sec"><div class="ph"><div><h1>'+hello()+(nome?", "+esc(nome):"")+'.</h1><p>'+dlong(t).replace(/^./,function(c){return c.toUpperCase()})+' · '+plural(ocup,"quarto ocupado","quartos ocupados")+' de '+nq+'</p></div></div>';
   var appX=false;try{appX=localStorage.getItem("ingaGApp")==="1"}catch(e){}
-  if(canInstall()&&!appX)h+='<div class="nb app"><span class="bell">📲</span><div class="tx"><b>Tenha a gestão como app</b><span>Um ícone na tela do celular, sem precisar procurar o link.</span></div><button class="btn sm" data-app>Instalar</button><button class="x" data-appx aria-label="Fechar">×</button></div>';
+  if(canInstall()&&!appX)h+='<div class="nb app"><span class="bell">📲</span><div class="tx"><b>Tenha o app da Ingá</b><span>Um ícone só na tela do celular, com a gestão de reservas e o painel do site.</span></div><button class="btn sm" data-app>Instalar</button><button class="x" data-appx aria-label="Fechar">×</button></div>';
   else if(PUSH.ok&&!PUSH.on&&!PUSH.x)h+='<div class="nb"><span class="bell">🔔</span><div class="tx"><b>Receba avisos neste celular</b><span>Pedido novo no site, reserva lançada por outra pessoa e o resumo do dia às 7h.</span></div><button class="btn rose sm" data-notif>Ativar avisos</button><button class="x" data-notifx aria-label="Fechar">×</button></div>';
   h+='<div class="kpis"><div class="kpi dark"><small>Ocupação hoje</small><b>'+ocup+'<span style="font-size:20px;color:rgba(238,241,236,.6)"> / '+nq+'</span></b><div class="occ"><i style="width:'+Math.round(ocup/nq*100)+'%"></i></div></div>'+
      '<div class="kpi"><small>Chegam hoje</small><b>'+chegam.length+'</b><span>'+(chegam.length?esc(chegam.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
@@ -947,7 +953,7 @@ function installApp(){$("menu").hidden=true;
   var b=IS_IOS?'<ol class="isteps"><li>Abra esta página no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> <span class="ico">⬆︎</span> na barra de baixo.</li><li>Escolha <b>Adicionar à Tela de Início</b> e toque em <b>Adicionar</b>.</li></ol>'
    :IS_AND?'<ol class="isteps"><li>Abra esta página no <b>Chrome</b> (não use o navegador da Samsung).</li><li>Toque nos três pontinhos <b>⋮</b> no canto de cima.</li><li>Escolha <b>Instalar app</b> e confirme em <b>Instalar</b>.</li></ol>'
    :'<ol class="isteps"><li>No Chrome ou Edge, clique no ícone de instalar <b>⊕</b> no fim da barra de endereço.</li><li>Confirme em <b>Instalar</b>.</li></ol>';
-  openSheet("Instalar como app",'<p style="margin:0 0 12px">O ícone <b>Gestão Ingá</b> fica na tela do celular, abre direto e você continua conectada.</p>'+b)}
+  openSheet("Instalar como app",'<p style="margin:0 0 12px">O ícone <b>Ingá</b> fica na tela do celular. Nele você tem a gestão de reservas e o painel do site, e continua conectada.</p>'+b)}
 $("m-app").addEventListener("click",installApp);
 $("m-app").hidden=STANDALONE;
 if(/[?&]instalar=1/.test(location.search)){try{history.replaceState(null,"",location.pathname+location.hash)}catch(e){}setTimeout(function(){if(!STANDALONE&&S)installApp()},1500)}

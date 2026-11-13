@@ -26,9 +26,18 @@ export default async function handler(req, res) {
       const ref = String(body?.r || "").replace(/^www\./, "").slice(0, 60);
       const src = !ref ? "direto" : /instagram|linktr/.test(ref) ? "instagram" : /facebook|fb\./.test(ref) ? "facebook" : /google/.test(ref) ? "google" : /whatsapp|wa\.me/.test(ref) ? "whatsapp" : /booking/.test(ref) ? "booking" : /tripadvisor/.test(ref) ? "tripadvisor" : ref.includes("vercel.app") || ref.includes("pousada") ? null : ref;
       // localização aproximada que a Vercel informa (cidade, estado, país) — sem guardar IP
-      const city = dec(req.headers["x-vercel-ip-city"]);
-      const region = dec(req.headers["x-vercel-ip-country-region"]);
-      const country = dec(req.headers["x-vercel-ip-country"]);
+      let city = dec(req.headers["x-vercel-ip-city"]);
+      let region = dec(req.headers["x-vercel-ip-country-region"]);
+      let country = dec(req.headers["x-vercel-ip-country"]);
+      // Fuso horário do aparelho: ajuda a separar gente de verdade de robôs e de VPN.
+      const tz = String(body?.tz || "").slice(0, 40);
+      const tzBR = /^America\/(Sao_Paulo|Bahia|Fortaleza|Recife|Belem|Maceio|Araguaina|Manaus|Cuiaba|Campo_Grande|Porto_Velho|Boa_Vista|Rio_Branco|Santarem|Eirunepe|Noronha)$/.test(tz);
+      if (country && country !== "BR") {
+        // robô de servidor no exterior: fuso UTC/indefinido → não conta
+        if (!tz || /^(UTC|Etc\/|GMT)/.test(tz)) return res.status(204).end();
+        // aparelho no fuso do Brasil passando por VPN/"Retransmissão privada" do iPhone → conta como Brasil, sem cidade
+        if (tzBR) { country = "BR"; region = ""; city = ""; }
+      }
       const add = (name, field) => { if (field) cmds.push(["HINCRBY", k(name), field, 1], ["EXPIRE", k(name), TTL]); };
       add("dev", device);
       if (src) add("src", src);

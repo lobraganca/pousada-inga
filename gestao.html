@@ -419,6 +419,8 @@ main{padding-top:22px;padding-bottom:110px}
 .mprev small{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--leaf);margin-bottom:4px}
 .mprev div{white-space:pre-wrap;font-size:13.5px;line-height:1.45}
 .mtpl .btn{margin-bottom:14px}
+body.kb .tabs,body.kb .fab{display:none!important}
+body.kb main{padding-bottom:40px!important}
 /* fab + toast */
 .fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
 @media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;padding:0;border-radius:50%;font-size:0;gap:0;justify-content:center}.fab svg{width:26px;height:26px}}
@@ -929,6 +931,11 @@ function notifSheet(){var P=PUSH.prefs||{pedidos:true,reservas:true,tarefas:true
   if($("ntest"))$("ntest").addEventListener("click",function(){api("pushTeste",{endpoint:PUSH.sub.endpoint}).then(function(){toast("Teste enviado. Deve chegar em segundos.")}).catch(err)});
   if($("noff"))$("noff").addEventListener("click",function(){pushOff().then(function(){toast("Avisos desligados");closeSheet();render()})})}
 $("m-not").addEventListener("click",function(){$("menu").hidden=true;notifSheet()});
+/* teclado aberto no celular: esconde a barra de abas e o botão + para não subirem junto e cobrirem o que está sendo digitado */
+(function(){var base=window.innerHeight;function upd(){var vv=window.visualViewport,h=vv?vv.height:window.innerHeight,ae=document.activeElement,typing=ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)&&!/^(checkbox|radio|button|submit)$/.test(ae.type||"");
+  if(!typing&&h>base*0.9)base=Math.max(base,h);document.body.classList.toggle("kb",window.innerWidth<=860&&(typing||h<base*0.75))}
+  document.addEventListener("focusin",function(){setTimeout(upd,50)});document.addEventListener("focusout",function(){setTimeout(upd,120)});
+  if(window.visualViewport)visualViewport.addEventListener("resize",upd);window.addEventListener("resize",upd)})();
 /* instalar como app */
 var UA=navigator.userAgent||"",IS_SAM=/SamsungBrowser/.test(UA),IS_AND=/Android/i.test(UA),IS_IOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),INSTP=null;
 window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();if(IS_SAM)return;INSTP=e});

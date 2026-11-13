@@ -20,6 +20,7 @@
 <meta name="theme-color" content="#EEF1EC">
 <meta name="color-scheme" content="light only">
 <link rel="icon" type="image/png" href="/favicon-64.png">
+<link rel="preload" as="image" href="/logo-inga.png">
 <style>html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}.vid-alt{display:block;text-align:center;margin-top:12px;font-weight:700;font-size:14px;color:var(--ink-soft,#56665E);text-decoration:underline;text-underline-offset:3px}
 </style>
 <title>Pousada Ingá Cumuruxatiba</title>
@@ -509,6 +510,8 @@ footer .credit{border-top:1px solid rgba(255,255,255,.12)}
 .flower .lr{animation:leafUp 1.4s ease-in-out both}
 .flower .lg{animation:leafDown 1.4s ease-in-out both}
 .flower .tx{animation:fadeIn .6s .5s ease both}
+.flower .fim{transform-origin:100px 60px;transform-box:view-box;animation:fimIn 1.2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes fimIn{0%{opacity:0;transform:scale(.88)}60%{opacity:1;transform:scale(1.02)}100%{transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes leafUp{0%{transform:translateY(14px)}55%{transform:translateY(-5px)}100%{transform:none}}
 @keyframes leafDown{0%{transform:translateY(-14px)}55%{transform:translateY(5px)}100%{transform:none}}
@@ -1451,12 +1454,7 @@ footer .credit .wrap{grid-template-columns:1fr auto!important;gap:14px 20px!impo
 
 <div class="intro" aria-hidden="true">
   <div class="bloom">
-    <svg class="flower" viewBox="0 0 200 120">
-      <path class="lr" d="M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z" fill="#B06C80"/>
-      <path class="lg" d="M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z" fill="#4A7A27"/>
-      <path class="lm" d="M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z" fill="#2F3424"/>
-      <g class="tx" fill="#fff" font-family="Yanone Kaffeesatz, Arial Narrow, sans-serif" font-weight="300"><text x="74" y="50" font-size="17" letter-spacing=".5">pousada</text><text x="60" y="94" font-size="58">Ingá</text></g>
-    </svg>
+    <svg class="flower" viewBox="0 0 200 120"><image class="fim" href="/logo-inga.png" x="0" y="4.6" width="200" height="110.8" preserveAspectRatio="xMidYMid meet"/></svg>
   </div>
 </div>
 </div>

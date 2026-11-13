@@ -61,10 +61,19 @@ button,input,select{font-family:inherit}
 .top .logo{width:84px}
 .top small{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:var(--ink-soft)}
 .top .acts{display:flex;gap:8px}
-.appsw{display:flex;gap:4px;margin:0 auto 8px;padding:4px;background:var(--paper);border:1px solid var(--line);border-radius:999px;width:max-content;max-width:calc(100% - 24px)}
-.appsw a{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink-soft);font:700 13px/1 var(--body);padding:9px 16px;border-radius:999px;white-space:nowrap}
-.appsw a.on{background:var(--olive,#2B3122);color:#EEF1EC}
-.appsw a:not(.on):hover{background:var(--sand)}
+.appsw{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;margin:2px auto 10px;padding:4px;background:rgba(43,49,34,.07);border-radius:16px;width:min(520px,calc(100% - 24px))}
+.appsw[hidden]{display:none}
+.appsw::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);background:var(--paper,#FBFCFA);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.08),0 6px 14px -8px rgba(20,40,30,.35);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.appsw.s::before{transform:translateX(100%)}
+.appsw a{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 10px;text-decoration:none;color:var(--ink-soft,#5B6B62);font:700 13.5px/1.1 var(--body,inherit);border-radius:12px;text-align:center}
+.appsw a.on{color:var(--ink,#16261E)}
+.appsw a.on svg{stroke:var(--rose,#B06C80)}
+.appsw svg{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.appsw .bd{min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--rose,#B06C80);color:#fff;font:800 11px/20px var(--body,inherit);font-style:normal}
+.appsw .bd[hidden]{display:none}
+.appsw a:not(.on):active{transform:scale(.97)}
+@media (max-width:380px){.appsw a{font-size:12.5px;gap:6px}.appsw svg{width:17px;height:17px}}
+@media (min-width:861px){.appsw{width:420px;margin-bottom:12px}}
 
 .top .btn{padding:10px 16px;font-size:13px}
 .tabs{display:flex;gap:4px;background:var(--sand-2);border-radius:999px;padding:4px;width:max-content;max-width:100%}
@@ -233,7 +242,7 @@ main>*,.grid2>*,.grid3>*{min-width:0}
   <header class="top"><div class="wrap">
     <div class="lt"><svg class="logo" viewBox="0 0 200 120" aria-hidden="true"><use href="#logo"/></svg><small>Painel da pousada</small></div>
     <div class="acts"><button class="btn ghost" id="refresh" type="button">Atualizar</button><button class="btn" id="out" type="button">Sair</button></div>
-  </div><nav class="appsw" aria-label="Trocar de área"><a class="on" aria-current="page">📊 Site e pedidos</a><a href="/gestao">🛎️ Gestão de reservas</a></nav></header>
+  </div><nav class="appsw s" aria-label="Trocar de área"><a class="sw-g" href="/gestao"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8 14h3M8 17h6"/></svg><span>Gestão de reservas</span></a><a class="sw-s on" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Site e pedidos</span></a></nav></header>
   <main class="wrap">
     <div class="inst" id="inst" hidden>
       <i class="ic" aria-hidden="true"></i>

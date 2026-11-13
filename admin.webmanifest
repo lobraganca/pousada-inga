@@ -3,7 +3,7 @@
   "name": "Pousada Ingá · Gestão e Painel",
   "short_name": "Ingá",
   "description": "Reservas, ocupação, visitas do site e pedidos da Pousada Ingá.",
-  "start_url": "/admin",
+  "start_url": "/gestao",
   "scope": "/",
   "display": "standalone",
   "background_color": "#EEF1EC",

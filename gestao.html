@@ -405,6 +405,20 @@ main{padding-top:22px;padding-bottom:110px}
 @media (max-width:600px){.logbox summary small{display:none}}
 .nb.app{background:linear-gradient(120deg,#F6E3EA,#FBEFF3);border-color:#EBC9D5}
 .isteps{margin:0;padding-left:22px;display:grid;gap:10px;font-size:15px;line-height:1.4}
+.mtpl{border:1px solid var(--line);border-radius:16px;padding:0 14px;margin-bottom:8px;background:var(--paper)}
+.mtpl summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:14px 0;font-size:14.5px}
+.mtpl summary::-webkit-details-marker{display:none}
+.mtpl summary::after{content:"▾";margin-left:auto;color:var(--ink-soft)}
+.mtpl[open] summary::after{transform:rotate(180deg)}
+.mtpl .tag{font-size:11px;font-weight:800;background:#F6E3EA;color:var(--rose);border-radius:99px;padding:2px 8px}
+.mtpl textarea{width:100%;box-sizing:border-box;font:inherit;font-size:14px;line-height:1.45;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;resize:vertical;background:#fff}
+.mtpl textarea:focus{outline:none;border-color:var(--olive)}
+.mvars{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chipv{border:1px solid var(--line);background:var(--sand);border-radius:99px;padding:6px 10px;font:600 12px/1 var(--body);color:var(--ink);cursor:pointer;min-height:30px}
+.mprev{background:#E7F2DD;border-radius:12px;padding:10px 12px;margin:6px 0 10px}
+.mprev small{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--leaf);margin-bottom:4px}
+.mprev div{white-space:pre-wrap;font-size:13.5px;line-height:1.45}
+.mtpl .btn{margin-bottom:14px}
 /* fab + toast */
 .fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
 @media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;padding:0;border-radius:50%;font-size:0;gap:0;justify-content:center}.fab svg{width:26px;height:26px}}
@@ -479,7 +493,7 @@ main{padding-top:22px;padding-bottom:110px}
 "use strict";
 var $=function(id){return document.getElementById(id)};
 var TK=null;try{TK=localStorage.getItem("ingaG")}catch(e){}
-var ALMORE=false,S=null,VIEW="hoje",MAPSTART=null,MAPM=null,FILTER="proximas",QUERY="",FINM=null;
+var MSGEX={},ALMORE=false,S=null,VIEW="hoje",MAPSTART=null,MAPM=null,FILTER="proximas",QUERY="",FINM=null;
 var ST={pre:"Pré-reserva",confirmada:"Confirmada",hospedado:"Hospedado",saiu:"Saiu",cancelada:"Cancelada"};
 var OR={site:"Site",whatsapp:"WhatsApp",telefone:"Telefone",booking:"Booking",airbnb:"Airbnb",balcao:"Direto",outro:"Outro"};
 var WK=["dom","seg","ter","qua","qui","sex","sáb"],MO=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -575,7 +589,7 @@ function render(){if(!S)return;
   document.querySelectorAll(".tabs [data-v]").forEach(function(b){b.setAttribute("aria-selected",b.dataset.v===VIEW)});
   var f={hoje:vHoje,mapa:vMapa,reservas:vReservas,caixa:vCaixa,ajustes:vAjustes}[VIEW]||vHoje;
   if(VIEW==="ajustes"&&S.me.papel!=="admin"){VIEW="hoje";f=vHoje}
-  $("fab").hidden=VIEW==="caixa"||VIEW==="ajustes";$("main").innerHTML=f();bind()}
+  $("fab").hidden=VIEW==="caixa"||VIEW==="ajustes";$("main").innerHTML=f();bind();bindMsgs()}
 
 /* ---------- HOJE ---------- */
 function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
@@ -717,19 +731,37 @@ function vAjustes(){var h='<div class="sec"><div class="ph"><div><h1>Ajustes</h1
      S.equipe.map(function(u){return'<div class="mem"><span class="av" style="background:'+(u.ativo?"var(--sea)":"#A9B5AD")+'">'+esc((u.nome||u.login).charAt(0).toUpperCase())+'</span><div><b>'+esc(u.nome)+(u.ativo?"":' <span class="muted">(bloqueado)</span>')+'</b><span>login: '+esc(u.login)+' · '+(u.papel==="admin"?"Administradora":"Equipe")+'</span></div><button class="btn soft sm" data-mem="'+esc(u.login)+'">Editar</button></div>'}).join("")+
      '<div style="margin-top:14px"><button class="btn sm" data-mem="">+ Adicionar pessoa</button></div></div>';
   h+='<div class="card"><h3>Quartos</h3><p class="muted" style="font-size:13px;margin:-6px 0 12px">A diária base é usada para sugerir preços conforme a data e a ocupação.</p><div id="qedit">'+S.quartos.map(function(q,i){return'<div class="qrow" data-qid="'+esc(q.id)+'"><label class="fld"><span>'+"Nome"+'</span><input value="'+esc(q.nome)+'" data-qn></label><label class="fld"><span>'+"Pessoas"+'</span><input type="number" min="1" max="12" value="'+q.cap+'" data-qc inputmode="numeric"></label><label class="fld"><span>'+"Diária (R$)"+'</span><input value="'+(q.preco||"")+'" data-qp inputmode="decimal" placeholder="R$"></label><button class="btn danger sm" data-qdel title="Remover quarto">✕</button></div>'}).join("")+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn soft sm" id="qadd">+ Quarto</button><button class="btn sm" id="qsave">Salvar quartos</button></div></div></div>';
+  if(S.me.papel==="admin"){var ex={nome:"Mariana",quarto:"Duplo 1",entrada:"sex, 20/11",saida:"dom, 22/11",entrada_curta:"20/11",saida_curta:"22/11",pessoas:"2 adultos",valores:"💰 Total: R$ 900 · Pago: R$ 300 · Saldo: R$ 600",saldo:"R$ 600",saldo_aviso:"💰 Saldo a pagar na chegada: R$ 600",endereco:ADDR,rota:MAPS,link_avaliacao:TRIP};
+    h+='<div class="card msgcard" style="grid-column:1/-1"><h3>Mensagens do WhatsApp</h3><p class="muted" style="font-size:13px;margin:-6px 0 12px">Os textos prontos que aparecem na reserva. Toque numa mensagem para editar. As palavras entre chaves, como {nome}, são trocadas sozinhas pelos dados do hóspede. Use os botões abaixo do texto para inserir.</p>'+
+    MSGINFO.map(function(m){var cur=tplOf(m[0]),mod=!!(S.msgs&&S.msgs[m[0]]);return'<details class="mtpl" data-mk="'+m[0]+'"><summary><b>'+m[1]+'</b>'+(mod?'<span class="tag">editada</span>':'')+'</summary><textarea rows="8" data-mt="'+m[0]+'">'+esc(cur)+'</textarea><div class="mvars">'+MSGVARS.map(function(v){return'<button type="button" class="chipv" data-ins="'+v[0]+'" title="Insere '+v[0]+'">+ '+v[1]+'</button>'}).join("")+'</div><div class="mprev"><small>Prévia com dados de exemplo</small><div data-mp="'+m[0]+'">'+esc(fillMsg(cur,ex))+'</div></div><button type="button" class="btn ghost sm" data-mreset="'+m[0]+'">Voltar ao texto original</button></details>'}).join("")+
+    '<div style="margin-top:14px"><button class="btn" id="msave">Salvar mensagens</button></div></div>';
+    MSGEX=ex}
   h+='<details class="card logbox"><summary><span>Histórico de alterações</span><small>quem fez o quê, para consulta</small></summary>'+(S.log.length?'<div class="log">'+S.log.map(function(l){return'<div>'+esc(logTxt(l))+'<span>há '+ago(l.em)+'</span></div>'}).join("")+'</div>':'<p class="empty">Nada ainda.</p>')+'</details></div>';
   return h}
-function logTxt(l){var n=l.nome||"",p=l.por||"";switch(l.tipo){case"criou":return p+" criou a reserva de "+n+(l.entrada?" ("+br(l.entrada)+" a "+br(l.saida)+")":"");case"editou":return p+" editou a reserva de "+n;case"hospedado":return p+" fez o check-in de "+n;case"saiu":return p+" fez o check-out de "+n;case"cancelada":return p+" cancelou a reserva de "+n;case"confirmada":return p+" confirmou a reserva de "+n;case"pre":return p+" voltou "+n+" para pré-reserva";case"pagamento":return p+" registrou "+money(l.valor)+" de "+n;case"apagou":return p+" apagou a reserva de "+n;case"quartos":return p+" alterou os quartos";case"espera":return p+" colocou "+n+" na lista de espera";case"tarefa":return p+" concluiu: "+n;case"membro-novo":return p+" adicionou "+n+" à equipe";case"membro-editado":return p+" editou o acesso de "+n;case"membro-removido":return p+" removeu "+n+" da equipe";default:return p+" "+l.tipo}}
+function logTxt(l){var n=l.nome||"",p=l.por||"";switch(l.tipo){case"criou":return p+" criou a reserva de "+n+(l.entrada?" ("+br(l.entrada)+" a "+br(l.saida)+")":"");case"editou":return p+" editou a reserva de "+n;case"mensagens":return p+" alterou as mensagens do WhatsApp";case"hospedado":return p+" fez o check-in de "+n;case"saiu":return p+" fez o check-out de "+n;case"cancelada":return p+" cancelou a reserva de "+n;case"confirmada":return p+" confirmou a reserva de "+n;case"pre":return p+" voltou "+n+" para pré-reserva";case"pagamento":return p+" registrou "+money(l.valor)+" de "+n;case"apagou":return p+" apagou a reserva de "+n;case"quartos":return p+" alterou os quartos";case"espera":return p+" colocou "+n+" na lista de espera";case"tarefa":return p+" concluiu: "+n;case"membro-novo":return p+" adicionou "+n+" à equipe";case"membro-editado":return p+" editou o acesso de "+n;case"membro-removido":return p+" removeu "+n+" da equipe";default:return p+" "+l.tipo}}
 
 /* ---------- mensagens WhatsApp ---------- */
-function msg(k,r){var q=room(r.quarto).nome,n=first(r.nome),sd=saldo(r);
-  switch(k){
-  case"confirmacao":return"Olá, "+n+"! 🌿 Sua reserva na Pousada Ingá está confirmada.\n\n🛏️ "+q+"\n📅 Entrada: "+dlong(r.entrada)+" (check-in das 14h às 20h)\n📅 Saída: "+dlong(r.saida)+" (check-out até 12h)\n👥 "+people(r)+(r.valor?"\n💰 Total: "+money(r.valor)+(r.pago?" · Pago: "+money(r.pago):"")+(sd?" · Saldo: "+money(sd):""):"")+"\n\nQualquer dúvida é só chamar. Até breve!";
-  case"lembrete":return"Oi, "+n+"! 🌴 Falta pouco para sua chegada na Pousada Ingá ("+dlong(r.entrada)+").\n\n⏰ Check-in das 14h às 20h\n📍 "+ADDR+"\n🗺️ Rota: "+MAPS+(sd?"\n💰 Saldo a pagar na chegada: "+money(sd):"")+"\n\nSe precisar de algo antes, é só falar. Boa viagem!";
-  case"chegada":return"Seja bem-vindo(a), "+n+"! 🌿 Que bom ter você na Ingá.\n\nO café da manhã é servido pela manhã no restaurante. Qualquer coisa que precisar durante a estadia, fale com a gente por aqui.\n\nAproveite Cumuruxatiba! 🌊";
-  case"saldo":return"Olá, "+n+"! Tudo bem? Passando para lembrar do saldo da sua reserva na Pousada Ingá: "+money(sd)+". Pode ser pago por Pix ou na chegada. Obrigada! 🌿";
-  case"sinal":return"Olá, "+n+"! 🌿 Sua pré-reserva na Pousada Ingá está separada: "+q+", de "+br(r.entrada)+" a "+br(r.saida)+".\n\nPara confirmar, precisamos do sinal combinado. Posso te passar os dados do Pix?";
-  case"avaliacao":return"Oi, "+n+"! Foi um prazer receber você na Pousada Ingá 💚 Esperamos que tenha aproveitado.\n\nSe puder, deixe uma avaliação contando como foi, isso ajuda muito a gente:\n"+TRIP+"\n\nVolte sempre!";}}
+var MSGDEF={
+confirmacao:"Olá, {nome}! 🌿 Sua reserva na Pousada Ingá está confirmada.\n\n🛏️ {quarto}\n📅 Entrada: {entrada} (check-in das 14h às 20h)\n📅 Saída: {saida} (check-out até 12h)\n👥 {pessoas}\n{valores}\n\nQualquer dúvida é só chamar. Até breve!",
+sinal:"Olá, {nome}! 🌿 Sua pré-reserva na Pousada Ingá está separada: {quarto}, de {entrada_curta} a {saida_curta}.\n\nPara confirmar, precisamos do sinal combinado. Posso te passar os dados do Pix?",
+lembrete:"Oi, {nome}! 🌴 Falta pouco para sua chegada na Pousada Ingá ({entrada}).\n\n⏰ Check-in das 14h às 20h\n📍 {endereco}\n🗺️ Rota: {rota}\n{saldo_aviso}\n\nSe precisar de algo antes, é só falar. Boa viagem!",
+chegada:"Seja bem-vindo(a), {nome}! 🌿 Que bom ter você na Ingá.\n\nO café da manhã é servido das 8h às 10h, no restaurante. Qualquer coisa que precisar durante a estadia, fale com a gente por aqui.\n\nAproveite Cumuruxatiba! 🌊",
+saldo:"Olá, {nome}! Tudo bem? Passando para lembrar do saldo da sua reserva na Pousada Ingá: {saldo}. Pode ser pago por Pix ou na chegada. Obrigada! 🌿",
+avaliacao:"Oi, {nome}! Foi um prazer receber você na Pousada Ingá 💚 Esperamos que tenha aproveitado.\n\nSe puder, deixe uma avaliação contando como foi, isso ajuda muito a gente:\n{link_avaliacao}\n\nVolte sempre!",
+espera:"Olá, {nome}! 🌿 Aqui é da Pousada Ingá. Boa notícia: vagou um quarto ({quarto}) para {entrada_curta} a {saida_curta}, as datas que você queria. Quer que eu reserve para você?"};
+var MSGINFO=[["confirmacao","✅ Confirmação da reserva"],["sinal","💳 Pedir o sinal (pré-reserva)"],["lembrete","🧳 Lembrete antes da chegada"],["chegada","🌿 Boas-vindas na chegada"],["saldo","💰 Lembrar o saldo"],["avaliacao","⭐ Agradecer + avaliação"],["espera","🔔 Vagou quarto (lista de espera)"]];
+var MSGVARS=[["{nome}","primeiro nome"],["{quarto}","quarto"],["{entrada}","data de entrada"],["{saida}","data de saída"],["{entrada_curta}","entrada dd/mm"],["{saida_curta}","saída dd/mm"],["{pessoas}","quantas pessoas"],["{valores}","total, pago e saldo"],["{saldo}","saldo a pagar"],["{saldo_aviso}","aviso de saldo (só se tiver)"],["{endereco}","endereço"],["{rota}","link da rota"],["{link_avaliacao}","link para avaliar"]];
+function bindMsgs(){if(!$("msave"))return;
+  document.querySelectorAll("[data-mt]").forEach(function(t){t.addEventListener("input",function(){var p=document.querySelector('[data-mp="'+t.dataset.mt+'"]');if(p)p.textContent=fillMsg(t.value,MSGEX)})});
+  document.querySelectorAll("[data-ins]").forEach(function(b){b.addEventListener("mousedown",function(e){e.preventDefault()});b.addEventListener("click",function(){var t=b.closest("details").querySelector("textarea"),a=t.selectionStart!=null?t.selectionStart:t.value.length,z=t.selectionEnd!=null?t.selectionEnd:a;t.value=t.value.slice(0,a)+b.dataset.ins+t.value.slice(z);t.focus();t.selectionStart=t.selectionEnd=a+b.dataset.ins.length;t.dispatchEvent(new Event("input"))})});
+  document.querySelectorAll("[data-mreset]").forEach(function(b){b.addEventListener("click",function(){var t=b.closest("details").querySelector("textarea");t.value=MSGDEF[b.dataset.mreset];t.dispatchEvent(new Event("input"));toast("Texto original de volta. Toque em Salvar para manter.")})});
+  $("msave").addEventListener("click",function(){var o={};document.querySelectorAll("[data-mt]").forEach(function(t){var v=t.value.trim();if(v&&v!==MSGDEF[t.dataset.mt].trim())o[t.dataset.mt]=v});
+    $("msave").disabled=true;api("mensagens",{msgs:o}).then(function(j){S.msgs=j.msgs;toast("Mensagens salvas ✓");render()}).catch(function(e){$("msave").disabled=false;toast(e.message,true)})})}
+function tplOf(k){return(S&&S.msgs&&S.msgs[k])||MSGDEF[k]}
+function fillMsg(t,v){return t.split("\n").map(function(line){var had=/\{[a-z_]+\}/.test(line),out=line.replace(/\{([a-z_]+)\}/g,function(m,k){return v[k]!=null?v[k]:m});return had&&!out.trim()?null:out}).filter(function(x){return x!==null}).join("\n").replace(/\n{3,}/g,"\n\n").trim()}
+function msg(k,r){var sd=saldo(r);
+  return fillMsg(tplOf(k),{nome:first(r.nome),quarto:room(r.quarto).nome,entrada:dlong(r.entrada),saida:dlong(r.saida),entrada_curta:br(r.entrada),saida_curta:br(r.saida),pessoas:people(r),
+    valores:r.valor?"💰 Total: "+money(r.valor)+(r.pago?" · Pago: "+money(r.pago):"")+(sd?" · Saldo: "+money(sd):""):"",saldo:money(sd),saldo_aviso:sd?"💰 Saldo a pagar na chegada: "+money(sd):"",endereco:ADDR,rota:MAPS,link_avaliacao:TRIP})}
 
 /* ---------- folhas (sheets) ---------- */
 function openSheet(title,body,cls){$("ovl").innerHTML='<div class="ov" id="ov"><div class="sheet '+(cls||"")+'" role="dialog" aria-modal="true"><div class="grab"></div><div class="sh-h"><h2>'+title+'</h2><button class="x" type="button" data-close aria-label="Fechar">✕</button></div>'+body+'</div></div>';
@@ -802,7 +834,7 @@ function checkout(id){var r=S.reservas.find(function(x){return x.id===id}),sd=sa
   if(!sd){setStatus(id,"saiu").then(function(){closeSheet()});return}
   openSheet("Check-out de "+esc(first(r.nome)),'<div class="dv"><div class="money"><div class="l"><span>Falta receber</span><b style="color:var(--warn)">'+money(sd)+'</b></div></div><p style="margin:0">O hóspede pagou o saldo agora?</p><div class="acts-grid"><button class="btn" data-co="'+id+'" data-q="1">Sim, recebi '+money(sd)+'</button><button class="btn ghost" data-co="'+id+'" data-q="0">Ainda não, fica pendente</button></div></div>')}
 
-function msgEspera(e,q){return"Olá, "+first(e.nome)+"! 🌿 Aqui é da Pousada Ingá. Boa notícia: vagou um quarto ("+q.nome+") para "+br(e.entrada)+" a "+br(e.saida)+", as datas que você queria. Quer que eu reserve para você?"}
+function msgEspera(e,q){return fillMsg(tplOf("espera"),{nome:first(e.nome),quarto:q.nome,entrada:dlong(e.entrada),saida:dlong(e.saida),entrada_curta:br(e.entrada),saida_curta:br(e.saida),pessoas:"",valores:"",saldo:"",saldo_aviso:"",endereco:ADDR,rota:MAPS,link_avaliacao:TRIP})}
 function espSheet(x){x=x||{};var t=today();
   openSheet("Lista de espera",'<form class="form" id="ef"><label class="fld"><span>Nome</span><input name="nome" value="'+esc(x.nome||"")+'" required></label><label class="fld"><span>WhatsApp</span><input name="tel" value="'+esc(phoneFmt(x.tel||""))+'" inputmode="tel"></label><div class="grid2"><label class="fld"><span>Entrada</span><input type="date" name="entrada" value="'+(x.entrada||t)+'"></label><label class="fld"><span>Saída</span><input type="date" name="saida" value="'+(x.saida||add(t,2))+'"></label></div><div class="grid2"><label class="fld"><span>Pessoas</span><input type="number" name="pessoas" min="1" max="12" value="'+(x.pessoas||2)+'"></label><label class="chk" style="align-self:end"><input type="checkbox" name="flex"> Aceita outras datas</label></div><label class="fld"><span>Observação</span><input name="obs" value="'+esc(x.obs||"")+'"></label><p class="muted" style="font-size:13px;margin:0">Quando vagar um quarto nessas datas, o sistema avisa no celular e mostra em Hoje.</p><p class="err" id="eerr" style="text-align:left"></p><div class="sheet-foot"><button class="btn" type="submit">Colocar na lista</button></div></form>');
   $("ef").addEventListener("submit",function(e){e.preventDefault();var f=this,o={};["nome","tel","entrada","saida","pessoas","obs"].forEach(function(k){o[k]=f.elements[k].value});o.flex=f.elements.flex.checked;

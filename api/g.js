@@ -9,6 +9,7 @@ const K = {
   users: "inga:g:users",       // hash login -> JSON {nome, papel, salt, hash}
   sess: (t) => `inga:g:sess:${t}`,
   rooms: "inga:g:rooms",       // string JSON [{id,nome,cap}]
+  msgs: "inga:g:msgs",         // string JSON {chave: texto} — modelos de mensagem editados pela dona
   res: "inga:g:res",           // hash id -> JSON reserva
   log: "inga:g:log",           // lista de eventos
   espera: "inga:g:espera",     // hash id -> JSON lista de espera
@@ -88,7 +89,7 @@ async function quem(token) {
 }
 
 async function carregar() {
-  const [rooms, resv, leadIds, users, esp, tar] = await pipeline([["GET", K.rooms], ["HGETALL", K.res], ["ZREVRANGE", "inga:leads", 0, 99], ["HGETALL", K.users], ["HGETALL", K.espera], ["HGETALL", K.tarefas]]);
+  const [rooms, resv, leadIds, users, esp, tar, msgs] = await pipeline([["GET", K.rooms], ["HGETALL", K.res], ["ZREVRANGE", "inga:leads", 0, 99], ["HGETALL", K.users], ["HGETALL", K.espera], ["HGETALL", K.tarefas], ["GET", K.msgs]]);
   const vals = (h) => { const o = []; if (Array.isArray(h)) for (let i = 1; i < h.length; i += 2) { const x = J(h[i], null); if (x) o.push(x); } return o; };
   const espera = vals(esp).filter((e) => e.status !== "removido");
   const tarefas = vals(tar).filter((t) => !t.feito || Date.now() - (t.feitoEm || 0) < 3 * 864e5);
@@ -104,7 +105,7 @@ async function carregar() {
   }
   const equipe = [];
   if (Array.isArray(users)) for (let i = 0; i < users.length; i += 2) { const u = J(users[i + 1], {}); equipe.push({ login: users[i], nome: u.nome, papel: u.papel, ativo: u.ativo !== false }); }
-  return { quartos: R, reservas, pedidos, equipe, espera, tarefas };
+  return { quartos: R, reservas, pedidos, equipe, espera, tarefas, msgs: J(msgs, {}) || {} };
 }
 
 function validar(r, todas) {
@@ -254,6 +255,15 @@ async function acaoBase(me, b) {
       await pipeline([["SET", K.rooms, JSON.stringify(list)]]);
       await logar(me, { tipo: "quartos" });
       return { ok: true, quartos: list };
+    }
+    case "mensagens": {
+      if (!admin) throw new Err(403, "Só a administradora pode mudar as mensagens.");
+      const CH = ["confirmacao", "sinal", "lembrete", "chegada", "saldo", "avaliacao", "espera"];
+      const o = {};
+      for (const k of CH) { const v = String((b.msgs || {})[k] || "").replace(/\r/g, "").slice(0, 1500).trim(); if (v) o[k] = v; }
+      await pipeline([["SET", K.msgs, JSON.stringify(o)]]);
+      await logar(me, { tipo: "mensagens" });
+      return { ok: true, msgs: o };
     }
     case "membro": {
       if (!admin) throw new Err(403, "Só a administradora pode cadastrar a equipe.");

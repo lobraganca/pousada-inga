@@ -403,6 +403,8 @@ main{padding-top:22px;padding-bottom:110px}
 .logbox[open] summary::after{transform:rotate(180deg)}
 .logbox[open] summary{margin-bottom:12px}
 @media (max-width:600px){.logbox summary small{display:none}}
+.nb.app{background:linear-gradient(120deg,#F6E3EA,#FBEFF3);border-color:#EBC9D5}
+.isteps{margin:0;padding-left:22px;display:grid;gap:10px;font-size:15px;line-height:1.4}
 /* fab + toast */
 .fab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:32;box-shadow:0 14px 28px -12px rgba(43,49,34,.7);padding:15px 22px;font-size:15px}
 @media (max-width:860px){.fab{bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom,0px));width:58px;height:58px;padding:0;border-radius:50%;font-size:0;gap:0;justify-content:center}.fab svg{width:26px;height:26px}}
@@ -458,6 +460,7 @@ main{padding-top:22px;padding-bottom:110px}
         <div class="menu" id="menu" hidden>
           <div class="who"><b id="mewho"></b><span id="merole" class="muted"></span></div>
           <button type="button" id="m-ref">↻ Atualizar dados</button>
+          <button type="button" id="m-app">📲 Instalar como app</button>
           <button type="button" id="m-not">🔔 Notificações no celular</button>
           <button type="button" id="m-pw">🔑 Trocar minha senha</button>
           <button type="button" id="m-out">↩ Sair</button>
@@ -594,7 +597,9 @@ function vHoje(){var t=today(),tm=add(t,1),R=S.reservas.filter(act);
   if(S.reservas.length>=15)periods(t,75).filter(function(p){return p.pico&&p.a>t}).forEach(function(p){var tot=diff(p.a,p.b)*S.quartos.length,o=bookedNights(p.a,p.b)/tot,dd=diff(t,p.a);if(o<=.3&&dd<=45)al.push({c:"warn",i:"📉",t:p.nome+" com só "+Math.round(o*100)+"% ocupado",s:"Faltam "+dd+" dias. Bom momento para divulgar ou fazer uma oferta.",a:'<button class="btn soft sm" data-go="caixa">Ver previsão</button>'})});
   var nome=first(S.me.nome);
   var h='<div class="sec"><div class="ph"><div><h1>'+hello()+(nome?", "+esc(nome):"")+'.</h1><p>'+dlong(t).replace(/^./,function(c){return c.toUpperCase()})+' · '+plural(ocup,"quarto ocupado","quartos ocupados")+' de '+nq+'</p></div></div>';
-  if(PUSH.ok&&!PUSH.on&&!PUSH.x)h+='<div class="nb"><span class="bell">🔔</span><div class="tx"><b>Receba avisos neste celular</b><span>Pedido novo no site, reserva lançada por outra pessoa e o resumo do dia às 7h.</span></div><button class="btn rose sm" data-notif>Ativar avisos</button><button class="x" data-notifx aria-label="Fechar">×</button></div>';
+  var appX=false;try{appX=localStorage.getItem("ingaGApp")==="1"}catch(e){}
+  if(canInstall()&&!appX)h+='<div class="nb app"><span class="bell">📲</span><div class="tx"><b>Tenha a gestão como app</b><span>Um ícone na tela do celular, sem precisar procurar o link.</span></div><button class="btn sm" data-app>Instalar</button><button class="x" data-appx aria-label="Fechar">×</button></div>';
+  else if(PUSH.ok&&!PUSH.on&&!PUSH.x)h+='<div class="nb"><span class="bell">🔔</span><div class="tx"><b>Receba avisos neste celular</b><span>Pedido novo no site, reserva lançada por outra pessoa e o resumo do dia às 7h.</span></div><button class="btn rose sm" data-notif>Ativar avisos</button><button class="x" data-notifx aria-label="Fechar">×</button></div>';
   h+='<div class="kpis"><div class="kpi dark"><small>Ocupação hoje</small><b>'+ocup+'<span style="font-size:20px;color:rgba(238,241,236,.6)"> / '+nq+'</span></b><div class="occ"><i style="width:'+Math.round(ocup/nq*100)+'%"></i></div></div>'+
      '<div class="kpi"><small>Chegam hoje</small><b>'+chegam.length+'</b><span>'+(chegam.length?esc(chegam.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
      '<div class="kpi"><small>Saem hoje</small><b>'+saem.length+'</b><span>'+(saem.length?esc(saem.map(function(r){return first(r.nome)}).join(", ")):"ninguém")+'</span></div>'+
@@ -832,9 +837,11 @@ document.addEventListener("click",function(e){var x=e.target.closest("[data-tk],
   if(d0.esprv!==undefined){var er=(S.espera||[]).find(function(z){return z.id===d0.esprv});if(!er)return;var q=esperaMatch(er)||bestRoom(er.entrada,er.saida,1);formSheet(null,{nome:er.nome,tel:er.tel,entrada:er.entrada,saida:er.saida,adultos:er.pessoas,quarto:q?q.id:"",status:"confirmada",obs:er.obs||""});S.espera=S.espera.filter(function(z){return z.id!==er.id});api("esperaStatus",{id:er.id,status:"removido"});return}
   if(d0.fcall!==undefined){FCALL=!FCALL;render();return}
   if(d0.scroll!==undefined){setTimeout(function(){var el=$(d0.scroll);if(el)el.scrollIntoView({behavior:"smooth",block:"start"})},50);return}}});
-document.addEventListener("click",function(e){var el=e.target.closest("[data-open],[data-new],[data-st],[data-out],[data-co],[data-edit],[data-cancel],[data-del],[data-pay],[data-payall],[data-conv],[data-disc],[data-mv],[data-f],[data-fm],[data-mem],[data-qdel],[data-mm],[data-mj]");if(!el)return;var d=el.dataset;
+document.addEventListener("click",function(e){var el=e.target.closest("[data-open],[data-new],[data-st],[data-out],[data-co],[data-edit],[data-cancel],[data-del],[data-pay],[data-payall],[data-conv],[data-disc],[data-mv],[data-f],[data-fm],[data-mem],[data-qdel],[data-mm],[data-mj],[data-almore],[data-app],[data-appx]");if(!el)return;var d=el.dataset;
   if(d.open!==undefined){detail(d.open);return}
   if(d.almore!==undefined){ALMORE=!ALMORE;render();return}
+  if(d.app!==undefined){installApp();return}
+  if(d.appx!==undefined){try{localStorage.setItem("ingaGApp","1")}catch(e){}render();return}
   if(d.new!==undefined){formSheet(null,{quarto:d.new,entrada:d.d,saida:add(d.d,1)});return}
   if(d.st!==undefined){setStatus(d.id,d.st).then(function(r){if(r&&$("ov"))detail(r.id)});return}
   if(d.out!==undefined){checkout(d.out);return}
@@ -890,6 +897,21 @@ function notifSheet(){var P=PUSH.prefs||{pedidos:true,reservas:true,tarefas:true
   if($("ntest"))$("ntest").addEventListener("click",function(){api("pushTeste",{endpoint:PUSH.sub.endpoint}).then(function(){toast("Teste enviado. Deve chegar em segundos.")}).catch(err)});
   if($("noff"))$("noff").addEventListener("click",function(){pushOff().then(function(){toast("Avisos desligados");closeSheet();render()})})}
 $("m-not").addEventListener("click",function(){$("menu").hidden=true;notifSheet()});
+/* instalar como app */
+var UA=navigator.userAgent||"",IS_SAM=/SamsungBrowser/.test(UA),IS_AND=/Android/i.test(UA),IS_IOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),INSTP=null;
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();if(IS_SAM)return;INSTP=e});
+window.addEventListener("appinstalled",function(){INSTP=null;try{localStorage.setItem("ingaGApp","1")}catch(e){}if(VIEW==="hoje")render()});
+function canInstall(){return !STANDALONE}
+function installApp(){$("menu").hidden=true;
+  if(IS_SAM&&IS_AND){location.href="intent://www.pousadaingacumuru.com.br/gestao?instalar=1#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.android.chrome;end";return}
+  if(INSTP){INSTP.prompt();INSTP.userChoice.then(function(c){INSTP=null;if(c.outcome==="accepted")toast("App instalado!")});return}
+  var b=IS_IOS?'<ol class="isteps"><li>Abra esta página no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b> <span class="ico">⬆︎</span> na barra de baixo.</li><li>Escolha <b>Adicionar à Tela de Início</b> e toque em <b>Adicionar</b>.</li></ol>'
+   :IS_AND?'<ol class="isteps"><li>Abra esta página no <b>Chrome</b> (não use o navegador da Samsung).</li><li>Toque nos três pontinhos <b>⋮</b> no canto de cima.</li><li>Escolha <b>Instalar app</b> e confirme em <b>Instalar</b>.</li></ol>'
+   :'<ol class="isteps"><li>No Chrome ou Edge, clique no ícone de instalar <b>⊕</b> no fim da barra de endereço.</li><li>Confirme em <b>Instalar</b>.</li></ol>';
+  openSheet("Instalar como app",'<p style="margin:0 0 12px">O ícone <b>Gestão Ingá</b> fica na tela do celular, abre direto e você continua conectada.</p>'+b)}
+$("m-app").addEventListener("click",installApp);
+$("m-app").hidden=STANDALONE;
+if(/[?&]instalar=1/.test(location.search)){try{history.replaceState(null,"",location.pathname+location.hash)}catch(e){}setTimeout(function(){if(!STANDALONE&&S)installApp()},1500)}
 document.addEventListener("click",function(e){if(e.target.closest("[data-notif]"))notifSheet();if(e.target.closest("[data-notifx]")){PUSH.x=true;try{localStorage.setItem("ingaPushX","1")}catch(_){}render()}});
 /* atualiza sozinho quando volta para a aba (equipe trabalhando junto) */
 document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"&&S&&!$("ov"))load(true)});

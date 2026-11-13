@@ -7,6 +7,9 @@
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#2B3122">
 <link rel="manifest" href="/admin.webmanifest">
+<script>try{if(localStorage.getItem("ingaAdmTok")||localStorage.getItem("ingaG"))document.documentElement.className+=" boot"}catch(e){}</script>
+<style>html.boot #login{display:none!important}html.boot body::after{content:"";position:fixed;inset:0;z-index:99;background:#EEF1EC url("/admin-icon-192.png") center/96px no-repeat;animation:bootp 1.2s ease-in-out infinite alternate}@keyframes bootp{from{background-size:90px}to{background-size:104px}}</style>
+
 <link rel="apple-touch-icon" href="/admin-apple-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -367,12 +370,12 @@ function call(extra){var b=Object.assign({},CRED,extra||{});return fetch("/api/s
 function load(fromForm){
   if(!CRED)return;var go=$("go");go.disabled=true;go.textContent="Entrando…";$("err").hidden=true;
   var pr=period();
-  call(pr).then(function(x){go.disabled=false;go.textContent="Entrar";
-    if(!x.ok){var silent=CRED&&CRED.gtok;if(CRED&&CRED.tok){CRED=null;try{localStorage.removeItem("ingaAdmTok")}catch(e){}}if(silent)CRED=null;$("dash").hidden=true;$("login").hidden=false;$("err").textContent=silent?"":(x.j.erro||"Não foi possível entrar.");$("err").hidden=!!silent;return}
+  call(pr).then(function(x){document.documentElement.classList.remove("boot");go.disabled=false;go.textContent="Entrar";
+    if(!x.ok){var silent=CRED&&CRED.gtok;if(CRED&&CRED.tok){CRED=null;try{localStorage.removeItem("ingaAdmTok");var g2=localStorage.getItem("ingaG");if(g2){CRED={gtok:g2};load(false);return}}catch(e){}}if(silent)CRED=null;$("dash").hidden=true;$("login").hidden=false;$("err").textContent=silent?"":(x.j.erro||"Não foi possível entrar.");$("err").hidden=!!silent;return}
     if(x.j.tok){CRED={tok:x.j.tok};try{localStorage.setItem("ingaAdmTok",x.j.tok);sessionStorage.removeItem("ingaAdm")}catch(e){}}
     else if(!CRED.tok){var c2={user:CRED.user,pass:CRED.pass};CRED=c2;try{sessionStorage.setItem("ingaAdm",JSON.stringify(c2))}catch(e){}}
     DATA=x.j;$("login").hidden=true;$("dash").hidden=false;$("de").value=DATA.de;$("ate").value=DATA.ate;render();peds();
-  }).catch(function(){go.disabled=false;go.textContent="Entrar";$("err").textContent="Sem conexão com o servidor. Tente de novo.";$("err").hidden=false})}
+  }).catch(function(){document.documentElement.classList.remove("boot");go.disabled=false;go.textContent="Entrar";$("err").textContent="Sem conexão com o servidor. Tente de novo.";$("err").hidden=false})}
 
 function render(){
   var d=DATA,days=d.dias,n=days.length;
@@ -469,7 +472,7 @@ $("peds").addEventListener("click",function(e){var m=e.target.closest("[data-mar
     call({acao:"apagar",id:d.dataset.del}).then(function(x){
       if(!x||!x.ok){d.disabled=false;d.dataset.sure="";d.classList.remove("sure");d.textContent="Não apagou. Tentar de novo";return}
       DATA.pedidos=DATA.pedidos.filter(function(y){return y.id!==d.dataset.del});peds()}).catch(function(){d.disabled=false;d.dataset.sure="";d.classList.remove("sure");d.textContent="Sem internet. Tentar de novo"})}});
-if(CRED)load(false);
+if(CRED)load(false);else document.documentElement.classList.remove("boot");
 })();
 
 /* instalar como app */

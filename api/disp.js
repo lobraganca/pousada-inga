@@ -3,6 +3,7 @@ import { dbReady, pipeline } from "./_db.js";
 // Disponibilidade pública para o calendário do site: só datas, nenhum dado de hóspede.
 // "cheio": noites em que todos os quartos estão ocupados.
 // "tipos": noites em que não sobra nenhum quarto daquele tipo (Casa na Árvore, Duplo, Triplo, Quádruplo).
+// Triplo e Quádruplo contam pela capacidade cadastrada na gestão: um quarto com até 4 pessoas serve como triplo ou quádruplo.
 const norm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 const add = (d, n) => { const t = new Date(d + "T12:00:00Z"); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); };
 
@@ -14,7 +15,7 @@ export default async function handler(req, res) {
     const [rooms, resv] = await pipeline([["GET", "inga:g:rooms"], ["HGETALL", "inga:g:res"]]);
     let Q = null;
     try { Q = JSON.parse(rooms); } catch {}
-    if (!Array.isArray(Q) || !Q.length) Q = [{ id: "r1", nome: "Casa na Árvore" }, { id: "r2", nome: "Duplo 1" }, { id: "r3", nome: "Duplo 2" }, { id: "r4", nome: "Duplo 3" }, { id: "r5", nome: "Triplo 1" }, { id: "r6", nome: "Triplo 2" }, { id: "r7", nome: "Triplo 3" }];
+    if (!Array.isArray(Q) || !Q.length) Q = [{ id: "r1", nome: "Casa na Árvore", cap: 2 }, { id: "r2", nome: "Duplo 1", cap: 2 }, { id: "r3", nome: "Duplo 2", cap: 2 }, { id: "r4", nome: "Duplo 3", cap: 2 }, { id: "r5", nome: "Triplo 1", cap: 3 }, { id: "r6", nome: "Triplo 2", cap: 3 }, { id: "r7", nome: "Triplo 3", cap: 3 }];
     const tipo = (q) => (norm(q.nome).includes("arvore") ? "arvore" : norm(q.nome).includes("quadruplo") ? "quadruplo" : norm(q.nome).includes("triplo") ? "triplo" : norm(q.nome).includes("duplo") ? "duplo" : "outro");
     const hoje = new Date(Date.now() - 3 * 36e5).toISOString().slice(0, 10), fim = add(hoje, 420);
     const occ = new Map(); // data -> Set(quarto)
@@ -25,7 +26,14 @@ export default async function handler(req, res) {
     }
     const out = { cheio: [], tipos: { arvore: [], duplo: [], triplo: [], quadruplo: [] } };
     const porTipo = {};
-    Q.forEach((q) => { const t = tipo(q); (porTipo[t] = porTipo[t] || []).push(q.id); });
+    // Duplo: quartos de casal (pelo nome). Triplo/Quádruplo: qualquer quarto (menos a Casa na Árvore) que comporte 3 ou 4 pessoas.
+    const cap = (q) => +q.cap || (tipo(q) === "quadruplo" ? 4 : tipo(q) === "triplo" ? 3 : 2);
+    Q.forEach((q) => {
+      const t = tipo(q);
+      if (t === "arvore" || t === "duplo") (porTipo[t] = porTipo[t] || []).push(q.id);
+      if (t !== "arvore" && cap(q) >= 3) (porTipo.triplo = porTipo.triplo || []).push(q.id);
+      if (t !== "arvore" && cap(q) >= 4) (porTipo.quadruplo = porTipo.quadruplo || []).push(q.id);
+    });
     for (const [d, set] of [...occ.entries()].sort()) {
       if (Q.every((q) => set.has(q.id))) out.cheio.push(d);
       for (const t of ["arvore", "duplo", "triplo", "quadruplo"]) if (porTipo[t] && porTipo[t].every((id) => set.has(id))) out.tipos[t].push(d);

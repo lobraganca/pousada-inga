@@ -65,6 +65,13 @@ async function entrar(req, b) {
   const login = slug(b.login), pass = String(b.senha || "");
   let user = null;
   const U = process.env.ADMIN_USER, P = process.env.ADMIN_PASS;
+  // Vindo do Painel (/admin) já conectada: entra direto, sem pedir a senha de novo
+  const at = String(b.admTok || "").replace(/[^a-f0-9]/g, "");
+  if (at.length === 64) {
+    const [ok] = await pipeline([["GET", `inga:adm:sess:${at}`]]);
+    if (!ok) throw new Err(401, "Entre com login e senha.");
+    user = { login: "dona", nome: txt(process.env.ADMIN_NAME, 40) || "Dona", papel: "admin" };
+  }
   if (U && P && same(String(b.login || "").trim(), U) && same(pass, P)) user = { login: "dona", nome: txt(process.env.ADMIN_NAME, 40) || "Dona", papel: "admin" };
   if (!user && login) {
     const [raw] = await pipeline([["HGET", K.users, login]]);

@@ -36,11 +36,20 @@ async function main(req, res) {
     if (ok) { porTok = true; await pipeline([["EXPIRE", `inga:adm:sess:${tok}`, 60 * 60 * 24 * 90]]); }
     else return res.status(401).json({ erro: "Sua sessão expirou. Entre de novo.", sair: true });
   }
+  // Vindo da Gestão já conectada como administradora: entra direto, sem pedir a senha de novo
+  let porGestao = false;
+  const gt = String(body?.gtok || "").replace(/[^a-f0-9]/g, "").slice(0, 64);
+  if (!porTok && gt.length >= 32 && dbReady()) {
+    const [raw] = await pipeline([["GET", `inga:g:sess:${gt}`]]);
+    let u = null; try { u = JSON.parse(raw); } catch {}
+    if (u && u.papel === "admin" && u.login === "dona") porGestao = true;
+    else return res.status(401).json({ erro: "Entre com login e senha." });
+  }
   if (body.acao === "sair") {
     if (porTok) await pipeline([["DEL", `inga:adm:sess:${tok}`]]);
     return res.status(200).json({ ok: true });
   }
-  if (!porTok && (!same(body?.user || "", U) || !same(body?.pass || "", P))) {
+  if (!porTok && !porGestao && (!same(body?.user || "", U) || !same(body?.pass || "", P))) {
     tries.set(ip, { n: t.n + 1, at: Date.now() });
     await falhasLogin(ip, true);
     return res.status(401).json({ erro: "Login ou senha incorretos." });
@@ -90,6 +99,6 @@ async function main(req, res) {
   }
   out.pedidos = leads;
   out.agora = new Date().toISOString();
-  if (!porTok && body.lembrar) { out.tok = crypto.randomBytes(32).toString("hex"); await pipeline([["SET", `inga:adm:sess:${out.tok}`, "1", "EX", 60 * 60 * 24 * 90]]); }
+  if (!porTok && (body.lembrar || porGestao)) { out.tok = crypto.randomBytes(32).toString("hex"); await pipeline([["SET", `inga:adm:sess:${out.tok}`, "1", "EX", 60 * 60 * 24 * 90]]); }
   return res.status(200).json(out);
 }

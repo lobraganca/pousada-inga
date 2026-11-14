@@ -17,8 +17,15 @@ export default async function handler(req, res) {
     if (!id || (!name && !phone)) return res.status(204).end();
     const key = `inga:lead:${id}`;
     // pedido apagado no Adm não volta, mesmo que a pessoa continue mexendo no formulário
-    const [apagado] = await pipeline([["EXISTS", `inga:leadx:${id}`]]);
+    const [apagado, existe] = await pipeline([["EXISTS", `inga:leadx:${id}`], ["EXISTS", key]]);
     if (apagado) return res.status(204).end();
+    // proteção contra spam: no máximo 12 pedidos novos por hora vindos da mesma internet
+    if (!existe) {
+      const ip = String(req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "?").split(",")[0].trim().replace(/[^\w.:-]/g, "").slice(0, 60);
+      const rk = `inga:leadrl:${ip}`;
+      const [n] = await pipeline([["INCR", rk], ["EXPIRE", rk, 3600]]);
+      if (+n > 12) return res.status(204).end();
+    }
     const now = Date.now();
     const city = (() => { try { return decodeURIComponent(String(req.headers["x-vercel-ip-city"] || "")); } catch { return ""; } })();
     const fields = {

@@ -364,7 +364,7 @@ var MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"
 var PAISES={BR:"Brasil",AR:"Argentina",US:"Estados Unidos",PT:"Portugal",UY:"Uruguai",CL:"Chile",PY:"Paraguai",DE:"Alemanha",FR:"França",IT:"Itália",ES:"Espanha",GB:"Reino Unido",CH:"Suíça",CA:"Canadá",NL:"Holanda",IE:"Irlanda"};
 function fmt(n){return (n||0).toLocaleString("pt-BR")}
 function sum(a,k){return a.reduce(function(s,d){return s+(+d[k]||0)},0)}
-function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function day(d){var z=new Date(d.getTime()-3*3600e3);return z.toISOString().slice(0,10)}
 function br(s){return s?s.slice(8,10)+"/"+s.slice(5,7)+"/"+s.slice(0,4):""}
 try{var tk=localStorage.getItem("ingaAdmTok");if(tk)CRED={tok:tk};else{var c=sessionStorage.getItem("ingaAdm");if(c)CRED=JSON.parse(c);else{var gt=localStorage.getItem("ingaG");if(gt)CRED={gtok:gt}}}}catch(e){}

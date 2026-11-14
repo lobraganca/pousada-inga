@@ -703,7 +703,7 @@ function drawBars(){var m=$("map");if(!m)return;clashes();var g=m.querySelector(
     var el=document.createElement("button");el.className="bar "+r.status+(cl?" cl":"")+(cr?" cr":"")+(CLASH[r.id]?" clash":"");el.dataset.open=r.id;
     el.style.left=(RW+a*DW+2)+"px";el.style.width=Math.max(18,(b-a)*DW-4)+"px";el.style.top=(56+qi*RH+8)+"px";
     if(CLASH[r.id]){var sib=S.reservas.filter(function(x){return CLASH[x.id]&&x.quarto===r.quarto&&x.entrada<r.saida&&r.entrada<x.saida}).sort(function(x,y){return x.entrada<y.entrada?-1:x.entrada>y.entrada?1:(x.id<y.id?-1:1)}),rk=Math.min(1,sib.indexOf(r)),hh=(RH-16)/2-1;el.style.height=hh+"px";el.style.top=(56+qi*RH+8+rk*(hh+2))+"px";el.style.fontSize="11px"}
-    el.innerHTML=(saldo(r)>0&&r.status!=="saiu"?'<i class="due"></i>':"")+'<span>'+esc(first(r.nome))+'</span>'+((b-a)*DW>90?'<small>'+nights(r)+'n</small>':"");
+    el.innerHTML=(saldo(r)>0&&r.status!=="saiu"?'<i class="due"></i>':"")+'<span>'+esc(first(r.nome))+'</span>'+((b-a)*DW>70?'<small title="'+people(r)+'"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="vertical-align:-1px;margin-right:3px"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'+((+r.adultos||1)+(+r.criancas||0))+(r.pet?' 🐾':'')+'</small>':"");
     el.title=r.nome+" · "+br(r.entrada)+" a "+br(r.saida)+" · "+ST[r.status];el.dataset.l=RW+a*DW+2;g.appendChild(el)});
   // nome sempre visível: quando a barra passa por baixo da coluna dos quartos, o texto acompanha
   function fit(){var sl=m.scrollLeft;m.querySelectorAll(".bar").forEach(function(b){var hid=Math.max(0,sl+RW-(+b.dataset.l));b.style.paddingLeft=hid?Math.min(hid+8,parseFloat(b.style.width)-30)+"px":""})}

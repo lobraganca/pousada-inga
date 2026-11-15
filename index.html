@@ -9,13 +9,13 @@
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://www.pousadaingacumuru.com.br/">
 <meta property="og:url" content="https://www.pousadaingacumuru.com.br/">
-<meta property="og:image" content="https://www.pousadaingacumuru.com.br/og.png">
+<meta property="og:image" content="https://www.pousadaingacumuru.com.br/og.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"LodgingBusiness","name":"Pousada Ingá","description":"Pousada pé na areia em Cumuruxatiba, Bahia, com piscina, jardim, restaurante, bar e café da manhã.","url":"https://www.pousadaingacumuru.com.br/","image":"https://www.pousadaingacumuru.com.br/og.png","telephone":"+55 73 3573-1214","email":"reserva@pousadaingacumuru.com.br","address":{"@type":"PostalAddress","streetAddress":"Alameda Roberto Pompeu, Lote 17, Rio do Peixe Grande","addressLocality":"Cumuruxatiba, Prado","addressRegion":"BA","postalCode":"45983-000","addressCountry":"BR"},"checkinTime":"14:00","checkoutTime":"12:00","petsAllowed":true,"sameAs":["https://www.instagram.com/pousada_inga_cumuruxatiba","https://www.tripadvisor.com.br/Hotel_Review-g1587885-d3452967-Reviews-Pousada_Inga-Cumuruxatiba_Prado_State_of_Bahia.html"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LodgingBusiness","name":"Pousada Ingá","description":"Pousada pé na areia em Cumuruxatiba, Bahia, com piscina, jardim, restaurante, bar e café da manhã.","url":"https://www.pousadaingacumuru.com.br/","image":"https://www.pousadaingacumuru.com.br/og.png?v=2","telephone":"+55 73 3573-1214","email":"reserva@pousadaingacumuru.com.br","address":{"@type":"PostalAddress","streetAddress":"Alameda Roberto Pompeu, Lote 17, Rio do Peixe Grande","addressLocality":"Cumuruxatiba, Prado","addressRegion":"BA","postalCode":"45983-000","addressCountry":"BR"},"checkinTime":"14:00","checkoutTime":"12:00","petsAllowed":true,"sameAs":["https://www.instagram.com/pousada_inga_cumuruxatiba","https://www.tripadvisor.com.br/Hotel_Review-g1587885-d3452967-Reviews-Pousada_Inga-Cumuruxatiba_Prado_State_of_Bahia.html"]}</script>
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#EEF1EC">
 <meta name="color-scheme" content="light only">
@@ -610,7 +610,7 @@ footer a{display:inline-block;padding-block:6px}
 .pin .nm{font-size:12px;font-weight:700;color:var(--ink-soft);white-space:nowrap;position:absolute;top:84px}
 .pin[aria-selected="true"] .km{color:var(--rose);transform:scale(1.15)}
 .pin[aria-selected="true"] .dot{border-color:var(--logo-rose);background:var(--logo-rose);box-shadow:0 0 0 6px var(--rose-soft)}
-.pin.home .dot{width:30px;height:20px;border:0;border-radius:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cpath d='M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z' fill='%23B06C80'/%3E%3Cpath d='M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z' fill='%234A7A27'/%3E%3Cpath d='M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z' fill='%232F3424'/%3E%3C/svg%3E") center/contain no-repeat;box-shadow:none!important}
+.pin.home .dot{width:44px;height:26px;border:0;border-radius:0;background:url("/logo-inga-400.png") center/contain no-repeat;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35));box-shadow:none!important}
 .walker{position:absolute;top:22px;left:0;width:26px;height:26px;margin-left:-13px;color:var(--olive);transition:left .9s cubic-bezier(.2,.8,.2,1)}
 .walker svg{width:100%;height:100%;animation:step .45s ease-in-out infinite alternate}
 .walker.idle svg{animation:none}
@@ -1177,9 +1177,7 @@ footer .fwrap{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:36px 40px;p
 
 /* logo do rodapé: folhas se mexendo como na abertura */
 .flogo{overflow:visible}
-.flogo.go .lr{animation:leafUp 1.4s ease-in-out both,breathUp 5s 1.4s ease-in-out infinite}
-.flogo.go .lg{animation:leafDown 1.4s ease-in-out both,breathDown 5s 1.4s ease-in-out infinite}
-.flogo.go .tx{animation:fadeIn .6s .5s ease both}
+.flogo.go .fim{animation:fadeIn .9s ease both}
 @keyframes breathUp{0%,100%{transform:none}50%{transform:translateY(-3px)}}
 @keyframes breathDown{0%,100%{transform:none}50%{transform:translateY(3px)}}
 
@@ -1960,12 +1958,7 @@ footer .credit .wrap{grid-template-columns:1fr auto!important;gap:14px 20px!impo
 <footer>
   <div class="wrap fwrap">
     <div class="f-brand">
-      <svg class="logo flogo" id="flogo" viewBox="0 0 200 120" aria-label="Pousada Ingá" role="img">
-        <path class="lr" d="M4 64C50 18 132 2 197 56 140 66 70 58 4 64Z" fill="#B06C80"/>
-        <path class="lg" d="M4 64C60 66 140 66 182 88 120 128 40 106 4 64Z" fill="#4A7A27"/>
-        <path d="M4 64C52 36 122 28 180 68 136 94 58 98 4 64Z" fill="#2F3424"/>
-        <g class="tx" fill="#fff" font-family="Yanone Kaffeesatz, Arial Narrow, sans-serif" font-weight="300"><text x="74" y="50" font-size="17" letter-spacing=".5">pousada</text><text x="60" y="94" font-size="58">Ingá</text></g>
-      </svg>
+      <svg class="logo flogo" id="flogo" viewBox="0 0 200 120" aria-label="Pousada Ingá" role="img"><image class="fim" href="/logo-inga-400.png" x="0" y="4.6" width="200" height="110.8"/></svg>
       <p class="f-tag">Hospitalidade, conforto e tranquilidade, pé na areia.</p>
       <p class="f-addr"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Alameda Roberto Pompeu, Lote 17 · Rio do Peixe Grande, Cumuruxatiba, Prado – BA</p>
     </div>

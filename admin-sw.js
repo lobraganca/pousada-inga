@@ -1,6 +1,6 @@
 // App do painel e da gestão: instalar, avisos (notificações) e funcionar sem internet.
 // Sem internet: as telas abrem a partir da cópia guardada; os dados da gestão ficam salvos no próprio aparelho.
-const CACHE = "inga-app-v1";
+const CACHE = "inga-app-v2";
 const SHELL = ["/gestao", "/admin", "/logo-inga-400.png", "/admin-icon-192.png", "/favicon-64.png", "/admin.webmanifest"];
 
 self.addEventListener("install", (e) => {
@@ -25,8 +25,11 @@ self.addEventListener("fetch", (e) => {
     }).catch(() => caches.match(url.pathname.startsWith("/admin") ? "/admin" : "/gestao")));
     return;
   }
-  // imagens e ícones do app: cópia guardada primeiro
-  if (SHELL.includes(url.pathname)) e.respondWith(caches.match(url.pathname).then((m) => m || fetch(req)));
+  // imagens e ícones do app: tenta a internet (sempre a versão atual); sem conexão, usa a cópia guardada
+  if (SHELL.includes(url.pathname)) e.respondWith(fetch(req).then((r) => {
+    if (r.ok) { const cp = r.clone(); caches.open(CACHE).then((c) => c.put(url.pathname, cp)); }
+    return r;
+  }).catch(() => caches.match(url.pathname)));
 });
 
 self.addEventListener("push", (e) => {

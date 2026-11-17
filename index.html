@@ -706,7 +706,8 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 .room-view .ill.photo{position:relative;background:#3B2A1E}
 .room-view .ill.photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
 .room-view:hover .ill.photo img{transform:scale(1.04)}
-.room-view .ill.photo{aspect-ratio:4/5;max-height:640px;justify-self:center;width:100%}
+.room-view .ill.photo{aspect-ratio:1/1;max-height:520px;justify-self:center;width:100%}
+@media (max-width:760px){.room-view .ill.photo{aspect-ratio:4/3}}
 .tsl{width:100%;height:100%;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .tsl-t{display:flex;width:100%;height:100%;transition:transform .38s cubic-bezier(.2,.8,.2,1);will-change:transform}
 .tsl.drag .tsl-t{transition:none}

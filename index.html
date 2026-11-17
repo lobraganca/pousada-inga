@@ -707,9 +707,10 @@ footer a.flk img{width:20px;height:20px;border-radius:5px;display:block}
 .room-view .ill.photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
 .room-view:hover .ill.photo img{transform:scale(1.04)}
 .room-view .ill.photo{aspect-ratio:4/5;max-height:640px;justify-self:center;width:100%}
-.tsl{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
-.tsl::-webkit-scrollbar{display:none}
-.room-view .ill.photo .tsl img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start;transform:none!important}
+.tsl{width:100%;height:100%;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.tsl-t{display:flex;width:100%;height:100%;transition:transform .38s cubic-bezier(.2,.8,.2,1);will-change:transform}
+.tsl.drag .tsl-t{transition:none}
+.room-view .ill.photo .tsl img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;transform:none!important;-webkit-user-drag:none;pointer-events:none}
 .tsl-b{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.88);color:#2F3424;display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:background .2s}
 .tsl-b:hover{background:#fff}.tsl-p{left:12px}.tsl-n{right:12px}
 .tsl-d{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:7px;pointer-events:none}
@@ -2355,19 +2356,25 @@ function showRoom(k){
   var r=ROOMS[k];
   document.querySelectorAll(".room-tabs button").forEach(function(b){b.setAttribute("aria-selected",b.dataset.room===k)});
   $("room-view").setAttribute("aria-labelledby","tab-"+k);
-  $("room-view").innerHTML='<div class="ill room-anim'+(r.img?' photo':'')+'">'+(r.img?treeSlides():roomIll(k))+'</div><div class="room-info room-anim"><span class="cap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/></svg>'+r.cap+'</span><h3>'+r.n+'</h3>'+(r.d?'<p class="room-desc">'+r.d+'</p>':'')+'<ul>'+r.f.map(function(x){return '<li><svg aria-hidden="true"><use href="#ck"/></svg>'+x+'</li>'}).join("")+'</ul><button type="button" class="btn btn-dark" data-pick="'+r.n+'" style="justify-self:start">Reservar este quarto</button></div>';
+  $("room-view").innerHTML='<div class="ill room-anim'+(r.img?' photo':'')+'">'+(r.img?(TI=0,treeSlides()):roomIll(k))+'</div><div class="room-info room-anim"><span class="cap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/></svg>'+r.cap+'</span><h3>'+r.n+'</h3>'+(r.d?'<p class="room-desc">'+r.d+'</p>':'')+'<ul>'+r.f.map(function(x){return '<li><svg aria-hidden="true"><use href="#ck"/></svg>'+x+'</li>'}).join("")+'</ul><button type="button" class="btn btn-dark" data-pick="'+r.n+'" style="justify-self:start">Reservar este quarto</button></div>';
 }
 function treeSlides(){
-  return '<div class="tsl" id="tsl" aria-roledescription="carrossel" aria-label="Fotos da Casa na Árvore">'+TREE_PICS.map(function(p,i){return '<img src="'+p[0]+'" alt="'+p[1].replace(/"/g,"&quot;")+'"'+(i?' loading="lazy"':'')+' decoding="async">'}).join("")+'</div>'+
+  return '<div class="tsl" id="tsl" aria-roledescription="carrossel" aria-label="Fotos da Casa na Árvore"><div class="tsl-t">'+TREE_PICS.map(function(p,i){return '<img src="'+p[0]+'" alt="'+p[1].replace(/"/g,"&quot;")+'" draggable="false" decoding="async">'}).join("")+'</div></div>'+
     '<span class="ribbon">Exclusiva</span>'+
     '<button type="button" class="tsl-b tsl-p" aria-label="Foto anterior"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>'+
     '<button type="button" class="tsl-b tsl-n" aria-label="Próxima foto"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>'+
     '<div class="tsl-d" aria-hidden="true">'+TREE_PICS.map(function(p,i){return '<i'+(i?'':' class="on"')+'></i>'}).join("")+'</div>';
 }
-function treeIdx(t){return Math.round(t.scrollLeft/(t.clientWidth||1))}
-function treeGo(d){var t=$("tsl");if(!t)return;var n=TREE_PICS.length,i=(treeIdx(t)+d+n)%n;t.scrollTo({left:i*t.clientWidth,behavior:reduce?"auto":"smooth"})}
-$("room-view").addEventListener("click",function(e){if(e.target.closest(".tsl-p"))treeGo(-1);else if(e.target.closest(".tsl-n"))treeGo(1)});
-$("room-view").addEventListener("scroll",function(e){var t=e.target;if(!t.classList||!t.classList.contains("tsl"))return;var i=treeIdx(t);t.parentNode.querySelectorAll(".tsl-d i").forEach(function(d,k){d.classList.toggle("on",k===i)})},true);
+var TI=0,SW=0;
+function treeSet(i,dx){var t=$("tsl");if(!t)return;var n=TREE_PICS.length;TI=(i+n)%n;t.firstChild.style.transform="translateX(calc("+(-TI*100)+"% + "+(dx||0)+"px))";t.parentNode.querySelectorAll(".tsl-d i").forEach(function(d,k){d.classList.toggle("on",k===TI)})}
+function treeGo(d){treeSet(TI+d)}
+(function(){var x0=null,y0=0,dx=0,dir=0,w=1;var rv=$("room-view");
+  rv.addEventListener("touchstart",function(e){if(!e.target.closest(".ill.photo")||e.touches.length>1)return;var t=$("tsl");if(!t)return;x0=e.touches[0].clientX;y0=e.touches[0].clientY;dx=0;dir=0;w=t.clientWidth||1},{passive:true});
+  rv.addEventListener("touchmove",function(e){if(x0===null)return;var mx=e.touches[0].clientX-x0,my=e.touches[0].clientY-y0;if(!dir){if(Math.abs(mx)<6&&Math.abs(my)<6)return;dir=Math.abs(mx)>Math.abs(my)?1:2;if(dir===1)$("tsl").classList.add("drag")}if(dir!==1)return;e.preventDefault();dx=mx;treeSet(TI,dx)},{passive:false});
+  rv.addEventListener("touchend",function(){if(x0===null)return;var t=$("tsl");x0=null;if(t)t.classList.remove("drag");if(dir===1){SW=Date.now();var m=Math.min(60,w*.18);treeSet(dx<-m?TI+1:dx>m?TI-1:TI)}dir=0;dx=0});
+  rv.addEventListener("touchcancel",function(){x0=null;var t=$("tsl");if(t)t.classList.remove("drag");treeSet(TI)});
+})();
+$("room-view").addEventListener("click",function(e){if(Date.now()-SW<400)return;if(e.target.closest(".tsl-p"))treeGo(-1);else if(e.target.closest(".tsl-n"))treeGo(1)});
 document.querySelector(".room-tabs").addEventListener("click",function(e){var b=e.target.closest("button");if(b)showRoom(b.dataset.room)});
 document.querySelector(".room-tabs").addEventListener("keydown",function(e){if(e.key==="ArrowRight"||e.key==="ArrowLeft"){var ks=["a","d","t","q"],c=ks.indexOf(document.querySelector('.room-tabs [aria-selected="true"]').dataset.room),k=ks[(c+(e.key==="ArrowRight"?1:3))%4];showRoom(k);$("tab-"+k).focus();}});
 $("room-view").addEventListener("click",function(e){var b=e.target.closest("[data-pick]");if(!b)return;state.room=b.dataset.pick;if(b.dataset.pick==="Quarto Triplo"&&people()<3){}

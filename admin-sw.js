@@ -1,7 +1,7 @@
 // App do painel e da gestão: instalar, avisos (notificações) e funcionar sem internet.
 // Sem internet: as telas abrem a partir da cópia guardada; os dados da gestão ficam salvos no próprio aparelho.
-const CACHE = "inga-app-v2";
-const SHELL = ["/gestao", "/admin", "/logo-inga-400.png", "/admin-icon-192.png", "/favicon-64.png", "/admin.webmanifest"];
+const CACHE = "inga-app-v3";
+const SHELL = ["/gestao", "/admin", "/logo-inga-app.png", "/admin-icon-192.png", "/favicon-64.png", "/admin.webmanifest"];
 
 self.addEventListener("install", (e) => {
   self.skipWaiting();
@@ -19,14 +19,14 @@ self.addEventListener("fetch", (e) => {
   if (url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
   // páginas do app: tenta a internet; sem conexão, usa a última cópia
   if (req.mode === "navigate" && /^\/(gestao|admin)/.test(url.pathname)) {
-    e.respondWith(fetch(req).then((r) => {
+    e.respondWith(fetch(req, { cache: "reload" }).then((r) => {
       if (r.ok) { const cp = r.clone(); caches.open(CACHE).then((c) => c.put(url.pathname.startsWith("/admin") ? "/admin" : "/gestao", cp)); }
       return r;
     }).catch(() => caches.match(url.pathname.startsWith("/admin") ? "/admin" : "/gestao")));
     return;
   }
   // imagens e ícones do app: tenta a internet (sempre a versão atual); sem conexão, usa a cópia guardada
-  if (SHELL.includes(url.pathname)) e.respondWith(fetch(req).then((r) => {
+  if (SHELL.includes(url.pathname)) e.respondWith(fetch(req, { cache: "reload" }).then((r) => {
     if (r.ok) { const cp = r.clone(); caches.open(CACHE).then((c) => c.put(url.pathname, cp)); }
     return r;
   }).catch(() => caches.match(url.pathname)));

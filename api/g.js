@@ -151,6 +151,7 @@ function validar(r, todas) {
 const br = (d) => String(d).slice(8, 10) + "/" + String(d).slice(5, 7);
 
 async function logar(me, o) {
+  if (me.login === "suporte") return; // o acesso de suporte não deixa registro
   await pipeline([["LPUSH", K.log, JSON.stringify({ em: Date.now(), por: me.nome, ...o })], ["LTRIM", K.log, 0, 299]]);
 }
 
@@ -222,8 +223,9 @@ async function acaoBase(me, b) {
         origem: ORIGENS.includes(x.origem) ? x.origem : "whatsapp",
         status: STATUS.includes(x.status) ? x.status : "confirmada",
         valor: num(x.valor), pago: num(x.pago), obs: txt(x.obs, 600), lead: txt(x.lead, 40).replace(/[^\w-]/g, ""),
-        criadoPor: old ? old.criadoPor : me.nome, criadoEm: old ? old.criadoEm : Date.now(),
-        alteradoPor: me.nome, alteradoEm: Date.now(),
+        criadoPor: old ? old.criadoPor : (me.login === "suporte" ? "" : me.nome), criadoEm: old ? old.criadoEm : Date.now(),
+        alteradoPor: me.login === "suporte" ? (old ? old.alteradoPor : "") : me.nome,
+        alteradoEm: me.login === "suporte" ? (old ? old.alteradoEm : Date.now()) : Date.now(),
       };
       validar(r, reservas);
       const cmds = [["HSET", K.res, r.id, JSON.stringify(r)]];
@@ -233,7 +235,7 @@ async function acaoBase(me, b) {
       if (!old) {
         const qn = (quartos.find((q) => q.id === r.quarto) || {}).nome || "";
         const volta = r.tel && reservas.some((x) => x.tel === r.tel && x.status !== "cancelada") ? " · ↺ hóspede voltando" : "";
-        await avisar("reservas", { title: `Nova reserva: ${r.nome}`, body: `${qn} · ${br(r.entrada)} a ${br(r.saida)} · lançada por ${me.nome}${volta}`, url: "/gestao#reservas", tag: "res-" + r.id }, { exceto: me.login });
+        await avisar("reservas", { title: `Nova reserva: ${r.nome}`, body: `${qn} · ${br(r.entrada)} a ${br(r.saida)}${me.login === "suporte" ? "" : " · lançada por " + me.nome}${volta}`, url: "/gestao#reservas", tag: "res-" + r.id }, { exceto: me.login });
       }
       return { ok: true, reserva: r };
     }
@@ -242,13 +244,13 @@ async function acaoBase(me, b) {
       const r = reservas.find((x) => x.id === b.id);
       if (!r) throw new Err(404, "Reserva não encontrada.");
       if (!STATUS.includes(b.status)) throw new Err(400, "Situação inválida.");
-      const n = { ...r, status: b.status, alteradoPor: me.nome, alteradoEm: Date.now() };
+      const n = { ...r, status: b.status, alteradoPor: me.login === "suporte" ? r.alteradoPor : me.nome, alteradoEm: me.login === "suporte" ? r.alteradoEm : Date.now() };
       if (b.status === "saiu" && b.quitar) n.pago = n.valor;
       validar(n, reservas);
       await pipeline([["HSET", K.res, r.id, JSON.stringify(n)]]);
       await logar(me, { tipo: b.status, res: r.id, nome: r.nome, quarto: r.quarto });
       if (b.status === "cancelada") {
-        await avisar("reservas", { title: `Reserva cancelada: ${r.nome}`, body: `${br(r.entrada)} a ${br(r.saida)} · o quarto ficou livre · por ${me.nome}`, url: "/gestao#mapa", tag: "res-" + r.id }, { exceto: me.login });
+        await avisar("reservas", { title: `Reserva cancelada: ${r.nome}`, body: `${br(r.entrada)} a ${br(r.saida)} · o quarto ficou livre${me.login === "suporte" ? "" : " · por " + me.nome}`, url: "/gestao#mapa", tag: "res-" + r.id }, { exceto: me.login });
         await vagou(r, reservas.map((x) => (x.id === n.id ? n : x)));
       }
       let tarefa = null;
@@ -371,7 +373,7 @@ async function acaoBase(me, b) {
       const t = { id: "T" + Date.now().toString(36) + crypto.randomBytes(2).toString("hex"), titulo: txt(x.titulo, 120), quarto: quartos.some((q) => q.id === x.quarto) ? x.quarto : "", para: txt(x.para, 40), prazo: isDay(x.prazo) ? x.prazo : "", tipo: "manual", feito: false, criadoPor: me.nome, criadoEm: Date.now() };
       if (!t.titulo) throw new Err(400, "Escreva a tarefa.");
       await pipeline([["HSET", K.tarefas, t.id, JSON.stringify(t)]]);
-      await avisar("tarefas", { title: `📋 Nova tarefa${t.para ? " para " + t.para : ""}`, body: t.titulo + (t.prazo ? ` · até ${br(t.prazo)}` : "") + ` · por ${me.nome}`, url: "/gestao#hoje", tag: "t-" + t.id }, { exceto: me.login });
+      await avisar("tarefas", { title: `📋 Nova tarefa${t.para ? " para " + t.para : ""}`, body: t.titulo + (t.prazo ? ` · até ${br(t.prazo)}` : "") + (me.login === "suporte" ? "" : ` · por ${me.nome}`), url: "/gestao#hoje", tag: "t-" + t.id }, { exceto: me.login });
       return { ok: true, tarefa: t };
     }
     case "tarefaFeita": {

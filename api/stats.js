@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { dbReady, dbMissing, pipeline, dayKey, V, falhasLogin, confereSenhaDona } from "./_db.js";
+import { dbReady, dbMissing, pipeline, dayKey, V, falhasLogin, confereSenhaDona, marcaSuporte, ehSuporte, confereChaveSuporte } from "./_db.js";
 
 // Login e senha ficam nas variáveis ADMIN_USER e ADMIN_PASS da Vercel (nunca no código).
 // Se a dona trocou a senha pela Gestão, vale a nova (veja confereSenhaDona em _db.js).
@@ -31,11 +31,12 @@ async function main(req, res) {
   if (!U || !P) return res.status(503).json({ erro: "Login ainda não configurado na Vercel (ADMIN_USER e ADMIN_PASS)." });
   // "manter conectado": um código guardado no aparelho no lugar da senha (vale 90 dias, renova a cada uso)
   const tok = String(body?.tok || "").replace(/[^a-f0-9]/g, "").slice(0, 64);
-  let porTok = false;
+  let porTok = false, sup = false; // sup = acesso de suporte (link da Vercel, sem senha)
   if (tok.length === 64 && dbReady()) {
     const [ok] = await pipeline([["GET", `inga:adm:sess:${tok}`]]);
-    if (ok) { porTok = true; await pipeline([["EXPIRE", `inga:adm:sess:${tok}`, 60 * 60 * 24 * 90]]); }
-    else return res.status(401).json({ erro: "Sua sessão expirou. Entre de novo.", sair: true });
+    const eSup = String(ok || "").startsWith("sup:");
+    if (ok && (!eSup || ehSuporte(ok))) { porTok = true; sup = eSup; await pipeline([["EXPIRE", `inga:adm:sess:${tok}`, 60 * 60 * 24 * 90]]); }
+    else { if (ok) await pipeline([["DEL", `inga:adm:sess:${tok}`]]); return res.status(401).json({ erro: "Sua sessão expirou. Entre de novo.", sair: true }); }
   }
   // Vindo da Gestão já conectada como administradora: entra direto, sem pedir a senha de novo
   let porGestao = false;
@@ -44,13 +45,25 @@ async function main(req, res) {
     const [raw] = await pipeline([["GET", `inga:g:sess:${gt}`]]);
     let u = null; try { u = JSON.parse(raw); } catch {}
     if (u && u.papel === "admin" && u.login === "dona") porGestao = true;
+    else if (u && u.login === "suporte" && ehSuporte(u.sup)) { porGestao = true; sup = true; }
     else return res.status(401).json({ erro: "Entre com login e senha." });
+  }
+  // Link de suporte (/admin#suporte=CHAVE): entra sem senha e deixa o aparelho conectado
+  let porChave = false;
+  const chave = String(body?.chave || "").slice(0, 300);
+  if (!porTok && !porGestao && chave) {
+    if (!confereChaveSuporte(chave)) {
+      tries.set(ip, { n: t.n + 1, at: Date.now() });
+      await falhasLogin(ip, true);
+      return res.status(401).json({ erro: "Este link de acesso não vale mais." });
+    }
+    porChave = true; sup = true;
   }
   if (body.acao === "sair") {
     if (porTok) await pipeline([["DEL", `inga:adm:sess:${tok}`]]);
     return res.status(200).json({ ok: true });
   }
-  if (!porTok && !porGestao && (!same(body?.user || "", U) || !(await confereSenhaDona(body?.pass || "")))) {
+  if (!porTok && !porGestao && !porChave && (!same(body?.user || "", U) || !(await confereSenhaDona(body?.pass || "")))) {
     tries.set(ip, { n: t.n + 1, at: Date.now() });
     await falhasLogin(ip, true);
     return res.status(401).json({ erro: "Login ou senha incorretos." });
@@ -100,6 +113,6 @@ async function main(req, res) {
   }
   out.pedidos = leads;
   out.agora = new Date().toISOString();
-  if (!porTok && (body.lembrar || porGestao)) { out.tok = crypto.randomBytes(32).toString("hex"); await pipeline([["SET", `inga:adm:sess:${out.tok}`, "1", "EX", 60 * 60 * 24 * 90]]); }
+  if (!porTok && (body.lembrar || porGestao || porChave)) { out.tok = crypto.randomBytes(32).toString("hex"); await pipeline([["SET", `inga:adm:sess:${out.tok}`, sup ? marcaSuporte() : "1", "EX", 60 * 60 * 24 * 90]]); }
   return res.status(200).json(out);
 }

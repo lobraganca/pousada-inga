@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { dbReady, dbMissing, pipeline, falhasLogin, limparFalhas, confereSenhaDona, gravaSenhaDona, chaves } from "./_db.js";
+import { dbReady, dbMissing, pipeline, falhasLogin, limparFalhas, confereSenhaDona, gravaSenhaDona, chaves, marcaSuporte, ehSuporte } from "./_db.js";
 import { vapid, salvarInscricao, lerInscricao, removerInscricao, avisar } from "./_push.js";
 
 // Sistema de gestão de reservas (/gestao).
@@ -70,7 +70,11 @@ async function entrar(req, b) {
   if (at.length === 64) {
     const [ok] = await pipeline([["GET", `inga:adm:sess:${at}`]]);
     if (!ok) throw new Err(401, "Entre com login e senha.");
-    user = { login: "dona", nome: txt(process.env.ADMIN_NAME, 40) || "Dona", papel: "admin" };
+    if (String(ok).startsWith("sup:")) {
+      // acesso de suporte (entrou pelo link da Vercel): aparece como "Suporte" no histórico
+      if (!ehSuporte(ok)) throw new Err(401, "Entre com login e senha.");
+      user = { login: "suporte", nome: "Suporte", papel: "admin", sup: ok };
+    } else user = { login: "dona", nome: txt(process.env.ADMIN_NAME, 40) || "Dona", papel: "admin" };
   }
   if (U && P && same(String(b.login || "").trim(), U) && (await confereSenhaDona(pass))) user = { login: "dona", nome: txt(process.env.ADMIN_NAME, 40) || "Dona", papel: "admin" };
   if (!user && login) {
@@ -82,7 +86,7 @@ async function entrar(req, b) {
   tries.delete(ip); await limparFalhas(ip);
   const token = crypto.randomBytes(24).toString("hex");
   await pipeline([["SET", K.sess(token), JSON.stringify(user), "EX", SESS_TTL]]);
-  return { token, user };
+  return { token, user: { login: user.login, nome: user.nome, papel: user.papel } };
 }
 
 // Desconecta os aparelhos de uma pessoa (menos o aparelho "manter"): depois de trocar a senha,
@@ -94,7 +98,14 @@ async function derrubar(login, manter) {
     const del = ks.filter((k, i) => J(vals && vals[i], null)?.login === login);
     if (del.length) await pipeline([["DEL", ...del]]);
   }
-  if (login === "dona") { const adm = await chaves("inga:adm:sess:*"); if (adm.length) await pipeline([["DEL", ...adm]]); } // "manter conectado" do Painel
+  if (login === "dona") { // "manter conectado" do Painel (menos os aparelhos do suporte)
+    const adm = await chaves("inga:adm:sess:*");
+    if (adm.length) {
+      const [vals] = await pipeline([["MGET", ...adm]]);
+      const del = adm.filter((k, i) => !String((vals && vals[i]) || "").startsWith("sup:"));
+      if (del.length) await pipeline([["DEL", ...del]]);
+    }
+  }
 }
 
 async function quem(token) {
@@ -103,6 +114,7 @@ async function quem(token) {
   const [raw] = await pipeline([["GET", K.sess(token)]]);
   const u = J(raw, null);
   if (!u) throw new Err(401, "Sua sessão terminou. Entre de novo.");
+  if (u.login === "suporte" && !ehSuporte(u.sup)) { await pipeline([["DEL", K.sess(token)]]); throw new Err(401, "Sua sessão terminou. Entre de novo."); }
   u.token = token;
   return u;
 }
@@ -191,7 +203,7 @@ async function acaoBase(me, b) {
     case "dados": {
       const d = await carregar();
       const [log] = await pipeline([["LRANGE", K.log, 0, 39]]);
-      return { me: { nome: me.nome, papel: me.papel, login: me.login }, ...d, equipe: admin ? d.equipe : [], log: (log || []).map((x) => J(x, null)).filter(Boolean), agora: Date.now() };
+      return { me: { nome: me.nome, papel: me.papel, login: me.login }, suporte: Boolean(marcaSuporte()), ...d, equipe: admin ? d.equipe : [], log: (log || []).map((x) => J(x, null)).filter(Boolean), agora: Date.now() };
     }
     case "sair": {
       await pipeline([["DEL", K.sess(me.token)]]);
@@ -287,7 +299,7 @@ async function acaoBase(me, b) {
     case "membro": {
       if (!admin) throw new Err(403, "Só a administradora pode cadastrar a equipe.");
       const login = slug(b.login);
-      if (!login || login === "dona") throw new Err(400, "Escolha um login (só letras e números, sem espaço).");
+      if (!login || login === "dona" || login === "suporte") throw new Err(400, "Escolha um login (só letras e números, sem espaço).");
       const [raw] = await pipeline([["HGET", K.users, login]]);
       const old = J(raw, null);
       if (!old && String(b.senha || "").length < 6) throw new Err(400, "A senha precisa ter pelo menos 6 caracteres.");
@@ -306,6 +318,7 @@ async function acaoBase(me, b) {
       return { ok: true };
     }
     case "senha": {
+      if (me.login === "suporte") throw new Err(400, "O acesso de suporte não usa senha.");
       const atual = String(b.atual || ""), nova = String(b.nova || ""), dona = me.login === "dona";
       const fk = `inga:g:pwfail:${me.token}`;
       const [nf] = await pipeline([["GET", fk]]);

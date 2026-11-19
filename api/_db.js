@@ -99,6 +99,15 @@ export async function gravaSenhaDona(nova) {
   const salt = crypto.randomBytes(16).toString("hex");
   await pipeline([["SET", DONA_PW, JSON.stringify({ salt, hash: scr(nova, salt), base: scr(P, salt), em: Date.now() })]]);
 }
+// ---------- Acesso de suporte (quem cuida do site), sem senha ----------
+// A chave fica na variável SUPORTE_CHAVE da Vercel. Abrir /admin#suporte=CHAVE conecta o aparelho
+// (fica conectado e renova a cada uso). Mudar ou apagar a SUPORTE_CHAVE na Vercel e publicar de novo
+// desconecta todos os aparelhos do suporte. Aparece para a dona em Ajustes, e o que for feito fica no histórico.
+const chaveSup = () => { const c = String(process.env.SUPORTE_CHAVE || "").trim(); return c.length >= 24 ? c : ""; };
+export const marcaSuporte = () => { const c = chaveSup(); return c ? "sup:" + crypto.createHash("sha256").update(c).digest("hex").slice(0, 20) : ""; };
+export const ehSuporte = (v) => { const m = marcaSuporte(); return !!m && igual(String(v || ""), m); };
+export const confereChaveSuporte = (k) => { const c = chaveSup(); return !!c && !!k && igual(String(k).trim(), c); };
+
 // Todas as chaves que combinam com um padrão (ex.: as sessões abertas).
 export async function chaves(padrao) {
   const out = []; let cur = "0";

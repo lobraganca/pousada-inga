@@ -7,7 +7,7 @@
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#2B3122">
 <link rel="manifest" href="/admin.webmanifest">
-<script>try{if(localStorage.getItem("ingaAdmTok")||localStorage.getItem("ingaG"))document.documentElement.className+=" boot"}catch(e){}</script>
+<script>try{if(localStorage.getItem("ingaAdmTok")||localStorage.getItem("ingaG")||/^#suporte=/.test(location.hash))document.documentElement.className+=" boot"}catch(e){}</script>
 <style>html.boot #login{display:none!important}
 /* abas Visitas / Pedidos em rosa + filtro mais limpo */
 .tabs{display:grid!important;grid-template-columns:1fr 1fr;width:100%!important;max-width:520px;background:#F3E3EA!important;border-radius:18px!important;padding:5px!important;gap:4px}
@@ -368,6 +368,8 @@ function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){retur
 function day(d){var z=new Date(d.getTime()-3*3600e3);return z.toISOString().slice(0,10)}
 function br(s){return s?s.slice(8,10)+"/"+s.slice(5,7)+"/"+s.slice(0,4):""}
 try{var tk=localStorage.getItem("ingaAdmTok");if(tk)CRED={tok:tk};else{var c=sessionStorage.getItem("ingaAdm");if(c)CRED=JSON.parse(c);else{var gt=localStorage.getItem("ingaG");if(gt)CRED={gtok:gt}}}}catch(e){}
+  /* link de suporte (/admin#suporte=CHAVE): entra sem senha; a chave sai da barra de endereço na hora */
+  try{var hm=/^#suporte=([A-Za-z0-9_-]{24,200})$/.exec(location.hash);if(hm){history.replaceState(null,"",location.pathname+location.search);CRED={chave:hm[1],lembrar:true}}}catch(e){}
 
 $("show").addEventListener("click",function(){var p=$("p");p.type=p.type==="password"?"text":"password";this.textContent=p.type==="password"?"Mostrar":"Esconder"});
 $("form").addEventListener("submit",function(e){e.preventDefault();CRED={user:$("u").value.trim(),pass:$("p").value,lembrar:$("keep").checked};load(true)});

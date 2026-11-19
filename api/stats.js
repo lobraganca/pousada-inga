@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
-import { dbReady, dbMissing, pipeline, dayKey, V, falhasLogin } from "./_db.js";
+import { dbReady, dbMissing, pipeline, dayKey, V, falhasLogin, confereSenhaDona } from "./_db.js";
 
 // Login e senha ficam nas variáveis ADMIN_USER e ADMIN_PASS da Vercel (nunca no código).
+// Se a dona trocou a senha pela Gestão, vale a nova (veja confereSenhaDona em _db.js).
 function same(a, b) {
   const x = crypto.createHash("sha256").update(String(a)).digest();
   const y = crypto.createHash("sha256").update(String(b)).digest();
@@ -49,7 +50,7 @@ async function main(req, res) {
     if (porTok) await pipeline([["DEL", `inga:adm:sess:${tok}`]]);
     return res.status(200).json({ ok: true });
   }
-  if (!porTok && !porGestao && (!same(body?.user || "", U) || !same(body?.pass || "", P))) {
+  if (!porTok && !porGestao && (!same(body?.user || "", U) || !(await confereSenhaDona(body?.pass || "")))) {
     tries.set(ip, { n: t.n + 1, at: Date.now() });
     await falhasLogin(ip, true);
     return res.status(401).json({ erro: "Login ou senha incorretos." });

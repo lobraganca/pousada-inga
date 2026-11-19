@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { dbReady, dbMissing, pipeline, falhasLogin, limparFalhas } from "./_db.js";
+import { dbReady, dbMissing, pipeline, falhasLogin, limparFalhas, confereSenhaDona, gravaSenhaDona, chaves } from "./_db.js";
 import { vapid, salvarInscricao, lerInscricao, removerInscricao, avisar } from "./_push.js";
 
 // Sistema de gestão de reservas (/gestao).
@@ -72,7 +72,7 @@ async function entrar(req, b) {
     if (!ok) throw new Err(401, "Entre com login e senha.");
     user = { login: "dona", nome: txt(process.env.ADMIN_NAME, 40) || "Dona", papel: "admin" };
   }
-  if (U && P && same(String(b.login || "").trim(), U) && same(pass, P)) user = { login: "dona", nome: txt(process.env.ADMIN_NAME, 40) || "Dona", papel: "admin" };
+  if (U && P && same(String(b.login || "").trim(), U) && (await confereSenhaDona(pass))) user = { login: "dona", nome: txt(process.env.ADMIN_NAME, 40) || "Dona", papel: "admin" };
   if (!user && login) {
     const [raw] = await pipeline([["HGET", K.users, login]]);
     const u = J(raw, null);
@@ -83,6 +83,18 @@ async function entrar(req, b) {
   const token = crypto.randomBytes(24).toString("hex");
   await pipeline([["SET", K.sess(token), JSON.stringify(user), "EX", SESS_TTL]]);
   return { token, user };
+}
+
+// Desconecta os aparelhos de uma pessoa (menos o aparelho "manter"): depois de trocar a senha,
+// ou quando a administradora bloqueia/remove alguém ou troca a senha dessa pessoa.
+async function derrubar(login, manter) {
+  const ks = (await chaves("inga:g:sess:*")).filter((k) => !manter || k !== K.sess(manter));
+  if (ks.length) {
+    const [vals] = await pipeline([["MGET", ...ks]]);
+    const del = ks.filter((k, i) => J(vals && vals[i], null)?.login === login);
+    if (del.length) await pipeline([["DEL", ...del]]);
+  }
+  if (login === "dona") { const adm = await chaves("inga:adm:sess:*"); if (adm.length) await pipeline([["DEL", ...adm]]); } // "manter conectado" do Painel
 }
 
 async function quem(token) {
@@ -282,23 +294,39 @@ async function acaoBase(me, b) {
       const u = { nome: txt(b.nome, 40) || login, papel: b.papel === "admin" ? "admin" : "equipe", ativo: b.ativo !== false, salt: old?.salt, hash: old?.hash };
       if (b.senha) { if (String(b.senha).length < 6) throw new Err(400, "A senha precisa ter pelo menos 6 caracteres."); u.salt = crypto.randomBytes(12).toString("hex"); u.hash = hashPw(b.senha, u.salt); }
       await pipeline([["HSET", K.users, login, JSON.stringify(u)]]);
+      if (old && (b.senha || !u.ativo)) await derrubar(login);
       await logar(me, { tipo: old ? "membro-editado" : "membro-novo", nome: u.nome });
       return { ok: true };
     }
     case "removerMembro": {
       if (!admin) throw new Err(403, "Só a administradora pode alterar a equipe.");
       await pipeline([["HDEL", K.users, slug(b.login)]]);
+      await derrubar(slug(b.login));
       await logar(me, { tipo: "membro-removido", nome: slug(b.login) });
       return { ok: true };
     }
     case "senha": {
-      if (me.login === "dona") throw new Err(400, "A senha da dona é trocada nas variáveis da Vercel (ADMIN_PASS).");
-      const [raw] = await pipeline([["HGET", K.users, me.login]]);
-      const u = J(raw, null);
-      if (!u || !same(hashPw(b.atual || "", u.salt), u.hash)) throw new Err(400, "A senha atual não confere.");
-      if (String(b.nova || "").length < 6) throw new Err(400, "A nova senha precisa ter pelo menos 6 caracteres.");
-      u.salt = crypto.randomBytes(12).toString("hex"); u.hash = hashPw(b.nova, u.salt);
-      await pipeline([["HSET", K.users, me.login, JSON.stringify(u)]]);
+      const atual = String(b.atual || ""), nova = String(b.nova || ""), dona = me.login === "dona";
+      const fk = `inga:g:pwfail:${me.token}`;
+      const [nf] = await pipeline([["GET", fk]]);
+      if (+nf >= 5) throw new Err(429, "Muitas tentativas. Espere 15 minutos.");
+      const erro = async () => { await pipeline([["INCR", fk], ["EXPIRE", fk, 900]]); throw new Err(400, "A senha atual não confere."); };
+      if (nova.length < (dona ? 8 : 6)) throw new Err(400, `A nova senha precisa ter pelo menos ${dona ? 8 : 6} caracteres.`);
+      if (nova === atual) throw new Err(400, "A nova senha precisa ser diferente da atual.");
+      if (dona) {
+        // a dona (login da Vercel): a nova senha fica no banco e vale também no Painel
+        if (!(await confereSenhaDona(atual))) await erro();
+        await gravaSenhaDona(nova);
+      } else {
+        const [raw] = await pipeline([["HGET", K.users, me.login]]);
+        const u = J(raw, null);
+        if (!u || !same(hashPw(atual, u.salt), u.hash)) await erro();
+        u.salt = crypto.randomBytes(12).toString("hex"); u.hash = hashPw(nova, u.salt);
+        await pipeline([["HSET", K.users, me.login, JSON.stringify(u)]]);
+      }
+      await pipeline([["DEL", fk]]);
+      await derrubar(me.login, me.token);
+      await logar(me, { tipo: "senha" });
       return { ok: true };
     }
     case "esperaSalvar": {

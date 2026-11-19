@@ -1,3 +1,5 @@
+import crypto from "node:crypto";
+
 // Conexão com o banco Upstash Redis.
 // Aceita as variáveis da integração da Vercel (KV_*) ou as do site da Upstash (UPSTASH_*),
 // e tolera erros comuns de colagem: aspas, espaços, barra no fim, ou a URL "rediss://".
@@ -66,6 +68,49 @@ export async function falhasLogin(ip, registrar = false) {
     return +n || 0;
   } catch { return 0; }
 }
+// ---------- Senha da dona (o login principal, ADMIN_USER) ----------
+// Começa sendo a ADMIN_PASS da Vercel. Se a dona trocar a senha pela Gestão, a nova fica guardada no banco,
+// só como "hash" (nunca a senha em si) e passa a valer na Gestão e no Painel.
+// Recuperação: se alguém mudar a ADMIN_PASS na Vercel depois disso (e publicar de novo), a senha do banco
+// deixa de valer sozinha e volta a valer a da Vercel.
+const DONA_PW = "inga:g:donapw";
+const scr = (pw, salt) => crypto.scryptSync(String(pw), salt, 32).toString("hex");
+const igual = (a, b) => crypto.timingSafeEqual(crypto.createHash("sha256").update(String(a)).digest(), crypto.createHash("sha256").update(String(b)).digest());
+const baseOk = new Map();
+async function senhaDoBanco() {
+  const P = process.env.ADMIN_PASS;
+  if (!P || !dbReady()) return null;
+  const [raw] = await pipeline([["GET", DONA_PW]]);
+  let o = null; try { o = JSON.parse(raw); } catch {}
+  if (!o || !o.salt || !o.hash || !o.base) return null;
+  const k = o.salt + ":" + o.base + ":" + crypto.createHash("sha256").update(P).digest("hex");
+  if (!baseOk.has(k)) baseOk.set(k, igual(scr(P, o.salt), o.base)); // a ADMIN_PASS ainda é a mesma de quando ela trocou?
+  return baseOk.get(k) ? o : null;
+}
+export async function confereSenhaDona(pass) {
+  const P = process.env.ADMIN_PASS;
+  if (!P) return false;
+  const o = await senhaDoBanco();
+  return o ? igual(scr(pass, o.salt), o.hash) : igual(pass, P);
+}
+export async function gravaSenhaDona(nova) {
+  const P = process.env.ADMIN_PASS;
+  if (!P) throw new Error("A ADMIN_PASS não está configurada na Vercel.");
+  const salt = crypto.randomBytes(16).toString("hex");
+  await pipeline([["SET", DONA_PW, JSON.stringify({ salt, hash: scr(nova, salt), base: scr(P, salt), em: Date.now() })]]);
+}
+// Todas as chaves que combinam com um padrão (ex.: as sessões abertas).
+export async function chaves(padrao) {
+  const out = []; let cur = "0";
+  for (let i = 0; i < 100; i++) {
+    const [r] = await pipeline([["SCAN", cur, "MATCH", padrao, "COUNT", 500]]);
+    cur = String((r && r[0]) ?? "0");
+    if (r && Array.isArray(r[1])) out.push(...r[1]);
+    if (cur === "0") break;
+  }
+  return out;
+}
+
 export async function limparFalhas(ip) {
   if (!dbReady()) return;
   try { await pipeline([["DEL", `inga:login:${String(ip || "?").replace(/[^\w.:-]/g, "").slice(0, 60)}`]]); } catch {}

@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { dbReady, dbMissing, pipeline, falhasLogin, limparFalhas, confereSenhaDona, gravaSenhaDona, chaves, marcaSuporte, ehSuporte } from "./_db.js";
+import { dbReady, dbMissing, pipeline, falhasLogin, limparFalhas, confereSenhaDona, gravaSenhaDona, chaves, ehSuporte } from "./_db.js";
 import { vapid, salvarInscricao, lerInscricao, removerInscricao, avisar } from "./_push.js";
 
 // Sistema de gestão de reservas (/gestao).
@@ -203,7 +203,7 @@ async function acaoBase(me, b) {
     case "dados": {
       const d = await carregar();
       const [log] = await pipeline([["LRANGE", K.log, 0, 39]]);
-      return { me: { nome: me.nome, papel: me.papel, login: me.login }, suporte: Boolean(marcaSuporte()), ...d, equipe: admin ? d.equipe : [], log: (log || []).map((x) => J(x, null)).filter(Boolean), agora: Date.now() };
+      return { me: { nome: me.nome, papel: me.papel, login: me.login }, ...d, equipe: admin ? d.equipe : [], log: (log || []).map((x) => J(x, null)).filter(Boolean), agora: Date.now() };
     }
     case "sair": {
       await pipeline([["DEL", K.sess(me.token)]]);
